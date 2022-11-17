@@ -49,13 +49,14 @@ void    handle_sigint(int sig)
 
 int main()
 {
-	char* input;
+	char	*prompt;
+	char	*input;
 
 	signal(SIGINT, handle_sigint);
 	while (42) {
-
+		prompt = getcwd(NULL, 0);
 		// Display prompt and read input (n.b. input must be freed after use)...
-		input = readline("minishell$ ");
+		input = readline(prompt);
 
 		// Check for EOF.
 		if (!input)
@@ -65,6 +66,7 @@ int main()
 		add_history(input);
 
 		// Do stuff...
+		chdir(input);
 
 		// Free input.
 		free(input);
