@@ -14,10 +14,10 @@
 # define FALSE	0
 # define TRUE	1
 
-typedef struct	s_envp {
+typedef struct	s_env {
 	int		node_count;
 	t_list	*head_node;
-}	t_envp;
+}	t_env;
 
 # define INVALID_ARGUMENT	"❌Error: Invalid arguments"
 
