@@ -69,6 +69,12 @@ char			**get_envp(char **envp)
 	return (g_envp);
 }
 
+void	init_env(t_env *env)
+{
+	env->head_node = NULL;
+	env->node_count = 0;
+}
+
 // TODO 연결리스트 구조체 생성하기 [v]
 // TODO 환경변수를 연결리스트로 저장하기 []
 // TODO 환경변수 연결리스트 끝에 추가하기 (libft 에서 만든 함수)
@@ -78,16 +84,14 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	char	*prompt;
-	char	**g_envp;
-	t_envp	local_envp;
+	t_env	curr_env;
 
-	g_envp = NULL;
+	(void)envp;
 	if (argc != 1)
 		return (EXIT_FAILURE);
+	init_env(&curr_env);
 	(void)argv;
-	g_envp = get_envp(envp);
 	prompt = "./minishell$ ";
-	printf("HELLO MINISHELL!\n");
 	while (TRUE)
 	{
 		input = readline(prompt);
