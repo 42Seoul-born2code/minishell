@@ -2,6 +2,28 @@
 #include <stdio.h>
 
 
+void	handler(int signum)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = waitpid(-1, &status, WNOHANG);
+	if (signum == SIGINT)
+	{
+		if (pid == -1)
+		{
+
+		}
+	}
+}
+
+
+// set_signal(void)
+// {
+// 	signal(SIGINT, hadler);
+// 	signal(SIGQUIT, handler);
+// }
+
 char	*ft_strdup(const char *s1)
 {
 	char	*p;
@@ -47,11 +69,17 @@ char			**get_envp(char **envp)
 	return (g_envp);
 }
 
+// TODO 연결리스트 구조체 생성하기 [v]
+// TODO 환경변수를 연결리스트로 저장하기 []
+// TODO 환경변수 연결리스트 끝에 추가하기 (libft 에서 만든 함수)
+// TODO 연결리스트를 더블 포인터 형태로 만들기
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	char	*prompt;
 	char	**g_envp;
+	t_envp	local_envp;
 
 	g_envp = NULL;
 	if (argc != 1)
