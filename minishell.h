@@ -23,6 +23,10 @@ typedef struct	s_env_node {
 	char	*value;
 }	t_env_node;
 
+// env_utils.c
+char	**get_envp_in_list(t_env_list *curr_env);
+void	save_envp_in_list(char **envp, t_env_list *curr_env);
+
 # define INVALID_ARGUMENT	"❌Error: Invalid arguments"
 
 #endif

@@ -1,7 +1,8 @@
 
 NAME 					:=	minishell
 
-SRC_FILES				:=	main.c
+SRC_FILES				:=	main.c				\
+							env_utils.c
 SRC_OBJS				:=	$(SRC_FILES:%.c=%.o)
 
 CC 						:=	cc
