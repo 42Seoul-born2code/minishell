@@ -8,6 +8,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include "./libft/libft.h"
 
 # define ERROR	-1
 # define FALSE	0
