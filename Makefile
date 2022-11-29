@@ -26,7 +26,7 @@ all : $(NAME)
 clean :
 	rm -f $(SRC_OBJS)
 
-debug :
+debug : fclean
 	make DEBUG_MODE=1 all
 
 fclean : clean
