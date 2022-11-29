@@ -15,12 +15,19 @@ LIB_FLAGS				:=	-L $(LIB_DIR) -l$(LIB_NAME)
 READLINE_LINKING		:=	-lreadline -L ~/.brew/opt/readline/lib
 READLINE_COMPILE		:=	-I~/.brew/opt/readline/include
 
+ifdef DEBUG_MODE
+	CFLAGS				:=	$(CFLAGS) -g
+endif
+
 .PHONY : all clean fclean re
 
 all : $(NAME)
 
 clean :
 	rm -f $(SRC_OBJS)
+
+debug : fclean
+	make DEBUG_MODE=1 all
 
 fclean : clean
 	rm -f $(NAME)
