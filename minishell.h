@@ -13,6 +13,8 @@
 # define ERROR	-1
 # define FALSE	0
 # define TRUE	1
+
+# define INVALID_ARGUMENT	"❌Error: Invalid arguments"
 typedef struct	s_env_list {
 	t_list	*head_node;
 }	t_env_list;
@@ -27,6 +29,7 @@ typedef struct	s_env_node {
 char	**get_envp_in_list(t_env_list *curr_env);
 void	save_envp_in_list(char **envp, t_env_list *curr_env);
 
-# define INVALID_ARGUMENT	"❌Error: Invalid arguments"
+// execute_minishell.c
+void	execute_minishell(t_env_list env);
 
 #endif
