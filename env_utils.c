@@ -49,7 +49,6 @@ void	save_envp_in_list(char **envp, t_env_list *curr_env)
 	curr_env->head_node = NULL;
 	while (envp[i] != NULL)
 	{
-		printf("%s\n", envp[i]);
 		kv_pair = ft_split(envp[i], '=');
 		env_node = malloc(sizeof(t_env_node));
 		env_node->line = ft_strdup(envp[i]);
