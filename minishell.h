@@ -11,19 +11,42 @@
 # include "./libft/libft.h"
 
 # define ERROR	-1
-# define FALSE	0
-# define TRUE	1
 
 # define INVALID_ARGUMENT	"❌Error: Invalid arguments"
-typedef struct	s_env_list {
+
+enum e_meta {
+	WHITESPACE,
+	WORD,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE,
+	DOLLAR,
+	EQUAL,
+	BACKSLASH,
+	PIPE,
+	REDIR_LEFT,
+	REDIR_HEREDOC,
+	REDIR_RIGHT,
+	REDIR_APPEND
+};
+
+typedef struct s_env_list {
 	t_list	*head_node;
 }	t_env_list;
 
-typedef struct	s_env_node {
+typedef struct s_env_node {
 	char	*line;
 	char	*key;
 	char	*value;
 }	t_env_node;
+
+typedef struct s_token {
+	t_list	*head_node;
+}	t_token;
+
+typedef struct s_token_node {
+	int		type;
+	char	*word;
+}	t_token_node;
 
 // env_utils.c
 char	**get_envp_in_list(t_env_list *curr_env);
