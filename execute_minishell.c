@@ -7,12 +7,28 @@ static t_bool	is_whitespace(char c)
 		return (TRUE);
 	return (FALSE);
 }
-
-t_bool	is_metacharacter(char c)
+// 2. >>> or <<<인지 확인
+// 1. >> or << 인지 확인
+// ft_strncmp는 0이여야 같은거임
+// ft_strncmp에서 int개수 예외처리 해줘야함
+t_bool	is_metacharacter(char *str)
 {
-	if (c == '|' || c == '<' || c == '>' || \
-		c == '\\'
-	)
+	if (ft_strncmp(str, "<<<", 3) == 0 || \
+	ft_strncmp(str, ">>>", 3) == 0)
+	{
+		printf("%s", "ERROR");
+		return TRUE;
+	}
+
+	if (ft_strncmp(str, "<<", 2) == 0 || \
+	ft_strncmp(str, ">>", 2) == 0)
+	{
+		printf("%s", "heredoc");
+		return TRUE;
+	}	
+
+	if (*str== '|' || *str == '<' || *str == '>' || \
+		*str == '\\')
 	{
 		return (TRUE);
 	}
@@ -54,7 +70,7 @@ void	tokenize_line(char *line, t_token *token_list)
 	while (line[i] != '\0')
 	{
 		token_node = malloc(sizeof(t_token_node));
-		if (is_whitespace(line[i]) || is_metacharacter(line[i]))
+		if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
 		{
 			token_node->type = get_meta_type(line[i]);
 		}
@@ -63,7 +79,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			start = i;
 			while (line[i] != '\0')
 			{
-				if (is_whitespace(line[i]) || is_metacharacter(line[i]))
+				if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
 					break ;
 				i += 1;
 			}
