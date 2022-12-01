@@ -23,7 +23,6 @@ t_bool	is_metacharacter(char *str)
 	if (ft_strncmp(str, "<<", 2) == 0 || \
 	ft_strncmp(str, ">>", 2) == 0)
 	{
-		printf("%s", "heredoc");
 		return TRUE;
 	}	
 
@@ -35,23 +34,23 @@ t_bool	is_metacharacter(char *str)
 	return (FALSE);
 }
 
-enum e_meta get_meta_type(char c)
+enum e_meta get_meta_type(char *str)
 {
-	if (is_whitespace(c) == TRUE)
+	if (is_whitespace(*str) == TRUE)
 		return (WHITESPACE);
-	if (c == '|')
+	if (*str == '|')
 		return (PIPE);
-	if (c == '<')
+	if (*str == '<')
 		return (REDIR_LEFT);
-	// if (c == '<<')
-		// return (REDIR_HEREDOC);
-	if (c == '>')
+	if (ft_strncmp(str, "<<", 2) == 0)
+		return (REDIR_HEREDOC);
+	if (*str == '>')
 		return (REDIR_RIGHT);
-	// if (c == '>>')
-		// return (REDIR_APPEND);
-	if (c == '\\')
+	if (ft_strncmp(str, ">>", 2) == 0)
+		return (REDIR_APPEND);
+	if (*str == '\\')
 		return (BACKSLASH);
-	if (c == '|')
+	if (*str == '|')
 		return (PIPE);
 	else
 		return (WORD);
@@ -72,7 +71,7 @@ void	tokenize_line(char *line, t_token *token_list)
 		token_node = malloc(sizeof(t_token_node));
 		if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
 		{
-			token_node->type = get_meta_type(line[i]);
+			token_node->type = get_meta_type(&line[i]);
 		}
 		else
 		{
