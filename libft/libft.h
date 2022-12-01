@@ -3,24 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
+/*   By: joonhan <joonhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 16:59:36 by joonhan           #+#    #+#             */
-/*   Updated: 2022/09/17 12:47:27 by joonhan          ###   ########.fr       */
+/*   Updated: 2022/11/30 13:09:23 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 
 # define LIBFT_H
-# define TRUE   		1
-# define FALSE  		0
 # define ERROR			-1
 # define BUFFER_SIZE   100
 
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdarg.h>
+
+typedef enum bool {
+	FALSE,
+	TRUE
+}	t_bool;
 
 typedef struct s_node
 {
@@ -80,6 +83,7 @@ t_list		*ft_lstlast(t_list *lst);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *),
 				void (*del)(void *));
 t_list		*ft_lstnew(void *content);
+t_bool		ft_strcmp(char *s1, char *s2);
 
 char		*get_next_line(int fd);
 t_node		*find_fd(t_node **p_head, int fd);

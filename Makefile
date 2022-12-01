@@ -21,6 +21,10 @@ ifdef DEBUG_MODE
 	CFLAGS				:=	$(CFLAGS) -g
 endif
 
+ifdef D_SANI
+	CFLAGS				:=	$(CFLAGS) -g -fsanitize=address
+endif
+
 .PHONY : all clean fclean re
 
 all : $(NAME)
@@ -30,6 +34,9 @@ clean :
 
 debug : fclean
 	make DEBUG_MODE=1 all
+
+dsani : fclean
+	make D_SANI=1 all
 
 fclean : clean
 	rm -f $(NAME)
