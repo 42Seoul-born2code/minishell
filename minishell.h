@@ -14,7 +14,7 @@
 
 # define INVALID_ARGUMENT	"❌Error: Invalid arguments"
 
-enum e_meta {
+typedef enum {
 	WHITESPACE,
 	WORD,
 	SINGLE_QUOTE,
@@ -27,7 +27,7 @@ enum e_meta {
 	REDIR_HEREDOC,
 	REDIR_RIGHT,
 	REDIR_APPEND
-};
+}	e_meta;
 
 typedef struct s_env_list {
 	t_list	*head_node;
@@ -44,7 +44,7 @@ typedef struct s_token {
 }	t_token;
 
 typedef struct s_token_node {
-	int		type;
+	e_meta	type;
 	char	*word;
 }	t_token_node;
 
