@@ -7,25 +7,21 @@ static t_bool	is_whitespace(char c)
 		return (TRUE);
 	return (FALSE);
 }
-// 2. >>> or <<<인지 확인
-// 1. >> or << 인지 확인
-// ft_strncmp는 0이여야 같은거임
-// ft_strncmp에서 int개수 예외처리 해줘야함
+
 t_bool	is_metacharacter(char *str)
 {
-	if (ft_strncmp(str, "<<<", 3) == 0 || \
-	ft_strncmp(str, ">>>", 3) == 0)
-	{
-		printf("%s", "ERROR");
-		return TRUE;
-	}
-
+	// TODO 3개짜리는 별도로 어떻게 처리할지?
+	// if (ft_strncmp(str, "<<<", 3) == 0 || \
+	// ft_strncmp(str, ">>>", 3) == 0)
+	// {
+	// 	printf("%s", "ERROR");
+	// 	return (FALSE);
+	// }
 	if (ft_strncmp(str, "<<", 2) == 0 || \
 	ft_strncmp(str, ">>", 2) == 0)
 	{
-		return TRUE;
+		return (TRUE);
 	}	
-
 	if (*str== '|' || *str == '<' || *str == '>' || \
 		*str == '\\')
 	{
@@ -34,20 +30,20 @@ t_bool	is_metacharacter(char *str)
 	return (FALSE);
 }
 
-enum e_meta get_meta_type(char *str)
+e_meta get_meta_type(char *str)
 {
 	if (is_whitespace(*str) == TRUE)
 		return (WHITESPACE);
 	if (*str == '|')
 		return (PIPE);
-	if (*str == '<')
-		return (REDIR_LEFT);
 	if (ft_strncmp(str, "<<", 2) == 0)
 		return (REDIR_HEREDOC);
-	if (*str == '>')
-		return (REDIR_RIGHT);
+	if (*str == '<')
+		return (REDIR_LEFT);
 	if (ft_strncmp(str, ">>", 2) == 0)
 		return (REDIR_APPEND);
+	if (*str == '>')
+		return (REDIR_RIGHT);
 	if (*str == '\\')
 		return (BACKSLASH);
 	if (*str == '|')
@@ -65,13 +61,16 @@ void	tokenize_line(char *line, t_token *token_list)
 
 	i = 0;
 	word = NULL;
-	(void)token_list;
 	while (line[i] != '\0')
 	{
 		token_node = malloc(sizeof(t_token_node));
 		if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
 		{
 			token_node->type = get_meta_type(&line[i]);
+			if (token_node->type == REDIR_HEREDOC || token_node->type == REDIR_APPEND)
+				i += 1;
+			token_node->word = NULL;
+			i += 1;
 		}
 		else
 		{
@@ -82,11 +81,12 @@ void	tokenize_line(char *line, t_token *token_list)
 					break ;
 				i += 1;
 			}
-			word = malloc(sizeof(char) * (i - start));
+			word = malloc(sizeof(char) * (i - start + 1));
 			ft_memcpy(word, &line[start], i - start);
-			printf("word: %s\n", word);
+			token_node->word = word;
+			token_node->type = WORD;
 		}
-		i += 1;
+		ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
 	}
 }
 
@@ -94,16 +94,18 @@ void	execute_minishell(t_env_list env)
 {
 	char	*line;
 	char	*prompt;
-	t_token	token_list;
+	t_token	*token_list;
 
 	(void)env;
 	prompt = "./minishell$ ";
+	token_list = malloc(sizeof(t_token));
+	token_list->head_node = NULL;
 	while (TRUE)
 	{
 		line = readline(prompt);
 		if (!line)
 			break ;
-		tokenize_line(line, &token_list);
+		tokenize_line(line, token_list);
 		add_history(line);
 		free(line);
 	}
