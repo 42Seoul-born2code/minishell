@@ -21,7 +21,6 @@ typedef enum {
 	DOUBLE_QUOTE,
 	DOLLAR,
 	EQUAL,
-	BACKSLASH,
 	PIPE,
 	REDIR_LEFT,
 	REDIR_HEREDOC,
@@ -41,6 +40,7 @@ typedef struct s_env_node {
 
 typedef struct s_token {
 	t_list	*head_node;
+	e_meta	quote_type;
 }	t_token;
 
 typedef struct s_token_node {

@@ -44,49 +44,76 @@ e_meta get_meta_type(char *str)
 		return (REDIR_APPEND);
 	if (*str == '>')
 		return (REDIR_RIGHT);
-	if (*str == '\\')
-		return (BACKSLASH);
 	if (*str == '|')
 		return (PIPE);
 	else
 		return (WORD);
 }
+/*
+	echo "hello 'world' > outfile"
+
+	// typedef struct quotes
+	// start_idx(int)
+	// end_idx(int) default -1
+	// is_closed(t_bool)
+*/
+
+/*
+	만약 quotes를 만나면 check quotes에서 다음 quotes를 만날때까지 진행한다.
+	다음 quotes가 없다면 에러처리
+	' "" '는 나중에 처리한다
+	자료형을 하나 더 만들어서 따로 추가
+*/
+void	check_quotes(char **line)
+{
+	while (*(*line) != '\0')
+	{
+		printf("%c\n", *(*(line)));
+		// if (line[i] == '\'' || line[i] == '\"')
+		// {
+			
+		// }
+		*line += 1;
+	}
+}
 
 void	tokenize_line(char *line, t_token *token_list)
 {
 	int				i;
-	int				start;
+	// int				start;
 	char			*word;
-	t_token_node	*token_node;
+	// t_token_node	*token_node;
 
 	i = 0;
 	word = NULL;
+	(void)token_list;
 	while (line[i] != '\0')
 	{
-		token_node = malloc(sizeof(t_token_node));
-		if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
-		{
-			token_node->type = get_meta_type(&line[i]);
-			if (token_node->type == REDIR_HEREDOC || token_node->type == REDIR_APPEND)
-				i += 1;
-			token_node->word = NULL;
-			i += 1;
-		}
-		else
-		{
-			start = i;
-			while (line[i] != '\0')
-			{
-				if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
-					break ;
-				i += 1;
-			}
-			word = malloc(sizeof(char) * (i - start + 1));
-			ft_memcpy(word, &line[start], i - start);
-			token_node->word = word;
-			token_node->type = WORD;
-		}
-		ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
+		check_quotes((&line + i));
+		// token_node = malloc(sizeof(t_token_node));
+		// if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
+		// {
+		// 	token_node->type = get_meta_type(&line[i]);
+		// 	if (token_node->type == REDIR_HEREDOC || token_node->type == REDIR_APPEND)
+		// 		i += 1;
+		// 	token_node->word = NULL;
+		// 	i += 1;
+		// }
+		// else
+		// {
+		// 	start = i;
+		// 	while (line[i] != '\0')
+		// 	{
+		// 		if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
+		// 			break ;
+		// 		i += 1;
+		// 	}
+		// 	word = malloc(sizeof(char) * (i - start + 1));
+		// 	ft_memcpy(word, &line[start], i - start);
+		// 	token_node->word = word;
+		// 	token_node->type = WORD;
+		// }
+		// ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
 	}
 }
 
