@@ -64,15 +64,35 @@ e_meta get_meta_type(char *str)
 	' "" '는 나중에 처리한다
 	자료형을 하나 더 만들어서 따로 추가
 */
-void	check_quotes(char **line)
+void	check_quotes(char **line, t_token_node *token_node)
 {
 	while (*(*line) != '\0')
 	{
-		printf("%c\n", *(*(line)));
-		// if (line[i] == '\'' || line[i] == '\"')
-		// {
-			
-		// }
+		printf("%c\n", *(*line));
+		if (*(*line) == '\'' || *(*line) == '\"')
+		{
+			if (*(*line) == '\'')
+			{
+				token_node->type = SINGLE_QUOTE;
+				*line += 1;
+				while (*(*line) != '\0' && *(*line) != '\'')
+				{
+					printf("%c", *(*line));
+					*line += 1;
+				}
+			}
+			else
+			{
+				token_node->type = DOUBLE_QUOTE;
+				*line += 1;
+				while (*(*line) != '\0' && *(*line) != '\"')
+				{
+					printf("%c", *(*line));
+					*line += 1;
+				}
+				// token_list
+			}
+		}
 		*line += 1;
 	}
 }
@@ -82,15 +102,15 @@ void	tokenize_line(char *line, t_token *token_list)
 	int				i;
 	// int				start;
 	char			*word;
-	// t_token_node	*token_node;
+	t_token_node	*token_node;
 
 	i = 0;
 	word = NULL;
 	(void)token_list;
 	while (line[i] != '\0')
 	{
-		check_quotes((&line + i));
-		// token_node = malloc(sizeof(t_token_node));
+		token_node = malloc(sizeof(t_token_node));
+		check_quotes((&line + i), token_node);
 		// if (is_whitespace(line[i]) || is_metacharacter(&line[i]))
 		// {
 		// 	token_node->type = get_meta_type(&line[i]);
