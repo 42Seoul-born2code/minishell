@@ -40,12 +40,12 @@ typedef struct s_env_node {
 
 typedef struct s_token {
 	t_list	*head_node;
-	e_meta	quote_type;
 }	t_token;
 
 typedef struct s_token_node {
 	e_meta	type;
-	char	*word;
+	char	**inputs;		// ["'", "ls", "-l", ">", "outfile","'", NULL]
+	e_meta	quote_type;		// SINGLE OR DOUBLE OR NOTHING
 }	t_token_node;
 
 // env_utils.c
