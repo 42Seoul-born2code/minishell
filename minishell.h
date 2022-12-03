@@ -44,8 +44,7 @@ typedef struct s_token {
 
 typedef struct s_token_node {
 	e_meta	type;
-	char	**inputs;		// ["'", "ls", "-l", ">", "outfile","'", NULL]
-	e_meta	quote_type;		// SINGLE OR DOUBLE OR NOTHING
+	char		*word;
 }	t_token_node;
 
 // env_utils.c
