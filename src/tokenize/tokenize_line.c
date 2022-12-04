@@ -1,62 +1,4 @@
-#include "minishell.h"
-
-static t_bool	is_whitespace(char c)
-{
-	if (c == ' ' || c == '\n' || c == '\t')
-		return (TRUE);
-	return (FALSE);
-}
-
-t_bool	is_operator(char *str)
-{
-	// TODO 3개짜리는 별도로 어떻게 처리할지?
-	// if (ft_strncmp(str, "<<<", 3) == 0 || \
-	// ft_strncmp(str, ">>>", 3) == 0)
-	// {
-	// 	printf("%s", "ERROR");
-	// 	return (FALSE);
-	// }
-	if (ft_strncmp(str, "<<", 2) == 0 || \
-	ft_strncmp(str, ">>", 2) == 0)
-	{
-		return (TRUE);
-	}	
-	if (*str== '|' || *str == '<' || *str == '>')
-	{
-		return (TRUE);
-	}
-	return (FALSE);
-}
-
-t_bool	is_quote(char c)
-{
-	if (c == '\'' || c == '\"')
-	{
-		return (TRUE);
-	}
-	return (FALSE);
-}
-
-
-e_meta get_meta_type(char *str)
-{
-	if (is_whitespace(*str) == TRUE)
-		return (WHITESPACE);
-	if (*str == '|')
-		return (PIPE);
-	if (ft_strncmp(str, "<<", 2) == 0)
-		return (REDIR_HEREDOC);
-	if (*str == '<')
-		return (REDIR_LEFT);
-	if (ft_strncmp(str, ">>", 2) == 0)
-		return (REDIR_APPEND);
-	if (*str == '>')
-		return (REDIR_RIGHT);
-	if (*str == '|')
-		return (PIPE);
-	else
-		return (WORD);
-}
+#include "tokenize.h"
 
 /*		AWESOME_TEST_CASE		*/
 /*
@@ -72,7 +14,6 @@ ls | cat > outfile
 'b''a'"s""h" 
 
 */
-/*		AWESOME_TEST_CASE		*/
 // 1. 공백(whitespace)이면 건너뛴다.
 // 2. metacharacter 로 구분되지 않은 따옴표이면, 
 //		metacharacter 를 만날 때까지, 그리고 닫는 따옴표를 만날 때까지 인덱스를 증가시킨다.
@@ -193,36 +134,3 @@ void	tokenize_line(char *line, t_token *token_list)
 		}
 	}
 }
-
-void	execute_minishell(t_env_list env)
-{
-	char	*line;
-	char	*prompt;
-	t_token	*token_list;
-
-	(void)env;
-	prompt = "./minishell$ ";
-	token_list = malloc(sizeof(t_token));
-	token_list->head_node = NULL;
-	while (TRUE)
-	{
-		line = readline(prompt);
-		if (!line)
-			break ;
-		tokenize_line(line, token_list);
-		add_history(line);
-		free(line);
-	}
-}
-
-/*
-
-	echo "hello 'world'"
-	echo "hello \"world\""
-	cat < main.c
-	ls > output
-	ls -l | grep main
-	ls -l | grep main >> output
-	<< HELLO cat | wc -l >> outfile
-
-*/
