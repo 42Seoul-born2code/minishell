@@ -18,7 +18,6 @@ ls | cat > outfile
 // 2. metacharacter 로 구분되지 않은 따옴표이면, 
 //		metacharacter 를 만날 때까지, 그리고 닫는 따옴표를 만날 때까지 인덱스를 증가시킨다.
 
-
 static void	save_token(t_token *token_list, t_token_node *node, char *line, int length)
 {
 	char	*word;
@@ -42,6 +41,20 @@ static void	get_operator_type(t_token_node *node, char *line, int *i, int *lengt
 		*length = 1;
 		*i += 1;
 	}
+}
+
+static int	get_word_length(t_token_node *node, char *line, int *i, int start)
+{
+	while (line[*i] != '\0')
+	{
+		if (is_whitespace(line[*i]) == TRUE || is_operator(&line[*i]) == TRUE)
+		{
+			break ;
+		}
+		*i += 1;
+	}
+	node->type = WORD;
+	return (*i - start);
 }
 
 void	tokenize_line(char *line, t_token *token_list)
@@ -119,16 +132,9 @@ void	tokenize_line(char *line, t_token *token_list)
 		}
 
 		// CASE4. word 를 만났을 때
-		// ec'ho' 'hello "world"'
-		// [ec'ho', 'hello "world"']
 		else
 		{
-			while (line[i] != '\0' && is_whitespace(line[i]) == FALSE && is_operator(&line[i]) == FALSE)
-			{
-				i += 1;
-			}
-			word_length = (i - start);
-			token_node->type = WORD;
+			word_length = get_word_length(token_node, line, &i, start);
 		}
 		save_token(token_list, token_node, &line[start], word_length);
 	}
