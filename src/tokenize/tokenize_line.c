@@ -18,19 +18,27 @@ ls | cat > outfile
 // 2. metacharacter 로 구분되지 않은 따옴표이면, 
 //		metacharacter 를 만날 때까지, 그리고 닫는 따옴표를 만날 때까지 인덱스를 증가시킨다.
 
+
+static void	save_token(t_token *token_list, t_token_node *node, char *line, int length)
+{
+	char	*word;
+
+	word = malloc(sizeof(char) * (length + 1));
+	ft_memcpy(word, line, length);
+	node->word = word;
+	ft_lstadd_back(&token_list->head_node, ft_lstnew(node));	
+}
+
 void	tokenize_line(char *line, t_token *token_list)
 {
 	int				i;
 	int				start;
 	t_bool			is_quote_closed;
-	char			*word;
 	char			quote_type;
 	t_token_node	*token_node;
 	int				word_length;
 
 	i = 0;
-	word = NULL;
-	(void)token_list;
 	while (line[i] != '\0')
 	{
 		// CASE1. whitespace 인 경우
@@ -40,6 +48,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			continue ;
 		}
 		// CASE2. operator 이면 무조건 저장
+		start = i;
 		token_node = malloc(sizeof(t_token_node));
 		if (is_operator(&line[i]) == TRUE)
 		{
@@ -54,16 +63,11 @@ void	tokenize_line(char *line, t_token *token_list)
 				word_length = 1;
 				i += 1;
 			}
-			word = malloc(sizeof(char) * (word_length + 1));
-			ft_memcpy(word, &line[i - (word_length)], word_length);
-			token_node->word = word;
-			ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
 		}
 		
 		// CASE3. 따옴표를 만났을 때
 		else if (is_quote(line[i]) == TRUE)
 		{
-			start = i;
 			is_quote_closed = FALSE;
 			// 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
 			while (line[i] != '\0')
@@ -104,11 +108,7 @@ void	tokenize_line(char *line, t_token *token_list)
 					i -= 1;
 					word_length -= 1;
 				}
-				word = malloc(sizeof(char) * (word_length + 1));
-				ft_memcpy(word, &line[start], word_length);
-				token_node->word = word;
 				token_node->type = WORD;
-				ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
 				i += 1;
 			}
 		}
@@ -118,19 +118,13 @@ void	tokenize_line(char *line, t_token *token_list)
 		// [ec'ho', 'hello "world"']
 		else
 		{
-			// word인 경우
-			start = i;
 			while (line[i] != '\0' && is_whitespace(line[i]) == FALSE && is_operator(&line[i]) == FALSE)
 			{
 				i += 1;
 			}
-			// i : 6, start : 0
 			word_length = (i - start);
-			word = malloc(sizeof(char) * (word_length + 1));
-			ft_memcpy(word, &line[start], word_length);
-			token_node->word = word;
 			token_node->type = WORD;
-			ft_lstadd_back(&token_list->head_node, ft_lstnew(token_node));
 		}
+		save_token(token_list, token_node, &line[start], word_length);
 	}
 }
