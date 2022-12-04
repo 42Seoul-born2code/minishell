@@ -29,6 +29,21 @@ static void	save_token(t_token *token_list, t_token_node *node, char *line, int 
 	ft_lstadd_back(&token_list->head_node, ft_lstnew(node));	
 }
 
+static void	get_operator_type(t_token_node *node, char *line, int *i, int *length)
+{
+	node->type = get_meta_type(&line[*i]);
+	if (node->type == REDIR_HEREDOC || node->type == REDIR_APPEND)
+	{
+		*length = 2;
+		*i += 2;
+	}
+	else
+	{
+		*length = 1;
+		*i += 1;
+	}
+}
+
 void	tokenize_line(char *line, t_token *token_list)
 {
 	int				i;
@@ -52,17 +67,7 @@ void	tokenize_line(char *line, t_token *token_list)
 		token_node = malloc(sizeof(t_token_node));
 		if (is_operator(&line[i]) == TRUE)
 		{
-			token_node->type = get_meta_type(&line[i]);
-			if (token_node->type == REDIR_HEREDOC || token_node->type == REDIR_APPEND)
-			{
-				word_length = 2;
-				i += 2;
-			}
-			else
-			{
-				word_length = 1;
-				i += 1;
-			}
+			get_operator_type(token_node, line, &i, &word_length);
 		}
 		
 		// CASE3. 따옴표를 만났을 때
