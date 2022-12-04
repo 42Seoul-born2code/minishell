@@ -57,14 +57,39 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	return (*i - start);
 }
 
+// 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
+static t_bool	is_quote_closed(char *line, int *i)
+{
+	char		quote_type;
+	t_bool	result;
+
+	result = FALSE;
+	while (line[*i] != '\0' || result == TRUE)
+	{
+		if (is_quote(line[*i]) == FALSE && (is_whitespace(line[*i]) == TRUE || is_operator(&line[*i]) == TRUE))
+			break ;
+		quote_type = line[*i];
+		*i += 1;
+		// echo 'hello "world"'| cat > a
+		while (line[*i] != '\0' && quote_type != line[*i])
+			*i += 1;
+		if (line[*i] == '\0')
+			break ;
+		result = TRUE;
+		// TEST CASE: 'b''a'"s""h" 와 같이 연속된 따옴표로 묶인 문자열을 처리하기 위한 조건
+		if (is_whitespace(line[*i]) && is_operator(&line[*i]))
+			break ;
+		*i += 1;
+	}
+	return (result);
+}
+
 void	tokenize_line(char *line, t_token *token_list)
 {
-	int				i;
-	int				start;
-	t_bool			is_quote_closed;
-	char			quote_type;
+	int						i;
+	int						start;
+	int						word_length;
 	t_token_node	*token_node;
-	int				word_length;
 
 	i = 0;
 	while (line[i] != '\0')
@@ -86,36 +111,10 @@ void	tokenize_line(char *line, t_token *token_list)
 		// CASE3. 따옴표를 만났을 때
 		else if (is_quote(line[i]) == TRUE)
 		{
-			is_quote_closed = FALSE;
-			// 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
-			while (line[i] != '\0')
-			{
-				// 'b'a's'"h"\0
-				if (is_quote(line[i]) == FALSE && (is_whitespace(line[i]) == TRUE || is_operator(&line[i]) == TRUE))
-					break ;
-				if (is_quote(line[i]) == TRUE)
-				{
-					quote_type = line[i];
-					i += 1;
-					while (line[i] != '\0' && quote_type != line[i])
-					{
-						i += 1;
-					}
-					if (line[i] == '\0')
-					{
-						is_quote_closed = FALSE;
-						break ;
-					}
-					is_quote_closed = TRUE;
-					if (is_whitespace(line[i]) && is_operator(&line[i]))
-						break ;
-				}
-				i += 1;
-			}
-			// 따옴표가 닫히지 않은 경우를 확인하기 위한 조건
-			if (is_quote_closed == FALSE)
+			if (is_quote_closed(line, &i) == FALSE)
 			{
 				printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
+				break ;
 				// TODO 오류 메세지 출력하도록 구현(Syntax Error)
 			}
 			else
