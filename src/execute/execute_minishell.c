@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "execute.h"
 
 void	execute_minishell(t_env_list env)
 {
@@ -16,6 +16,8 @@ void	execute_minishell(t_env_list env)
 		if (!line)
 			break ;
 		tokenize_line(line, token_list);
+		parsing(token_list);
+		// TODO 문법 검사
 		add_history(line);
 		free(line);
 	}
