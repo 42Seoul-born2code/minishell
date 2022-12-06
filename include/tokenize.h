@@ -15,7 +15,11 @@ typedef enum {
 	REDIR_LEFT,
 	REDIR_HEREDOC,
 	REDIR_RIGHT,
-	REDIR_APPEND
+	REDIR_APPEND,
+	COMMAND,
+	ARGUMENT,
+	INFILE,
+	OUTFILE
 }	e_meta;
 
 typedef struct s_token {
