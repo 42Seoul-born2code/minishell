@@ -70,7 +70,7 @@ OK : wc -l < Makefile
 
 [< FILE_NAME COMMAND ARGUMENT]
 
-- OK : < outfile cat Makefile
+- OK : < infile cat Makefile
 
 [COMMAND ARGUMENT >> FILE_NAME]
 
@@ -104,32 +104,96 @@ OK : wc -l < Makefile
 
 void	parsing(t_token *token_list)
 {
-	t_list				*curr_node;
+	t_list			*curr_node;
 	t_token_node	*curr_content;
-	t_bool				is_command_found;
+	t_bool			is_command_found;
+	t_bool			is_redirection_found; // < > >>
+	t_bool			is_heredoc_found; // <<
 
 	is_command_found = FALSE;
+	is_redirection_found = FALSE;
+	is_heredoc_found = FALSE;
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
 		curr_content = (t_token_node *)curr_node->content;
-		if (curr_content->type == WORD && is_command_found == FALSE)
+		
+		if (curr_content->type == WORD)
 		{
-			curr_content->type = COMMAND;
-			is_command_found = TRUE;
+			// 1. redirection 뒤는 무조건 파일 이름
+			if (is_redirection_found == TRUE)
+			{
+				curr_content->type = FILE_NAME;
+				is_redirection_found = FALSE;
+			}
+			// 2. command 는 redirection 보다 우선순위가 낮음
+			else if (is_command_found == FALSE && is_heredoc_found == FALSE)
+			{
+				curr_content->type = COMMAND;
+				is_command_found = TRUE;
+			}
+			else if (is_heredoc_found == TRUE)
+			{
+				curr_content->type = LIMITER;
+				is_heredoc_found = FALSE;
+			}
+			else
+			{
+				curr_content->type = ARGUMENT;
+			}
 		}
-		// 1. Redirection input (<)
+		// 3. Redirection input (<)
 		// - [COMMAND < FILE_NAME ]
-		else if (is_command_found == TRUE && curr_content->type == REDIR_LEFT)
-		{
-
-		}
+		// CASE1. ls < Makefile
 		// - [< FILE_NAME COMMAND ARGUMENTS]
-		else if ()
+		// CASE2. < Makefile ls -al
+		else if (curr_content->type == REDIR_LEFT && is_redirection_found == FALSE)
 		{
-			
+			is_redirection_found = TRUE;
+		}
+		// 4. Redirection heredoc (<<)
+		// CASE1. ls << eof cat
+		// CASE2. ls cat << eof
+		else if (curr_content->type == REDIR_HEREDOC)
+		{
+			is_heredoc_found = TRUE;
+		}
+
+		// 5. pipe
+		// CASE1. | <
+		// CASE2. | ls 
+		// CASE3. | >
+		// CASE4. | <<
+		// CASE5. | >>
+		else if (curr_content->type == PIPE)
+		{
+			is_command_found = FALSE;
+			is_redirection_found = FALSE;
+			is_heredoc_found = FALSE;
+		}
+
+		// 6. Redirect right (>)
+		// CASE1. ls > outfile (OK)
+		// CASE2. > outfile (OK)
+		// CASE3. outfile > (NO)
+		else if ((curr_content->type == REDIR_RIGHT || curr_content->type == REDIR_APPEND) && is_redirection_found == FALSE)
+		{
+			is_redirection_found = TRUE;
 		}
 		printf("type: %d, word: %s\n", curr_content->type, curr_content->word);
 		curr_node = curr_node->next;
 	}
 }
+
+/*
+
+	COMMAND << LIMITER COMMAND
+	COMMAND COMMAND << LIMITER
+
+	WORD[COMMAND] <<[HEREDOC] WORD[LIMITER] WORD[ARGUMENT] 
+	ls << eof cat(ARGUMENT)
+	ls cat(ARGUMENT) << eof
+
+	So, before pipe, a word after command is considered arguments.
+
+*/
