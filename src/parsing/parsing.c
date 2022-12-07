@@ -104,11 +104,11 @@ OK : wc -l < Makefile
 
 void	parsing(t_token *token_list)
 {
-	t_list			*curr_node;
+	t_list				*curr_node;
 	t_token_node	*curr_content;
-	t_bool			is_command_found;
-	t_bool			is_redirection_found; // < > >>
-	t_bool			is_heredoc_found; // <<
+	t_bool				is_command_found;
+	t_bool				is_redirection_found;
+	t_bool				is_heredoc_found;
 
 	is_command_found = FALSE;
 	is_redirection_found = FALSE;
@@ -117,41 +117,50 @@ void	parsing(t_token *token_list)
 	while (curr_node != NULL)
 	{
 		curr_content = (t_token_node *)curr_node->content;
-		
+		// 1. WORD 인 경우
 		if (curr_content->type == WORD)
 		{
-			// 1. redirection 뒤는 무조건 파일 이름
+			// 1-1. redirection 뒤는 무조건 파일 이름이 온다.
+			// CASE1. ls > outfile
+			// CASE2. > outfile ls
+			// CASE3. ls >> outfile
+			// CASE4. >> outfile ls
+			// CASE5. < infile cat
+			// CASE6. cat < infile
 			if (is_redirection_found == TRUE)
 			{
 				curr_content->type = FILE_NAME;
 				is_redirection_found = FALSE;
 			}
-			// 2. command 는 redirection 보다 우선순위가 낮음
+			// 1-2. command 를 처음 발견한 경우
+			// command 는 redirection 보다 우선순위가 낮음
+			// CASE1. ls << eof 
 			else if (is_command_found == FALSE && is_heredoc_found == FALSE)
 			{
 				curr_content->type = COMMAND;
 				is_command_found = TRUE;
 			}
+			// 1-3. HEREDOC 뒤에 오는 WORD 는 LIMITER 
 			else if (is_heredoc_found == TRUE)
 			{
 				curr_content->type = LIMITER;
 				is_heredoc_found = FALSE;
 			}
+			// 1-4. 그 외의 경우에는 모두 ARGUMENT 
 			else
 			{
 				curr_content->type = ARGUMENT;
 			}
 		}
-		// 3. Redirection input (<)
-		// - [COMMAND < FILE_NAME ]
-		// CASE1. ls < Makefile
-		// - [< FILE_NAME COMMAND ARGUMENTS]
-		// CASE2. < Makefile ls -al
-		else if (curr_content->type == REDIR_LEFT && is_redirection_found == FALSE)
+
+		// 2. <, >, >> 을 받았을 때
+		else if ((curr_content->type == REDIR_LEFT || curr_content->type == REDIR_RIGHT || curr_content->type == REDIR_APPEND) \
+		&& is_redirection_found == FALSE)
 		{
 			is_redirection_found = TRUE;
 		}
-		// 4. Redirection heredoc (<<)
+
+		// 3. << HEREDOC을 받았을 때
 		// CASE1. ls << eof cat
 		// CASE2. ls cat << eof
 		else if (curr_content->type == REDIR_HEREDOC)
@@ -159,26 +168,12 @@ void	parsing(t_token *token_list)
 			is_heredoc_found = TRUE;
 		}
 
-		// 5. pipe
-		// CASE1. | <
-		// CASE2. | ls 
-		// CASE3. | >
-		// CASE4. | <<
-		// CASE5. | >>
+		// 4. 파이프를 받았을 때, 모두 False로 초기화
 		else if (curr_content->type == PIPE)
 		{
 			is_command_found = FALSE;
 			is_redirection_found = FALSE;
 			is_heredoc_found = FALSE;
-		}
-
-		// 6. Redirect right (>)
-		// CASE1. ls > outfile (OK)
-		// CASE2. > outfile (OK)
-		// CASE3. outfile > (NO)
-		else if ((curr_content->type == REDIR_RIGHT || curr_content->type == REDIR_APPEND) && is_redirection_found == FALSE)
-		{
-			is_redirection_found = TRUE;
 		}
 		printf("type: %d, word: %s\n", curr_content->type, curr_content->word);
 		curr_node = curr_node->next;
