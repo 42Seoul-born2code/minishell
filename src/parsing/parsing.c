@@ -144,28 +144,29 @@ OK : wc -l < Makefile
 
 t_unit	*create_unit_list(t_token *token_list)
 {
-	t_unit	*unit_list;
-	t_list	*unit_node;
-	t_list	*curr_node;
+	t_unit		*unit_list;
+	t_unit		*unit_node;
+	t_list		*curr_node;
 
-	unit_list = malloc(sizeof(t_unit));
 	curr_node = token_list->head_node;
+	if (curr_node == NULL)
+		return (NULL);
+	unit_list = malloc(sizeof(t_unit));
+	unit_list->head_node = NULL;
 	while (curr_node != NULL)
 	{
 		if (((t_token_node *)curr_node->content)->type != PIPE)
 		{
-			unit_node = ft_lstnew(NULL);
-			while (((t_token_node *)curr_node->content)->type != PIPE)
+			unit_node = malloc(sizeof(t_unit));
+			unit_node->head_node = NULL;
+			ft_lstadd_back(&unit_list->head_node, ft_lstnew(unit_node));
+			while (curr_node != NULL && ((t_token_node *)curr_node->content)->type != PIPE)
 			{
-				ft_lstadd_back(&unit_node, ft_lstnew(((t_token_node *)curr_node->content)));
+				ft_lstadd_back(&unit_node->head_node, ft_lstnew(curr_node->content));
 				curr_node = curr_node->next;
 			}
-			ft_lstadd_back(&unit_list->head_node, ft_lstnew(unit_node));
 		}
-		else
-		{
-			curr_node = curr_node->next;
-		}
+		curr_node = curr_node->next;
 	}
 	return (NULL);
 }
