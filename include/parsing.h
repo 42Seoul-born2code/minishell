@@ -10,6 +10,10 @@ typedef struct s_parse_info {
 	t_bool	is_heredoc_found;
 }	t_parse_info;
 
+typedef struct s_unit {
+	t_list	*head_node;
+}	t_unit;
+
 void	parsing(t_token *token_list);
 
 #endif
