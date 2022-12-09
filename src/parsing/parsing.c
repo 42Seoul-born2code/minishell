@@ -102,75 +102,6 @@ OK : wc -l < Makefile
 
 #include "parsing.h"
 
-/*
-
-	0. [[echo] ['hello']] | [[cat] [>] [outfile]]
-
-		############# 연결 리스트 ##############
-		t_list	*unit_list {
-			// {"echo", "hello", NULL}
-			t_unit	*content {
-				t_token_node *token{
-					char	*word [echo]
-					e_meta	type [word]
-				}
-				t_token_node *next {
-					char	*word [hello]
-					e_meta	type [word]
-				};
-			}
-			--> [[echo] [hello]]
-			t_unit	*next
-			--> [[cat] [>] [outfile]]]
-		}
-		############# 연결 리스트 ##############
-		
-		############# 배열 ##############
-		char	**unit = {"command", "argument", NULL}
-		############# 배열 ##############
-
-	unit_list {
-		new_node {
-			[token, token, token]
-		},
-		new_node {
-			[token, token, token]
-		}
-	}
-
-	[[echo] -> [hello]] | [[cat] [>] [outfile]]
-	[unit_list]		[unit_list]
-*/
-
-t_unit	*create_unit_list(t_token *token_list)
-{
-	t_unit		*unit_list;
-	t_unit		*unit_node;
-	t_list		*curr_node;
-
-	curr_node = token_list->head_node;
-	if (curr_node == NULL)
-		return (NULL);
-	unit_list = malloc(sizeof(t_unit));
-	unit_list->head_node = NULL;
-	while (curr_node != NULL)
-	{
-		if (((t_token_node *)curr_node->content)->type != PIPE)
-		{
-			unit_node = malloc(sizeof(t_unit));
-			unit_node->head_node = NULL;
-			ft_lstadd_back(&unit_list->head_node, ft_lstnew(unit_node));
-			while (curr_node != NULL && ((t_token_node *)curr_node->content)->type != PIPE)
-			{
-				ft_lstadd_back(&unit_node->head_node, ft_lstnew(curr_node->content));
-				curr_node = curr_node->next;
-			}
-		}
-		curr_node = curr_node->next;
-	}
-	return (NULL);
-}
-
 static void	init_parse_info(t_parse_info *parse_info)
 {
 	parse_info->is_command_found = FALSE;
@@ -251,9 +182,6 @@ void	parsing(t_token *token_list)
 		printf("type: %d, word: %s\n", curr_content->type, curr_content->word);
 		curr_node = curr_node->next;
 	}
-
-	// unit list 로 생성
-	unit_list = create_unit_list(token_list);
 }
 
 /*
