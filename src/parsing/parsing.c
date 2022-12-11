@@ -114,7 +114,6 @@ void	parsing(t_token *token_list)
 	t_list			*curr_node;
 	t_token_node	*curr_content;
 	t_parse_info	parse_info;
-	t_unit			*unit_list;
 
 	init_parse_info(&parse_info);
 	curr_node = token_list->head_node;
