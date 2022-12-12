@@ -49,7 +49,7 @@ void	execute_minishell(t_env_list env)
 			break ;
 		tokenize_line(line, token_list);
 		parsing(token_list);
-		// syntax_analysis(token_list);
+		syntax_analysis(token_list);
 		free_list_nodes(token_list);
 		// TODO 문법 검사
 		add_history(line);
