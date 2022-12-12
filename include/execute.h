@@ -6,6 +6,7 @@
 
 # include "tokenize.h"
 # include "parsing.h"
+# include "expansion.h"
 # include "utils.h"
 
 void	execute_minishell(t_env_list env);

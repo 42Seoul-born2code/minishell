@@ -15,6 +15,9 @@ SRC_PARSING_DIR				:=	parsing/
 SRC_PARSING					:=	parsing.c		\
 								syntax_analysis.c
 
+SRC_EXPANSION_DIR			:=	expansion/
+SRC_EXPANSION				:=	expansion.c
+
 SRC_UTILS_DIR				:=	utils/
 SRC_UTILS					:=	env_utils.c
 
@@ -23,6 +26,7 @@ SRC_FILES					:=	main.c																						\
 								$(addprefix $(SRC_EXECUTE_DIR), $(SRC_EXECUTE)) 	\
 								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) \
 								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) \
+								$(addprefix $(SRC_EXPANSION_DIR), $(SRC_EXPANSION)) \
 								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 
 
 SRCS						:=	$(addprefix $(SRC_DIR), $(SRC_FILES))
