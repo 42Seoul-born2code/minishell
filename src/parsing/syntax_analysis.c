@@ -21,8 +21,7 @@ t_bool	is_next_token_operator(t_list *curr_node)
 
 	next_node = curr_node->next;
 	next_token = next_node->content;
-	if (next_token->type == PIPE || next_token->type == REDIR_LEFT || next_token->type == REDIR_RIGHT || \
-		next_token->type == REDIR_HEREDOC || next_token->type == REDIR_APPEND)
+	if (is_operator(next_token->word) == TRUE)
 		return (TRUE);
 	return (FALSE);
 }

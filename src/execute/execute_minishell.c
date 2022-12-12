@@ -1,19 +1,5 @@
 #include "execute.h"
 
-/*
-
-	t_token *token_list {
-		t_list	*head_node {
-			t_token *content {
-					e_meta	type;
-					char	*word;
-			}
-			t_list	*next;
-		}
-	}
-
-*/
-
 void	free_list_nodes(t_token *lst)
 {
 	t_list				*curr_list;
@@ -50,8 +36,8 @@ void	execute_minishell(t_env_list env)
 		tokenize_line(line, token_list);
 		parsing(token_list);
 		syntax_analysis(token_list);
+		expansion(token_list);
 		free_list_nodes(token_list);
-		// TODO 문법 검사
 		add_history(line);
 		free(line);
 	}
