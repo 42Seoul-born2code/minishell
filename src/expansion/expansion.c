@@ -40,21 +40,20 @@ void	expansion(t_token *token_list)
 	int				i;
 	int				start;
 	int				word_length;
-	char			*prev_word;
 	char			*env_word;
+	char			*buffer;
+	char			*replaced_word;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 	t_bool			is_quote_open;
-	// char			start_quote_type;
 
 	curr_node = token_list->head_node;
+	buffer = NULL;
 	while (curr_node != NULL)
 	{
 		i = 0;
 		is_quote_open = FALSE;
-		// start_quote_type = '\0';
 		curr_token = curr_node->content;
-		// word 를 순회하면서 따옴표 안에 있는 환경 변수를 치환
 		while (curr_token->word[i] != '\0')
 		{
 			// 1. 작은 따옴표 안에 있는 문자열
@@ -73,7 +72,9 @@ void	expansion(t_token *token_list)
 			// - 작은 따옴표에 둘러 쌓여 있어도 무조건 치환
 			// - 작은 따옴표도 출력이 돼야함
 			// - CASE1: echo "hello"
-			// - CASE2: echo "hello $NAME"
+			// - CASE2: echo "hello $NAME$"
+			//               0123456789
+			// - CASE3: echo "$NAME$NAME"
 			//               0123456789
 			// echo "hello $NAME superstar >> $INTRA" (NAME = joon, INTRA = joonhan)
 			// echo "hello joon joonhan"
@@ -81,25 +82,20 @@ void	expansion(t_token *token_list)
 			// - CASE2: echo "hello'$NAME'world"
 			else if (is_quote_open == FALSE && curr_token->word[i] == '\"')
 			{
-				// start_quote_type = '\"';
+				replaced_word = "\"";
 				start = i;
-				is_quote_open = TRUE;
 				i += 1;
+				is_quote_open = TRUE;
 				// 치환이 이루어지는 과정
 				while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"')
 				{
+					// $ 만난 경우
 					if (curr_token->word[i] == '$')
 					{
-						// 이전까지 문자열 저장
-						word_length = i - start;
-						prev_word = malloc(sizeof(char) * (word_length + 1));
-						ft_memcpy(prev_word, &curr_token->word[start], word_length);
 						i += 1;
-						// echo "hello $NAME"
-						// 환경변수 이름 저장
 						start = i;
 						// TODO: $NAME$NAME 떄문에 $조건 추가해줘야함
-						while (curr_token->word[i] != '\"')
+						while (curr_token->word[i] != '\"' && curr_token->word[i] != '$')
 						{
 							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
 							{
@@ -110,10 +106,29 @@ void	expansion(t_token *token_list)
 						word_length = i - start;
 						env_word = malloc(sizeof(char) * (word_length + 1));
 						ft_memcpy(env_word, &curr_token->word[start], word_length);
-						printf("getenv: %s\n", getenv(env_word));
+						replaced_word = ft_strjoin(replaced_word, getenv(env_word));
+						free(env_word);
+						printf("if>> replaced_word: %s\n", replaced_word);
+						
 					}
-					i += 1;
+					// $ 만나기 전의 경우
+					else
+					{
+						start = i;
+						while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '$')
+						{
+							i += 1;
+						}
+						word_length = i - start;
+						buffer = malloc(sizeof(char) * (word_length + 1));
+						ft_memcpy(buffer, &curr_token->word[start], word_length);
+						replaced_word = ft_strjoin(replaced_word, buffer);
+						free(buffer);
+						printf("else>> replaced_word: %s\n", replaced_word);
+					}
 				}
+				replaced_word = ft_strjoin(replaced_word, "\"");
+				printf("END>> replaced_word: %s\n", replaced_word);
 			}
 			else
 			{
