@@ -31,10 +31,6 @@
 	echo hello,"$NAME",welcome
 */
 
-
-// 'hello "$word"'
-
-// 
 void	expansion(t_token *token_list)
 {
 	int				i;
@@ -42,15 +38,22 @@ void	expansion(t_token *token_list)
 	int				word_length;
 	char			*env_word;
 	char			*buffer;
+	char			*temp_word;
 	char			*replaced_word;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 	t_bool			is_quote_open;
+	t_word_list		*word_list;
+	t_list			*curr_word;
+	t_list			*next_word;
 
 	curr_node = token_list->head_node;
 	buffer = NULL;
 	while (curr_node != NULL)
 	{
+		replaced_word = NULL;
+		word_list = malloc(sizeof(t_word_list));
+		word_list->head_node = NULL;
 		i = 0;
 		is_quote_open = FALSE;
 		curr_token = curr_node->content;
@@ -79,10 +82,10 @@ void	expansion(t_token *token_list)
 			// echo "hello $NAME superstar >> $INTRA" (NAME = joon, INTRA = joonhan)
 			// echo "hello joon joonhan"
 			// echo "hello $NAME "
-			// - CASE2: echo "hello'$NAME'world"
+			// - CASE4: echo "hello'$NAME'world"
 			else if (is_quote_open == FALSE && curr_token->word[i] == '\"')
 			{
-				replaced_word = "\"";
+				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
 				start = i;
 				i += 1;
 				is_quote_open = TRUE;
@@ -95,7 +98,7 @@ void	expansion(t_token *token_list)
 						i += 1;
 						start = i;
 						// TODO: $NAME$NAME 떄문에 $조건 추가해줘야함
-						while (curr_token->word[i] != '\"' && curr_token->word[i] != '$')
+						while (curr_token->word[i] != '\"' && curr_token->word[i] != '\'' && curr_token->word[i] != '$')
 						{
 							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
 							{
@@ -106,10 +109,8 @@ void	expansion(t_token *token_list)
 						word_length = i - start;
 						env_word = malloc(sizeof(char) * (word_length + 1));
 						ft_memcpy(env_word, &curr_token->word[start], word_length);
-						replaced_word = ft_strjoin(replaced_word, getenv(env_word));
+						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
 						free(env_word);
-						printf("if>> replaced_word: %s\n", replaced_word);
-						
 					}
 					// $ 만나기 전의 경우
 					else
@@ -122,13 +123,23 @@ void	expansion(t_token *token_list)
 						word_length = i - start;
 						buffer = malloc(sizeof(char) * (word_length + 1));
 						ft_memcpy(buffer, &curr_token->word[start], word_length);
-						replaced_word = ft_strjoin(replaced_word, buffer);
+						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
 						free(buffer);
-						printf("else>> replaced_word: %s\n", replaced_word);
 					}
 				}
-				replaced_word = ft_strjoin(replaced_word, "\"");
-				printf("END>> replaced_word: %s\n", replaced_word);
+				// 연결 리스트 노드들 하나로 합치기
+				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+				curr_word = word_list->head_node;
+				while (curr_word != NULL)
+				{
+					next_word = curr_word->next;
+					temp_word = ft_strdup(replaced_word);
+					free(replaced_word);
+					replaced_word = ft_strjoin(temp_word, (char *)curr_word->content);
+					free(curr_word->content);
+					free(curr_word);
+					curr_word = next_word;
+				}
 			}
 			else
 			{
@@ -138,6 +149,13 @@ void	expansion(t_token *token_list)
 			// - 중간에 큰 따옴표를 만나면 2번 적용
 			// - CASE1: echo hello,"$NAME"
 		}
+		// 기존에 있던 word 를 교체
+		if (replaced_word != NULL)
+		{
+			free(curr_token->word);
+			curr_token->word = replaced_word;
+		}
+		printf("curr_token->word: %s\n", curr_token->word);
 		curr_node = curr_node->next;
 	}
 }
