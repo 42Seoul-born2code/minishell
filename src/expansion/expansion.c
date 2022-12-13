@@ -30,6 +30,12 @@
 
 	echo hello,"$NAME",welcome
 */
+static	t_bool is_valid_variable_rule(char c)
+{
+	if (ft_isalnum(c) == TRUE || c == '_')
+		return (TRUE);
+	return (FALSE);
+}
 
 void	expansion(t_token *token_list)
 {
@@ -98,8 +104,13 @@ void	expansion(t_token *token_list)
 						i += 1;
 						start = i;
 						// TODO: $NAME$NAME 떄문에 $조건 추가해줘야함
+						// echo "hello $NAME.$NAME"
 						while (curr_token->word[i] != '\"' && curr_token->word[i] != '\'' && curr_token->word[i] != '$')
 						{
+							if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
+							{
+								break ;
+							}
 							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
 							{
 								break ;
@@ -107,6 +118,78 @@ void	expansion(t_token *token_list)
 							i += 1;
 						}
 						word_length = i - start;
+						// echo "hello $NAME."
+						// if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
+						// 	i -= 1;
+						env_word = malloc(sizeof(char) * (word_length + 1));
+						ft_memcpy(env_word, &curr_token->word[start], word_length);
+						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+						free(env_word);
+						// i += 1;
+					}
+					// $ 만나기 전의 경우
+					else
+					{
+						// "$NAME.hi"
+						start = i;
+						while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '$')
+						{
+							i += 1;
+						}
+						word_length = i - start;
+						buffer = malloc(sizeof(char) * (word_length + 1));
+						ft_memcpy(buffer, &curr_token->word[start], word_length);
+						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
+						free(buffer);
+						if (curr_token->word[i] == '\"')
+						{
+							i += 1;
+						}
+					}
+				}
+				// 연결 리스트 노드들 하나로 합치기
+				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+				curr_word = word_list->head_node;
+				while (curr_word != NULL)
+				{
+					next_word = curr_word->next;
+					temp_word = ft_strdup(replaced_word);
+					free(replaced_word);
+					replaced_word = ft_strjoin(temp_word, (char *)curr_word->content);
+					free(curr_word->content);
+					free(curr_word);
+					curr_word = next_word;
+				}
+			}
+			// 3. 따옴표에 둘러 쌓이지 않은 문자열
+			// - 중간에 큰 따옴표를 만나면 2번 적용
+			// export a=ho
+			// ec$a hello,$NAME
+			// - CASE1: echo hello,$NAME
+			else
+			{
+				while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '\'')
+				{
+					// $ 만난 경우
+					if (curr_token->word[i] == '$')
+					{
+						i += 1;
+						start = i;
+						while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '\'' && curr_token->word[i] != '$')
+						{
+							if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
+							{
+								break ;
+							}
+							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
+							{
+								break ;
+							}
+							i += 1;
+						}
+						word_length = i - start;
+						// if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
+						// 	i -= 1;
 						env_word = malloc(sizeof(char) * (word_length + 1));
 						ft_memcpy(env_word, &curr_token->word[start], word_length);
 						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
@@ -127,8 +210,6 @@ void	expansion(t_token *token_list)
 						free(buffer);
 					}
 				}
-				// 연결 리스트 노드들 하나로 합치기
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
 				curr_word = word_list->head_node;
 				while (curr_word != NULL)
 				{
@@ -140,14 +221,8 @@ void	expansion(t_token *token_list)
 					free(curr_word);
 					curr_word = next_word;
 				}
+				// i += 1;
 			}
-			else
-			{
-				i += 1;
-			}
-			// 3. 따옴표에 둘러 쌓이지 않은 문자열
-			// - 중간에 큰 따옴표를 만나면 2번 적용
-			// - CASE1: echo hello,"$NAME"
 		}
 		// 기존에 있던 word 를 교체
 		if (replaced_word != NULL)
