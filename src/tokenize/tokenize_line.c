@@ -60,25 +60,20 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 // 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
 static t_bool	is_quote_closed(char *line, int *i)
 {
-	char		quote_type;
+	char	quote_type;
 	t_bool	result;
 
 	result = FALSE;
-	while (line[*i] != '\0' || result == TRUE)
+	quote_type = line[*i];
+	*i += 1;
+	while (line[*i] != '\0')
 	{
-		if (is_quote(line[*i]) == FALSE && (is_whitespace(line[*i]) == TRUE || is_operator(&line[*i]) == TRUE))
-			break ;
-		quote_type = line[*i];
-		*i += 1;
-		// echo 'hello "world"'| cat > a
-		while (line[*i] != '\0' && quote_type != line[*i])
+		if (quote_type == line[*i])
+		{
+			result = TRUE;
 			*i += 1;
-		if (line[*i] == '\0')
 			break ;
-		result = TRUE;
-		// TEST CASE: 'b''a'"s""h" 와 같이 연속된 따옴표로 묶인 문자열을 처리하기 위한 조건
-		if (is_whitespace(line[*i]) && is_operator(&line[*i]))
-			break ;
+		}
 		*i += 1;
 	}
 	return (result);
@@ -111,23 +106,20 @@ void	tokenize_line(char *line, t_token *token_list)
 		// CASE3. 따옴표를 만났을 때
 		else if (is_quote(line[i]) == TRUE)
 		{
-			if (is_quote_closed(line, &i) == FALSE)
+			while (line[i] != '\0')
 			{
-				printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
-				break ;
-				// TODO 오류 메세지 출력하도록 구현(Syntax Error)
-			}
-			else
-			{
-				word_length = (i - start) + 1;
-				if (is_whitespace(line[i]) || is_operator(&line[i]))
+				if (is_quote_closed(line, &i) == FALSE)
 				{
-					i -= 1;
-					word_length -= 1;
+					printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
+					break ;
 				}
-				token_node->type = WORD;
-				i += 1;
+				if (is_operator(&line[i]) == TRUE || is_whitespace(line[i]) == TRUE)
+				{
+					break ;
+				}
 			}
+			word_length = i - start;
+			token_node->type = WORD;
 		}
 
 		// CASE4. word 를 만났을 때
