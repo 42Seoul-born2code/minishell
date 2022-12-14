@@ -12,6 +12,7 @@ ls | cat > outfile
 'ba'"sh"
 'ba'sh
 'b''a'"s""h" 
+"hello$NAME".hi
 
 */
 // 1. 공백(whitespace)이면 건너뛴다.
@@ -64,6 +65,11 @@ static t_bool	is_quote_closed(char *line, int *i)
 	t_bool	result;
 
 	result = FALSE;
+	if (is_quote(line[*i]) == FALSE)
+	{
+		*i += 1;
+		return (TRUE);
+	}
 	quote_type = line[*i];
 	*i += 1;
 	while (line[*i] != '\0')
@@ -104,6 +110,9 @@ void	tokenize_line(char *line, t_token *token_list)
 		}
 		
 		// CASE3. 따옴표를 만났을 때
+		// 1. "hello$NAME".hi -> 따옴표가 닫히지 않았다고 문법 오류를 뱉어냄 [ 해결 ] 
+		// 2. "hello$NAME".hi -> "hellojoonpark.hi" expansion 문제 해결 필요
+		// 3. expansion에서 큰따옴표 처리를 잘 못하고 있음 버그 발견 예제 : 'b''a'"s""h"
 		else if (is_quote(line[i]) == TRUE)
 		{
 			while (line[i] != '\0')
