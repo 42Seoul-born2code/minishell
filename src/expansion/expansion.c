@@ -37,15 +37,25 @@ static	t_bool is_valid_variable_rule(char c)
 	return (FALSE);
 }
 
-static void	save_before_env_variable(char *word, int *idx, t_word_list *word_list)
+static void	save_before_env_variable(char *word, int *idx, t_word_list *word_list, e_quote type)
 {
 	int		start;
 	int		word_length;
 	char	*buffer;
+	t_bool	is_stopable;
 
 	start = *idx;
-	while (word[*idx] != '\0' && word[*idx] != '\"' && word[*idx] != '$')
+	is_stopable = FALSE;
+	// echo hello'world"$NAME"'
+	// echo hello"$NAME"
+	while (word[*idx] != '\0')
 	{
+		if (type == NOT_QUOTED)
+			is_stopable = word[*idx] == '\'' || word[*idx] == '\"' || word[*idx] == '$';
+		else
+			is_stopable = word[*idx] == '\"' || word[*idx] == '$';
+		if (is_stopable == TRUE)
+			break ;
 		*idx += 1;
 	}
 	word_length = *idx - start;
@@ -82,6 +92,27 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 	free(env_word);
 }
 
+static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list)
+{
+	int		start;
+	int		word_length;
+	char	*buffer;
+
+	start = *idx;
+	*idx += 1;
+	while (word[*idx] != '\0' && word[*idx] != '\'')
+	{
+		*idx += 1;
+	}
+	word_length = *idx - start;
+	buffer = malloc(sizeof(char) * (word_length + 1));
+	ft_memcpy(buffer, &word[start], word_length);
+	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
+	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
+	free(buffer);
+	*idx += 1;
+}
+
 // 환경 변수를 확장해서 기존의 토큰을 교체하는 함수
 void	expansion(t_token *token_list)
 {
@@ -114,10 +145,7 @@ void	expansion(t_token *token_list)
 			// - CASE2: echo hello'world"$NAME"'
 			if (is_quote_open == FALSE && curr_token->word[i] == '\'')
 			{
-				i += 1;
-				while (curr_token->word[i] != '\0' && curr_token->word[i] != '\'')
-					i += 1;
-				continue ;
+				save_single_quoted_word(curr_token->word, &i, word_list);
 			}
 
 			// 2. 큰 따옴표 안에 있는 문자열
@@ -132,6 +160,7 @@ void	expansion(t_token *token_list)
 			// echo "hello joon joonhan"
 			// echo "hello $NAME "
 			// - CASE4: echo "hello'$NAME'world"
+			// - CASE5: echo "hello, $NAME.hi"hi
 			else if (is_quote_open == FALSE && curr_token->word[i] == '\"')
 			{
 				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
@@ -148,7 +177,7 @@ void	expansion(t_token *token_list)
 					// $ 만나기 전의 경우
 					else
 					{
-						save_before_env_variable(curr_token->word, &i, word_list);
+						save_before_env_variable(curr_token->word, &i, word_list, QUOTED);
 					}
 					if (curr_token->word[i] == '\"')
 					{
@@ -162,6 +191,7 @@ void	expansion(t_token *token_list)
 			// export a=ho
 			// ec$a hello,$NAME
 			// - CASE1: echo hello,$NAME
+			// - CASE2: echo hello'world"$NAME"'
 			else
 			{
 				while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '\'')
@@ -174,7 +204,7 @@ void	expansion(t_token *token_list)
 					// $ 만나기 전의 경우
 					else
 					{
-						save_before_env_variable(curr_token->word, &i, word_list);
+						save_before_env_variable(curr_token->word, &i, word_list, NOT_QUOTED);
 					}
 				}
 			}
