@@ -113,7 +113,8 @@ void	tokenize_line(char *line, t_token *token_list)
 		// 1. "hello$NAME".hi -> 따옴표가 닫히지 않았다고 문법 오류를 뱉어냄 [ 해결 ] 
 		// 2. "hello$NAME".hi -> "hellojoonpark.hi" expansion 문제 해결 필요 [ 해결 ]
 		// 3. expansion에서 큰따옴표 처리를 잘 못하고 있음 버그 발견 예제 : 'b''a'"s""h" [ 해결 ]
-		// 4. "$NAME$" 입력 시 -> "joonparkjoonpark" 으로 출력되는 문제 발견 
+		// 4. "$NAME$" 입력 시 -> "joonparkjoonpark" 으로 출력되는 문제 발견 [ 해결 ]
+		// 5. '"$NAME" '$NAME'' 입력 시 -> '"$NAME" 'joonpark'' 으로 변수 확장하는 문제 발견
 		else if (is_quote(line[i]) == TRUE)
 		{
 			while (line[i] != '\0')
