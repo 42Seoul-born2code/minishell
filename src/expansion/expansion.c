@@ -182,6 +182,7 @@ void	expansion(t_token *token_list)
 					if (curr_token->word[i] == '\"')
 					{
 						i += 1;
+						break ;
 					}
 				}
 				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
