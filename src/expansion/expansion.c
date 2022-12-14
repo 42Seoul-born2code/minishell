@@ -121,7 +121,6 @@ void	expansion(t_token *token_list)
 	char			*replaced_word;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
-	t_bool			is_quote_open;
 	t_word_list		*word_list;
 	t_list			*curr_word;
 	t_list			*next_word;
@@ -133,7 +132,6 @@ void	expansion(t_token *token_list)
 		word_list = malloc(sizeof(t_word_list));
 		word_list->head_node = NULL;
 		i = 0;
-		is_quote_open = FALSE;
 		curr_token = curr_node->content;
 		// 현재 토큰에 담긴 문자열의 처음부터 끝까지 순회
 		while (curr_token->word[i] != '\0')
@@ -143,7 +141,7 @@ void	expansion(t_token *token_list)
 			// - 작은 따옴표 출력 X
 			// - CASE1: echo 'hello "$NAME"'
 			// - CASE2: echo hello'world"$NAME"'
-			if (is_quote_open == FALSE && curr_token->word[i] == '\'')
+			if (curr_token->word[i] == '\'')
 			{
 				save_single_quoted_word(curr_token->word, &i, word_list);
 			}
@@ -161,11 +159,10 @@ void	expansion(t_token *token_list)
 			// echo "hello $NAME "
 			// - CASE4: echo "hello'$NAME'world"
 			// - CASE5: echo "hello, $NAME.hi"hi
-			else if (is_quote_open == FALSE && curr_token->word[i] == '\"')
+			else if (curr_token->word[i] == '\"')
 			{
 				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
 				i += 1;
-				is_quote_open = TRUE;
 				// 치환이 이루어지는 과정
 				while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"')
 				{
