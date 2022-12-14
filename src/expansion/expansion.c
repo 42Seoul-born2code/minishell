@@ -55,14 +55,37 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 	free(buffer);
 }
 
+static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
+{
+	int		start;
+	int		word_length;
+	char	*env_word;
+
+	*idx += 1;
+	start = *idx;
+	while (word[*idx] != '\0' && word[*idx] != '\"' && word[*idx] != '\'' && word[*idx] != '$')
+	{
+		if (is_valid_variable_rule(word[*idx]) == FALSE)
+		{
+			break ;
+		}
+		if (is_operator(&word[*idx]) == TRUE || is_whitespace(word[*idx]) == TRUE)
+		{
+			break ;
+		}
+		*idx += 1;
+	}
+	word_length = *idx - start;
+	env_word = malloc(sizeof(char) * (word_length + 1));
+	ft_memcpy(env_word, &word[start], word_length);
+	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+	free(env_word);
+}
+
 // 환경 변수를 확장해서 기존의 토큰을 교체하는 함수
 void	expansion(t_token *token_list)
 {
 	int				i;
-	int				start;
-	int				word_length;
-	char			*env_word;
-	char			*buffer;
 	char			*temp_word;
 	char			*replaced_word;
 	t_list			*curr_node;
@@ -75,7 +98,6 @@ void	expansion(t_token *token_list)
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
-		buffer = NULL;
 		replaced_word = NULL;
 		word_list = malloc(sizeof(t_word_list));
 		word_list->head_node = NULL;
@@ -113,7 +135,6 @@ void	expansion(t_token *token_list)
 			else if (is_quote_open == FALSE && curr_token->word[i] == '\"')
 			{
 				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
-				start = i;
 				i += 1;
 				is_quote_open = TRUE;
 				// 치환이 이루어지는 과정
@@ -122,28 +143,7 @@ void	expansion(t_token *token_list)
 					// $ 만난 경우
 					if (curr_token->word[i] == '$')
 					{
-						// expand_env_variable(curr_token->word, &i);
-						i += 1;
-						start = i;
-						// TODO: $NAME$NAME 떄문에 $조건 추가해줘야함
-						// echo "hello $NAME.$NAME"
-						while (curr_token->word[i] != '\"' && curr_token->word[i] != '\'' && curr_token->word[i] != '$')
-						{
-							if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
-							{
-								break ;
-							}
-							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
-							{
-								break ;
-							}
-							i += 1;
-						}
-						word_length = i - start;
-						env_word = malloc(sizeof(char) * (word_length + 1));
-						ft_memcpy(env_word, &curr_token->word[start], word_length);
-						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
-						free(env_word);
+						expand_env_variable(curr_token->word, &i, word_list);
 					}
 					// $ 만나기 전의 경우
 					else
@@ -169,25 +169,7 @@ void	expansion(t_token *token_list)
 					// $ 만난 경우
 					if (curr_token->word[i] == '$')
 					{
-						i += 1;
-						start = i;
-						while (curr_token->word[i] != '\0' && curr_token->word[i] != '\"' && curr_token->word[i] != '\'' && curr_token->word[i] != '$')
-						{
-							if (is_valid_variable_rule(curr_token->word[i]) == FALSE)
-							{
-								break ;
-							}
-							if (is_operator(&curr_token->word[i]) == TRUE || is_whitespace(curr_token->word[i]) == TRUE)
-							{
-								break ;
-							}
-							i += 1;
-						}
-						word_length = i - start;
-						env_word = malloc(sizeof(char) * (word_length + 1));
-						ft_memcpy(env_word, &curr_token->word[start], word_length);
-						ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
-						free(env_word);
+						expand_env_variable(curr_token->word, &i, word_list);
 					}
 					// $ 만나기 전의 경우
 					else
@@ -195,7 +177,6 @@ void	expansion(t_token *token_list)
 						save_before_env_variable(curr_token->word, &i, word_list);
 					}
 				}
-				// i += 1;
 			}
 		}
 		// 연결 리스트 노드들 하나로 합치기
