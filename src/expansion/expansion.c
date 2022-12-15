@@ -1,12 +1,5 @@
 #include "expansion.h"
 
-/*
-
-	echo ""$NAME" '$NAME'"
-		joonhyeok.han 'joonhyeok.han'
-
-	echo hello,"$NAME",welcome
-*/
 static	t_bool is_valid_variable_rule(char c)
 {
 	if (ft_isalnum(c) == TRUE || c == '_')
@@ -23,8 +16,6 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 
 	start = *idx;
 	is_stopable = FALSE;
-	// echo hello'world"$NAME"'
-	// echo hello"$NAME"
 	while (word[*idx] != '\0')
 	{
 		if (type == NOT_QUOTED)
@@ -41,9 +32,6 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
 	free(buffer);
 }
-
-// echo "'$PATH"' -- trash value in $PATH [ 해결 ]
-// echo ls" " -- 공백이 들어오면 개복치마냥 터져버림
 
 static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 {
@@ -140,28 +128,12 @@ void	expansion(t_token *token_list)
 		while (curr_token->word[idx] != '\0')
 		{
 			// 1. 작은 따옴표 안에 있는 문자열
-			// - 닫는 따옴표 다시 만나기 전까지 인덱스 증가
-			// - 작은 따옴표 출력 X
-			// - CASE1: echo 'hello "$NAME"'
-			// - CASE2: echo hello'world"$NAME"'
 			if (curr_token->word[idx] == '\'')
 			{
 				save_single_quoted_word(curr_token->word, &idx, word_list);
 			}
 
 			// 2. 큰 따옴표 안에 있는 문자열
-			// - 작은 따옴표에 둘러 쌓여 있어도 무조건 치환
-			// - 작은 따옴표도 출력이 돼야함
-			// - CASE1: echo "hello"
-			// - CASE2: echo "hello $NAME$"
-			//               0123456789
-			// - CASE3: echo "$NAME$NAME"
-			//               0123456789
-			// echo "hello $NAME superstar >> $INTRA" (NAME = joon, INTRA = joonhan)
-			// echo "hello joon joonhan"
-			// echo "hello $NAME "
-			// - CASE4: echo "hello'$NAME'world"
-			// - CASE5: echo "hello, $NAME.hi"hi
 			else if (curr_token->word[idx] == '\"')
 			{
 				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
@@ -179,20 +151,14 @@ void	expansion(t_token *token_list)
 					{
 						save_before_env_variable(curr_token->word, &idx, word_list, QUOTED);
 					}
-					if (curr_token->word[idx] == '\"')
-					{
-						idx += 1;
-						break ;
-					}
 				}
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+				if (curr_token->word[idx] == '\"')
+				{
+					ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+					idx += 1;
+				}
 			}
 			// 3. 따옴표에 둘러 쌓이지 않은 문자열
-			// - 중간에 큰 따옴표를 만나면 2번 적용
-			// export a=ho
-			// ec$a hello,$NAME
-			// - CASE1: echo hello,$NAME
-			// - CASE2: echo hello'world"$NAME"'
 			else
 			{
 				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"' && curr_token->word[idx] != '\'')
