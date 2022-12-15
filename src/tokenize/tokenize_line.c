@@ -14,6 +14,8 @@ ls | cat > outfile
 'b''a'"s""h" 
 "hello$NAME".hi
 
+echo ls" " -- 공백이 들어오면 토큰을 잘라서 인식함
+
 */
 // 1. 공백(whitespace)이면 건너뛴다.
 // 2. metacharacter 로 구분되지 않은 따옴표이면, 
