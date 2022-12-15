@@ -114,17 +114,35 @@ static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list
 	*idx += 1;
 }
 
+// 환경변수를 확장하기 위해 연결 리스트로 저장했던 문자열들을 하나로 합치는 함수
+// replaced_word 에 char ** 를 사용한 이유는 char * 로 값을 바꾸면 expansion 함수에 변경 내용이 반영되지 않음
+void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
+{	
+	char	*previous_word;
+	t_list	*curr_word;
+	t_list	*next_word;
+
+	curr_word = word_list->head_node;
+	while (curr_word != NULL)
+	{
+		next_word = curr_word->next;
+		previous_word = ft_strdup(*replaced_word);
+		free(*replaced_word);
+		*replaced_word = ft_strjoin(previous_word, (char *)curr_word->content);
+		free(curr_word->content);
+		free(curr_word);
+		curr_word = next_word;
+	}
+}
+
 // 환경 변수를 확장해서 기존의 토큰을 교체하는 함수
 void	expansion(t_token *token_list)
 {
 	int				idx;
-	char			*temp_word;
 	char			*replaced_word;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 	t_word_list		*word_list;
-	t_list			*curr_word;
-	t_list			*next_word;
 
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
@@ -209,17 +227,7 @@ void	expansion(t_token *token_list)
 			}
 		}
 		// 연결 리스트 노드들 하나로 합치기
-		curr_word = word_list->head_node;
-		while (curr_word != NULL)
-		{
-			next_word = curr_word->next;
-			temp_word = ft_strdup(replaced_word);
-			free(replaced_word);
-			replaced_word = ft_strjoin(temp_word, (char *)curr_word->content);
-			free(curr_word->content);
-			free(curr_word);
-			curr_word = next_word;
-		}
+		merge_replaced_word(word_list, &replaced_word);
 		// 기존에 있던 word 를 교체
 		if (replaced_word != NULL)
 		{
