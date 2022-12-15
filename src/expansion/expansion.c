@@ -2,29 +2,6 @@
 
 /*
 
-	echo "hello $NAME"
-	echo $NAME
-	''
-
-	export a=ho
-	ec$a $NAME
-
-	1. word 에 큰 따옴표가 있는 경우
-		- 환경 변수 이름 파악 (whitespace 나 operator 전까지)
-		- 환경 변수에서 값을 가져오기. 없으면 빈 문자열 처리
-	2. word 에 큰 따옴표가 없는 경우
-		- 작은 따옴표 안에 있는 환경 변수는 치환하지 않는다.
-		- 작은 따옴표를 만났는지 확인하는 플래그 변수 사용하기
-
-	echo 'hello "$NAME"'
-		hello "$NAME"
-
-	echo "'hello "$NAME"'"
-		'hello joonhyeok.han'
-
-	echo "'hello '$NAME''"
-		'hello 'joonhyeok.han''
-
 	echo ""$NAME" '$NAME'"
 		joonhyeok.han 'joonhyeok.han'
 
@@ -65,6 +42,9 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 	free(buffer);
 }
 
+// echo "'$PATH"' -- trash value in $PATH [ 해결 ]
+// echo ls" " -- 공백이 들어오면 개복치마냥 터져버림
+
 static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 {
 	int		start;
@@ -99,19 +79,23 @@ static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list
 	int		word_length;
 	char	*buffer;
 
-	start = *idx;
+	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
 	*idx += 1;
+	start = *idx;
 	while (word[*idx] != '\0' && word[*idx] != '\'')
+		*idx += 1;
+	if (start == *idx)
+		return ;
+	else
 	{
+		word_length = *idx - start;
+		buffer = malloc(sizeof(char) * (word_length + 1));
+		ft_memcpy(buffer, &word[start], word_length);
+		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
+		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
+		free(buffer);
 		*idx += 1;
 	}
-	word_length = *idx - start;
-	buffer = malloc(sizeof(char) * (word_length + 1));
-	ft_memcpy(buffer, &word[start], word_length);
-	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
-	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-	free(buffer);
-	*idx += 1;
 }
 
 // 환경변수를 확장하기 위해 연결 리스트로 저장했던 문자열들을 하나로 합치는 함수
