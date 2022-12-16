@@ -4,6 +4,7 @@
 # include "tokenize.h"
 
 void	expansion(t_token *token_list);
+void	quote_removal(t_token *token_list);
 
 typedef enum {
 	NOT_QUOTED,

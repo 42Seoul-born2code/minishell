@@ -37,6 +37,7 @@ void	execute_minishell(t_env_list env)
 		parsing(token_list);
 		syntax_analysis(token_list);
 		expansion(token_list);
+		quote_removal(token_list);
 		free_list_nodes(token_list);
 		add_history(line);
 		free(line);
