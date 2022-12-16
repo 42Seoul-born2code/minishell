@@ -14,8 +14,6 @@ ls | cat > outfile
 'b''a'"s""h" 
 "hello$NAME".hi
 
-echo ls" " -- 공백이 들어오면 토큰을 잘라서 인식함
-
 */
 // 1. 공백(whitespace)이면 건너뛴다.
 // 2. metacharacter 로 구분되지 않은 따옴표이면, 
@@ -46,20 +44,6 @@ static void	get_operator_type(t_token_node *node, char *line, int *i, int *lengt
 	}
 }
 
-static int	get_word_length(t_token_node *node, char *line, int *i, int start)
-{
-	while (line[*i] != '\0')
-	{
-		if (is_whitespace(line[*i]) == TRUE || is_operator(&line[*i]) == TRUE)
-		{
-			break ;
-		}
-		*i += 1;
-	}
-	node->type = WORD;
-	return (*i - start);
-}
-
 // 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
 static t_bool	is_quote_closed(char *line, int *i)
 {
@@ -85,6 +69,28 @@ static t_bool	is_quote_closed(char *line, int *i)
 		*i += 1;
 	}
 	return (result);
+}
+
+// ls" "'
+static int	get_word_length(t_token_node *node, char *line, int *i, int start)
+{
+	while (line[*i] != '\0')
+	{
+		if (is_quote(line[*i]) == TRUE)
+		{
+			if (is_quote_closed(line, i) == FALSE)
+				return (ERROR);
+			else
+				continue ;
+		}
+		if (is_whitespace(line[*i]) == TRUE || is_operator(&line[*i]) == TRUE)
+		{
+			break ;
+		}
+		*i += 1;
+	}
+	node->type = WORD;
+	return (*i - start);
 }
 
 void	tokenize_line(char *line, t_token *token_list)
@@ -116,6 +122,7 @@ void	tokenize_line(char *line, t_token *token_list)
 		// 2. "hello$NAME".hi -> "hellojoonpark.hi" expansion 문제 해결 필요 [ 해결 ]
 		// 3. expansion에서 큰따옴표 처리를 잘 못하고 있음 버그 발견 예제 : 'b''a'"s""h" [ 해결 ]
 		// 4. "$NAME$" 입력 시 -> "joonparkjoonpark" 으로 출력되는 문제 발견 [ 해결 ]
+		// 5. echo ls" " 입력 시 공백이 들어오면 토큰을 잘라서 인식함 []
 		else if (is_quote(line[i]) == TRUE)
 		{
 			while (line[i] != '\0')
@@ -138,6 +145,11 @@ void	tokenize_line(char *line, t_token *token_list)
 		else
 		{
 			word_length = get_word_length(token_node, line, &i, start);
+			if (word_length == ERROR)
+			{
+				printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
+				break ;
+			}
 		}
 		save_token(token_list, token_node, &line[start], word_length);
 	}
