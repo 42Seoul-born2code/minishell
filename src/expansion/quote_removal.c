@@ -53,6 +53,9 @@ void	quote_removal(t_token *token_list)
 				word_length = idx - start_idx;
 				prev_word = malloc(sizeof(char) * word_length + 1);
 				ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
+				// TODO : join하고 free 하는 것을 하나의 함수로 만들기.
+				// ft_strjoin(result_word, prev_word)
+				// free(prev_word)
 				printf("prev_word: %s\n", prev_word);
 				// 1-3. 따옴표 이전 문자열과 strjoin
 				idx += 1;
