@@ -25,6 +25,23 @@
 
 */
 
+/*
+
+	환경변수 치환 -> word spliting (공백 제거) -> quote removal
+
+	Note that if no expansion occurs, no splitting is performed.
+
+	After the preceding expansions, all unquoted occurrences of the characters ‘\’, ‘'’, and ‘"’ (that did not result from one of the above expansions) are removed.
+
+	export a="a       'a'"
+	echo $a
+	-> echo a         'a'
+	-> a 'a'
+	
+	echo a 'a'
+	-> a a
+
+*/
 void	quote_removal(t_token *token_list)
 {
 	int						idx;

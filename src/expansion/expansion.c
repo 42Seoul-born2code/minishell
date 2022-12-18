@@ -33,6 +33,38 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 	free(buffer);
 }
 
+static char *remove_whitespace(char * str)
+{
+	/*
+	1. 명령어가 export 하고 나서 변수 저장 이때는 따옴표도 같이 저장해야함 (파이프는 신경 X)
+	2. 그 변수를 expension할 때 whitespace를 지워줘야함
+	예시1 : export a="a         a     n       d"
+	스플릿을 쓰면 "a" , "a"     "n"       "d"
+	ft_split(a, ' ');
+	ft_split(a, '\n');
+
+	사용할 수 있는 함수: ft_substr
+
+	수도 코드
+
+	문자열을 돌면서 6종의 화이트스페이스 중 하나를 만나면 그 자리를 저장
+	다음 문자를 보면서 계속 화이트 스페이스면 인덱스 증가
+	언제까지? 화이트 스페이스 아닐때까지 증가
+	
+	hello\n\r\f' 'hello
+
+
+	*/
+	int	idx;
+	while (str[idx] != NULL)
+	{
+		if (ft_iswhitespace(str[idx]) == TRUE)
+			idx += 1;
+		idx += 1;
+	}
+	
+}
+
 static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 {
 	int		start;
@@ -56,7 +88,9 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 		word_length = *idx - start;
 		env_word = malloc(sizeof(char) * (word_length + 1));
 		ft_memcpy(env_word, &word[start], word_length);
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+		// 공백 제거 함수
+
+		ft_lstadd_back(&word_list->head_node, ft_lstnew(remove_whitespace(ft_strdup(getenv(env_word)))));
 		free(env_word);
 	}
 }
