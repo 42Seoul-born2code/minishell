@@ -8,15 +8,20 @@
 	echo "hello '$USER'"
 	-> hello 'joonhan'
 
-	echo hello'hello world'$USER
+	echo hello'world'$USER
+	-> helloworldjoonhan
 	
 	echo hello"'world'"joonpark
+	-> hello'world'joonpark
 
 	echo hello$USER
+	-> hellojoonhan
 
-	echo hello'"', dear: '"'$USER
+	echo hello'"',dear:'"'$USER
+	-> hello",dear:"joonhan
 
 	'b''a'"s""h"
+	-> bash
 
 */
 
@@ -27,7 +32,9 @@ void	quote_removal(t_token *token_list)
 	int						word_length;
 	t_list				*curr_node;
 	t_token_node	*curr_token;
+	char					*buffer;
 	char					*prev_word;
+	char					*result_word;
 	char					start_quote;
 
 	curr_node = token_list->head_node;
@@ -35,6 +42,8 @@ void	quote_removal(t_token *token_list)
 	{
 		idx = 0;
 		prev_word = NULL;
+		result_word = NULL;
+		buffer = NULL;
 		curr_token = curr_node->content;
 		while (curr_token->word[idx] != '\0')
 		{
@@ -53,11 +62,7 @@ void	quote_removal(t_token *token_list)
 				word_length = idx - start_idx;
 				prev_word = malloc(sizeof(char) * word_length + 1);
 				ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
-				// TODO : join하고 free 하는 것을 하나의 함수로 만들기.
-				// ft_strjoin(result_word, prev_word)
-				// free(prev_word)
 				printf("prev_word: %s\n", prev_word);
-				// 1-3. 따옴표 이전 문자열과 strjoin
 				idx += 1;
 			}
 
@@ -75,9 +80,18 @@ void	quote_removal(t_token *token_list)
 				prev_word = malloc(sizeof(char) * word_length + 1);
 				ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
 				printf("prev_word: %s\n", prev_word);
-				// 2-1. 따옴표 이전 문자열과 strjoin
 			}
+
+			// 1-3. 따옴표 이전 문자열과 strjoin
+			if (result_word != NULL)
+			{
+				buffer = ft_strdup(result_word);
+				free(result_word);
+			}
+			result_word = ft_strjoin(buffer, prev_word);
+			free(prev_word);
 		}
+		printf("result_word: %s\n", result_word);
 		// 3. 따옴표 이후 문자열도 strjoin
 		curr_node = curr_node->next;
 	}
