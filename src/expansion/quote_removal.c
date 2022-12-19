@@ -64,23 +64,24 @@ void	quote_removal(t_token *token_list)
 		curr_token = curr_node->content;
 		while (curr_token->word[idx] != '\0')
 		{
-			// 1. 따옴표인 경우
 			if (is_quote(curr_token->word[idx]) == TRUE)
 			{
 				start_quote = curr_token->word[idx];
 				idx += 1;
 				start_idx = idx;
 				// 1-1. 끝나는 따옴표 위치 파악
-				while (curr_token->word[idx] != start_quote)
+				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != start_quote)
 				{
 					idx += 1;
 				}
 				// 1-2. 따옴표 제외한 문자열 복사
-				word_length = idx - start_idx;
-				prev_word = malloc(sizeof(char) * word_length + 1);
-				ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
-				printf("prev_word: %s\n", prev_word);
-				idx += 1;
+				if (start_idx != idx)
+				{
+					word_length = idx - start_idx;
+					prev_word = malloc(sizeof(char) * word_length + 1);
+					ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
+					idx += 1;
+				}
 			}
 
 			// 2. 따옴표가 아닌 경우
@@ -93,10 +94,12 @@ void	quote_removal(t_token *token_list)
 						break ;
 					idx += 1;
 				}
-				word_length = idx - start_idx;
-				prev_word = malloc(sizeof(char) * word_length + 1);
-				ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
-				printf("prev_word: %s\n", prev_word);
+				if (start_idx != idx)
+				{
+					word_length = idx - start_idx;
+					prev_word = malloc(sizeof(char) * word_length + 1);
+					ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
+				}
 			}
 
 			// 1-3. 따옴표 이전 문자열과 strjoin
@@ -107,6 +110,7 @@ void	quote_removal(t_token *token_list)
 			}
 			result_word = ft_strjoin(buffer, prev_word);
 			free(prev_word);
+			prev_word = NULL;
 		}
 		printf("result_word: %s\n", result_word);
 		// 3. 따옴표 이후 문자열도 strjoin
