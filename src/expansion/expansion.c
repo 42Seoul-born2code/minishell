@@ -33,43 +33,72 @@ static void	save_before_env_variable(char *word, int *idx, t_word_list *word_lis
 	free(buffer);
 }
 
-static char *remove_whitespace(char * str)
+char	*add_double_quotes(char *env_word)
 {
-	/*
-	1. 명령어가 export 하고 나서 변수 저장 이때는 따옴표도 같이 저장해야함 (파이프는 신경 X)
-	2. 그 변수를 expension할 때 whitespace를 지워줘야함
-	예시1 : export a="a         a     n       d"
-	스플릿을 쓰면 "a" , "a"     "n"       "d"
-	ft_split(a, ' ');
-	ft_split(a, '\n');
+	char	*prev_word;
+	char	*buffer;
 
-	사용할 수 있는 함수: ft_substr
-
-	수도 코드
-
-	문자열을 돌면서 6종의 화이트스페이스 중 하나를 만나면 그 자리를 저장
-	다음 문자를 보면서 계속 화이트 스페이스면 인덱스 증가
-	언제까지? 화이트 스페이스 아닐때까지 증가
-	
-	hello\n\r\f' 'hello
-
-
-	*/
-	int	idx;
-	while (str[idx] != NULL)
-	{
-		if (ft_iswhitespace(str[idx]) == TRUE)
-			idx += 1;
-		idx += 1;
-	}
-	
+	buffer = ft_strjoin("\"", env_word);
+	prev_word = ft_strdup(buffer);
+	free(buffer);
+	buffer = ft_strjoin(prev_word, "\"");
+	free(prev_word);
+	return (buffer);
 }
 
-static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
+static void	slice_and_save_str(char *str, int start, int idx, char **result)
+{
+	char	*buffer;
+	char	*prev_word;
+
+	buffer = ft_substr(str, start, idx - start);
+	prev_word = ft_strdup(*result);
+	if (*result != NULL)
+		free(*result);
+	*result = ft_strjoin(prev_word, buffer);
+	free(prev_word);
+	if (str[idx] != '\0')
+	{
+		prev_word = ft_strdup(*result);
+		*result = ft_strjoin(prev_word, " ");
+		free(prev_word);
+	}
+}
+static char *remove_whitespace(char *str)
+{
+	int		idx;
+	int		start;
+	char	*buffer;
+	char	*result;
+	
+	if (str == NULL)
+		return (NULL);
+	idx = 0;
+	result = NULL;
+	buffer = ft_strdup(str);
+	str = ft_strtrim(buffer, " \n\t\f\v\r");
+	free(buffer);
+	while (str[idx] != '\0')
+	{
+		start = idx;
+		while (is_whitespace(str[idx]) == FALSE && str[idx] != '\0')
+			idx += 1;
+		if (start == idx)
+		{
+			idx += 1;
+			continue ;
+		}
+		slice_and_save_str(str, start, idx, &result);
+	}
+	return (result);
+}
+
+static void	expand_env_variable(char *word, int *idx, t_word_list *word_list, e_quote type)
 {
 	int		start;
 	int		word_length;
 	char	*env_word;
+	char	*not_spaced_env_word;
 
 	*idx += 1;
 	start = *idx;
@@ -88,9 +117,15 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list)
 		word_length = *idx - start;
 		env_word = malloc(sizeof(char) * (word_length + 1));
 		ft_memcpy(env_word, &word[start], word_length);
-		// 공백 제거 함수
-
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(remove_whitespace(ft_strdup(getenv(env_word)))));
+		if (type == NOT_QUOTED)
+		{
+			not_spaced_env_word = remove_whitespace(getenv(env_word));
+			ft_lstadd_back(&word_list->head_node, ft_lstnew(add_double_quotes(not_spaced_env_word)));
+		}
+		else
+		{
+			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+		}
 		free(env_word);
 	}
 }
@@ -178,7 +213,7 @@ void	expansion(t_token *token_list)
 					// $ 만난 경우
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token->word, &idx, word_list);
+						expand_env_variable(curr_token->word, &idx, word_list, QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
@@ -198,9 +233,10 @@ void	expansion(t_token *token_list)
 				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"' && curr_token->word[idx] != '\'')
 				{
 					// $ 만난 경우
+					// 띄어쓰기 제거, 살릴 quote는 살리기
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token->word, &idx, word_list);
+						expand_env_variable(curr_token->word, &idx, word_list, NOT_QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
