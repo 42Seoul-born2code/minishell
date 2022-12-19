@@ -2,7 +2,8 @@
 
 t_bool	is_whitespace(char c)
 {
-	if (c == ' ' || c == '\n' || c == '\t')
+	if (c == ' ' || c == '\n' || c == '\r' || c == '\v'
+		|| c == '\f' || c == '\t')
 		return (TRUE);
 	return (FALSE);
 }

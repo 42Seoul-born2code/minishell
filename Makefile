@@ -16,7 +16,8 @@ SRC_PARSING					:=	parsing.c		\
 								syntax_analysis.c
 
 SRC_EXPANSION_DIR			:=	expansion/
-SRC_EXPANSION				:=	expansion.c
+SRC_EXPANSION				:=	expansion.c		\
+												quote_removal.c
 
 SRC_UTILS_DIR				:=	utils/
 SRC_UTILS					:=	env_utils.c
