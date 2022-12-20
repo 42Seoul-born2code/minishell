@@ -43,7 +43,6 @@ void	syntax_analysis(t_token *token_list)
 				printf("다음 노드가 없네유? FAIL 드립니다.\n");
 			}
 			// 2. 파이프 바로 뒤에 파이프가 왔을 때
-			// TODO 62번줄에 입력한 예외처리를 조건문으로 처리하기
 			else if (is_continuous_pipe(curr_node) == TRUE)
 			{
 				printf("파이프 뒤에 파이프네유? FAIL 드립니다.\n");
@@ -57,19 +56,3 @@ void	syntax_analysis(t_token *token_list)
 		curr_node = curr_node->next;
 	}
 }
-/*
-
-	1. 따옴표가 제대로 닫혔는가? (DONE)
-		- [[echo], ['hello "world"]] | cat
-
-	2. 파이프 바로 뒤에 파이프가 왔는가?
-		- || or | | (파이프 뒤에 파이프)
-
-	3. redirection 바로 뒤에 operator 인가?
-
-	- TEST CASE
-		- OK: ls | > outfile
-		- OK: ls | >> outfile
-		- OK: echo hello | ls | $PATH | > outfile
-
-*/
