@@ -1,32 +1,35 @@
 
-NAME 								:=	minishell
+NAME 						:=	minishell
 
-SRC_DIR							:=	./src/
-INCLUDE							:=	-I./include/
+SRC_DIR						:=	./src/
+INCLUDE						:=	-I./include/
 
-SRC_EXECUTE_DIR			:=	execute/
+SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c
 
-SRC_TOKENIZE_DIR		:=	tokenize/
-SRC_TOKENIZE			:=	tokenize_line.c				\
+SRC_TOKENIZE_DIR			:=	tokenize/
+SRC_TOKENIZE				:=	tokenize_line.c			\
 								tokenize_utils.c
 
 SRC_PARSING_DIR				:=	parsing/
-SRC_PARSING					:=	parsing.c		\
+SRC_PARSING					:=	parsing.c				\
 								syntax_analysis.c
 
 SRC_EXPANSION_DIR			:=	expansion/
-SRC_EXPANSION				:=	expansion.c		\
-												quote_removal.c
+SRC_EXPANSION				:=	expansion.c				\
+								quote_removal.c
+
+SRC_REDIRECT_DIR			:=	redirect/
+SRC_REDIRECT				:=	redirect.c
 
 SRC_UTILS_DIR				:=	utils/
 SRC_UTILS					:=	env_utils.c
 
 
-SRC_FILES					:=	main.c																						\
+SRC_FILES					:=	main.c												\
 								$(addprefix $(SRC_EXECUTE_DIR), $(SRC_EXECUTE)) 	\
-								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) \
-								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) \
+								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) 	\
+								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) 	\
 								$(addprefix $(SRC_EXPANSION_DIR), $(SRC_EXPANSION)) \
 								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 
 

@@ -51,33 +51,14 @@ void	execute_minishell(t_env_list env)
 		expansion(token_list);
 		quote_removal(token_list);
 		print_token_word(token_list);
+		set_redirection(token_list);
 		free_list_nodes(token_list);
 		add_history(line);
 		free(line);
 	}
 }
 
-/*
+// [cat] [Makefile]
+// execve(cmd_path, cmd_argv, envp);
 
-	echo "hello 'world'"
-	echo "hello \"world\""
-	cat < main.c
-	ls > output
-	ls -l | grep main
-	ls -l | grep main >> output
-	<< HELLO cat | wc -l >> outfile
-
-*/
-
-/*
-	3. Shell commands
-	
-	echo hello world
-	[echo, hello, world]
-	[word, word, word]
-	[file, arguments, arguments]
-
-	echo -n hello world
-	execve("filename", argv, envp )
-	-
-*/
+// cat Makefile > outfile
