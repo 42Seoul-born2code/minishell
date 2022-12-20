@@ -44,15 +44,15 @@
 */
 void	quote_removal(t_token *token_list)
 {
-	int						idx;
-	int						start_idx;
-	int						word_length;
-	t_list				*curr_node;
+	int				idx;
+	int				start_idx;
+	int				word_length;
+	t_list			*curr_node;
 	t_token_node	*curr_token;
-	char					*buffer;
-	char					*prev_word;
-	char					*result_word;
-	char					start_quote;
+	char			*buffer;
+	char			*prev_word;
+	char			*result_word;
+	char			start_quote;
 
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
@@ -113,7 +113,8 @@ void	quote_removal(t_token *token_list)
 			prev_word = NULL;
 		}
 		printf("result_word: %s\n", result_word);
-		// 3. 따옴표 이후 문자열도 strjoin
+		free(curr_token->word);
+		curr_token->word = result_word;
 		curr_node = curr_node->next;
 	}
 }
