@@ -20,17 +20,15 @@ void	free_list_nodes(t_token *lst)
 
 void	execute_minishell(t_env_list env)
 {
-	char		*line;
-	char		*prompt;
+	char	*line;
 	t_token	*token_list;
 
 	(void)env;
-	prompt = "./minishell$ ";
 	token_list = malloc(sizeof(t_token));
 	token_list->head_node = NULL;
 	while (TRUE)
 	{
-		line = readline(prompt);
+		line = readline(PROMPT);
 		if (!line)
 			break ;
 		tokenize_line(line, token_list);
