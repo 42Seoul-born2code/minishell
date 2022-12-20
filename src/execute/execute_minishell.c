@@ -1,5 +1,19 @@
 #include "execute.h"
 
+void	print_token_word(t_token *token_list)
+{
+	t_list			*curr_node;
+	t_token_node	*curr_token;
+
+	curr_node = token_list->head_node;
+	while (curr_node != NULL)
+	{
+		curr_token = curr_node->content;
+		printf("curr_token->word: %s\n", curr_token->word);
+		curr_node = curr_node->next;
+	}
+}
+
 void	free_list_nodes(t_token *lst)
 {
 	t_list				*curr_list;
@@ -36,6 +50,7 @@ void	execute_minishell(t_env_list env)
 		syntax_analysis(token_list);
 		expansion(token_list);
 		quote_removal(token_list);
+		print_token_word(token_list);
 		free_list_nodes(token_list);
 		add_history(line);
 		free(line);
