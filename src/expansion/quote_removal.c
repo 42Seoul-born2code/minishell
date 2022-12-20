@@ -112,7 +112,7 @@ void	quote_removal(t_token *token_list)
 			free(prev_word);
 			prev_word = NULL;
 		}
-		printf("result_word: %s\n", result_word);
+		// printf("result_word: %s\n", result_word);
 		free(curr_token->word);
 		curr_token->word = result_word;
 		curr_node = curr_node->next;

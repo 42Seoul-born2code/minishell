@@ -255,7 +255,7 @@ void	expansion(t_token *token_list)
 			curr_token->word = replaced_word;
 		}
 		free(word_list);
-		printf("curr_token->word: %s\n", curr_token->word);
+		// printf("curr_token->word: %s\n", curr_token->word);
 		curr_node = curr_node->next;
 	}
 }
