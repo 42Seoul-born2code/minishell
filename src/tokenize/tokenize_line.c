@@ -95,9 +95,9 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 
 void	tokenize_line(char *line, t_token *token_list)
 {
-	int						i;
-	int						start;
-	int						word_length;
+	int				i;
+	int				start;
+	int				word_length;
 	t_token_node	*token_node;
 
 	i = 0;
