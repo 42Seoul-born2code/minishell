@@ -1,24 +1,5 @@
 #include "tokenize.h"
 
-/*		AWESOME_TEST_CASE		*/
-/*
-
-echo "hello 'world' > outfile"
-echo 'hello "world"' | cat > a
-echo aaa"kk"kk haha > ee
-  echo 'hello "world"' |>
-ls | cat > outfile
-'ba''sh'
-'ba'"sh"
-'ba'sh
-'b''a'"s""h" 
-"hello$NAME".hi
-
-*/
-// 1. 공백(whitespace)이면 건너뛴다.
-// 2. metacharacter 로 구분되지 않은 따옴표이면, 
-//		metacharacter 를 만날 때까지, 그리고 닫는 따옴표를 만날 때까지 인덱스를 증가시킨다.
-
 static void	save_token(t_token *token_list, t_token_node *node, char *line, int length)
 {
 	char	*word;
