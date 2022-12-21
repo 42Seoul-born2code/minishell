@@ -6,7 +6,11 @@ INCLUDE						:=	-I./include/
 
 SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c		\
-								execute_command.c
+								execute_command.c		\
+								execute_simple_command.c\
+								execute_utils.c			\
+								open_file.c				
+
 
 SRC_TOKENIZE_DIR			:=	tokenize/
 SRC_TOKENIZE				:=	tokenize_line.c			\
