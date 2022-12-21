@@ -16,8 +16,8 @@ void	print_token_word(t_token *token_list)
 
 void	free_list_nodes(t_token *lst)
 {
-	t_list				*curr_list;
-	t_list				*next_list;
+	t_list			*curr_list;
+	t_list			*next_list;
 	t_token_node	*curr_node;
 
 	curr_list = lst->head_node;
@@ -51,7 +51,8 @@ void	execute_minishell(t_env_list env)
 		expansion(token_list);
 		quote_removal(token_list);
 		print_token_word(token_list);
-		set_redirection(token_list);
+		// set_redirection(token_list);
+		execute_command(token_list, env);
 		free_list_nodes(token_list);
 		add_history(line);
 		free(line);
