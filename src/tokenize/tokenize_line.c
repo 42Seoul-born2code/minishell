@@ -98,7 +98,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			get_operator_type(token_node, line, &i, &word_length);
 		}
 		
-		// CASE3. 따옴표를 만났을 때
+		// CASE3. 따옴표로 시작하는 경우
 		// 1. "hello$NAME".hi -> 따옴표가 닫히지 않았다고 문법 오류를 뱉어냄 [ 해결 ] 
 		// 2. "hello$NAME".hi -> "hellojoonpark.hi" expansion 문제 해결 필요 [ 해결 ]
 		// 3. expansion에서 큰따옴표 처리를 잘 못하고 있음 버그 발견 예제 : 'b''a'"s""h" [ 해결 ]
@@ -122,7 +122,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			token_node->type = WORD;
 		}
 
-		// CASE4. word 를 만났을 때
+		// CASE4. word 를 만났을 때 (따옴표 없이 시작하는 경우)
 		else
 		{
 			word_length = get_word_length(token_node, line, &i, start);
