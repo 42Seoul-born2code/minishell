@@ -51,8 +51,8 @@ void	execute_minishell(t_env_list env)
 		expansion(token_list);
 		quote_removal(token_list);
 		print_token_word(token_list);
-		// set_redirection(token_list);
 		execute_command(token_list, env);
+		printf("hello\n");
 		free_list_nodes(token_list);
 		add_history(line);
 		free(line);
