@@ -49,8 +49,8 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-READLINE_LINKING			:=	-lreadline -L ~/.brew/opt/readline/lib
-READLINE_COMPILE			:=	-I~/.brew/opt/readline/include
+READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
+READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
 
 ifdef DEBUG_MODE
 	CFLAGS					:=	$(CFLAGS) -g
