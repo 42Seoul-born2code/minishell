@@ -35,7 +35,6 @@ static char	*find_cmd_path(char *cmd)
 		// 존재하는 경우
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
-			// 0. regular file 인지 확인
 			printf("cmd_path: %s\n", cmd_path);
 			return (cmd_path);
 		}
@@ -105,18 +104,12 @@ void	execute_command(t_token *token_list, t_env_list env_list)
 		*/
 		if (curr_token->type == COMMAND)
 		{
-			// 1. 파일의 위치를 확인
-			// 1-1. 현재 디렉토리
-			// 1-2. $PATH
 			cmd_path = find_cmd_path(curr_token->word);
 			if (cmd_path == NULL)
 				return ;
 			cmd_argv = merge_arguments(curr_node);
 			envp = get_envp_in_list(&env_list);
 			break ;
-			// 2. stat 으로 regular file 인지, directory 인지 판단
-			// 3. 접근 권한(F_OK, X_OK)이 있는지 판단
-			// 4. execve 실행
 		}
 		// else if (curr_token->type == ARGUMENT)
 		// {
