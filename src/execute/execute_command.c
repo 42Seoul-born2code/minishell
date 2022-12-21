@@ -6,8 +6,14 @@ static char	*find_cmd_path(char *cmd)
 	char	*path;
 	char	**path_env;
 	char	*cmd_path;
-	// struct stat buf;
+	struct stat buf;
 
+	stat(cmd, &buf);
+	if (S_ISDIR(buf.st_mode))
+	{
+		printf("%s is a directory\n", cmd);
+		return (NULL);
+	}
 	i = 0;
 	// 1. 현재 폴더에 위치하는지 확인
 	if (access(cmd, F_OK | X_OK) == 0)
@@ -27,15 +33,6 @@ static char	*find_cmd_path(char *cmd)
 		path = ft_strjoin(path_env[i], "/");
 		cmd_path = ft_strjoin(path, cmd);
 		// 존재하는 경우
-		// TODO 
-		// execve 함수에 들어갔을 때 디렉토리를 실행하려고 하면
-		// "___ is a directory" 라는 에러를 발생시키는지 확인하기
-		// stat(cmd, &buf);
-		// if (!S_ISREG(buf.st_mode))
-		// {
-		// 	printf("%s is a directory\n");
-		// 	return (NULL);
-		// }
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
 			// 0. regular file 인지 확인
@@ -112,6 +109,8 @@ void	execute_command(t_token *token_list, t_env_list env_list)
 			// 1-1. 현재 디렉토리
 			// 1-2. $PATH
 			cmd_path = find_cmd_path(curr_token->word);
+			if (cmd_path == NULL)
+				return ;
 			cmd_argv = merge_arguments(curr_node);
 			envp = get_envp_in_list(&env_list);
 			break ;
@@ -124,5 +123,8 @@ void	execute_command(t_token *token_list, t_env_list env_list)
 		// }
 		curr_node = curr_node->next;
 	}
-	execve(cmd_path, cmd_argv, envp);
+	if (execve(cmd_path, cmd_argv, envp) == ERROR)
+	{
+		printf("실행 오류 발생\n");
+	}
 }
