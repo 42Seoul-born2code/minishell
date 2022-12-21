@@ -54,10 +54,6 @@ static int	count_argv(t_list *curr_node)
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		// if (curr_token->type != ARGUMENT)
-		// {
-		// 	break ;
-		// }
 		argv_count += 1;
 		curr_node = curr_node->next;
 	}
@@ -85,7 +81,37 @@ char	**merge_arguments(t_list *curr_node)
 	return (cmd_argv);
 }
 
-void	execute_command(t_token *token_list, t_env_list env_list)
+e_command_type	get_execute_type(t_token *token_list)
+{
+	t_list			*curr_node;
+	t_token_node	*curr_token;
+
+	curr_node = token_list->head_node;
+	while (curr_node != NULL)
+	{
+		curr_token = curr_node->content;
+		if (curr_token->type == PIPE)
+			return (MULTI_COMMAND);
+		curr_node = curr_node->next;
+	}
+	return (SIMPLE_COMMAND);
+}
+
+void	fork_command(char *cmd_path, char **cmd_argv, char **envp)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == CHILD_PROCESS)
+	{
+		if (execve(cmd_path, cmd_argv, envp) == ERROR)
+		{
+			// printf("execve error occured\n");
+		}
+	}
+}
+
+void	execute_simple_command(t_token *token_list, t_env_list env_list)
 {
 	char			*cmd_path;
 	char			**cmd_argv;
@@ -97,27 +123,40 @@ void	execute_command(t_token *token_list, t_env_list env_list)
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		/* 
-			- `filename` 을 현재 디렉토리에서 찾아본다.
-			- 만약, 실행 가능하다면 `execve` 함수로 실행시킨다.
-			- 현재 디렉토리에 없으면 `$PATH` 환경변수에 저장된 경로를 찾아가서 파일이 존재하는지 확인하고, 실행 권한이 있으면 `execve` 함수로 실행시킨다.
-		*/
 		if (curr_token->type == COMMAND)
 		{
 			cmd_path = find_cmd_path(curr_token->word);
 			if (cmd_path == NULL)
-				return ;
+			{
+				printf("%s: command not found\n", curr_token->word);
+			}
 			cmd_argv = merge_arguments(curr_node);
 			envp = get_envp_in_list(&env_list);
+			// 자식 프로세스로 실행
+			fork_command(cmd_path, cmd_argv, envp);
 			break ;
 		}
-		// else if (curr_token->type == ARGUMENT)
-		// {
-		// }
 		curr_node = curr_node->next;
 	}
-	if (execve(cmd_path, cmd_argv, envp) == ERROR)
+
+}
+
+void	execute_command(t_token *token_list, t_env_list env_list)
+{
+	t_list			*curr_node;
+
+	// TODO
+	// 1. 파이프가 존재하지 않는 simple command 는 fork 를 수행해서 실행한다.
+	// 2. 파이프가 존재하는 multi command 는 파이프 생성 후 fork 를 실행한다.
+	curr_node = token_list->head_node;
+	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
-		printf("실행 오류 발생\n");
+		execute_simple_command(token_list, env_list);
+	}
+	else
+	{
+		// execute_multi_command();
 	}
 }
+
+// ls | cat 
