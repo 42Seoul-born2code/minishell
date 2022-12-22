@@ -8,6 +8,7 @@ SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c		\
 								execute_command.c		\
 								execute_simple_command.c\
+								execute_multi_command.c	\
 								execute_utils.c			\
 								open_file.c				
 

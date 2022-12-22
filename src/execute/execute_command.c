@@ -30,6 +30,6 @@ void	execute_command(t_token *token_list, t_env_list env_list)
 	}
 	else
 	{
-		// execute_multi_command();
+		execute_multi_command(token_list, env_list);
 	}
 }

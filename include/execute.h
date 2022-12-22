@@ -34,6 +34,9 @@ void	execute_minishell(t_env_list env);
 // execute_command.c
 void	execute_command(t_token *token_list, t_env_list env_list);
 
+// execute_multi_command.c
+void	execute_multi_command(t_token *token_list, t_env_list env_list);
+
 // execute_simple_command.c
 void	execute_simple_command(t_token *token_list, t_env_list env_list);
 
