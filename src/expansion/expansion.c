@@ -124,6 +124,7 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list, e_
 		}
 		else
 		{
+			// TODO LIMITER 일 경우 확장하지 않음
 			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
 		}
 		free(env_word);
