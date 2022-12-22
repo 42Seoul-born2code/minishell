@@ -32,6 +32,11 @@ void	execute_simple_command(t_token *token_list, t_env_list env_list)
 				outfile = open_file(curr_node->next, WRITE_MODE);
 				dup2(outfile, STDOUT_FILENO);
 			}
+			else if (curr_token->type == REDIR_APPEND)
+			{
+				outfile = open_file(curr_node->next, APPEND_MODE);
+				dup2(outfile, STDOUT_FILENO);
+			}
 			curr_node = curr_node->next;
 		}
 		close(outfile);

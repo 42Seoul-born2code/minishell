@@ -9,11 +9,14 @@ static int	open_read_mode_file(char *file)
 	return (open(file, O_RDONLY));
 }
 
-static int	open_write_mode_file(char *file)
+static int	open_write_mode_file(char *file, int mode)
 {
 	int	fd;
 
-	fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (mode == WRITE_MODE)
+		fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	else
+		fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == ERROR)
 	{
 		if (access(file, F_OK) == ERROR)
@@ -26,18 +29,16 @@ static int	open_write_mode_file(char *file)
 
 int	open_file(t_list *next_node, int mode)
 {
-	int		fd;
 	char	*file;
 
-	fd = 0;
 	file = ((t_token_node *)next_node->content)->word;
 	if (mode == READ_MODE)
 	{
 		return (open_read_mode_file(file));
 	}
-	else if (mode == WRITE_MODE)
+	else if (mode == WRITE_MODE || mode == APPEND_MODE)
 	{
-		return (open_write_mode_file(file));
+		return (open_write_mode_file(file, mode));
 	}
 	return (ERROR);
 }
