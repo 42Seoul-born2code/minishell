@@ -52,7 +52,6 @@ static t_bool	is_quote_closed(char *line, int *i)
 	return (result);
 }
 
-// ls" "'
 static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 {
 	while (line[*i] != '\0')
@@ -98,27 +97,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			get_operator_type(token_node, line, &i, &word_length);
 		}
 		
-		// CASE3. 따옴표로 시작하는 경우
-		// TODO CASE3 와 CASE4 는 하나로 처리해도 괜찮을 것 같음
-		else if (is_quote(line[i]) == TRUE)
-		{
-			while (line[i] != '\0')
-			{
-				if (is_quote_closed(line, &i) == FALSE)
-				{
-					printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
-					break ;
-				}
-				if (is_operator(&line[i]) == TRUE || is_whitespace(line[i]) == TRUE)
-				{
-					break ;
-				}
-			}
-			word_length = i - start;
-			token_node->type = WORD;
-		}
-
-		// CASE4. word 를 만났을 때 (따옴표 없이 시작하는 경우)
+		// CASE3. 문자열을 만났을 때
 		else
 		{
 			word_length = get_word_length(token_node, line, &i, start);
