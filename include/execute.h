@@ -20,13 +20,23 @@
 # define READ_MODE		1
 # define APPEND_MODE	2
 
+# define ERROR_CODE_COMMAND_NOT_FOUND	127
+
 # define NO_FILE_OR_DIR			"❌Error: No such file or directory: "
 # define PERMISSON_DENIED		"❌Error: permission denied: "
+# define PIPE_ERROR				"❌Error: pipe function doesn't work."
+# define FORK_ERROR				"❌Error: fork error occured."
+# define COMMAND_NOT_FOUND		"❌Error: command not found: "
 
 typedef enum {
 	SIMPLE_COMMAND,
 	MULTI_COMMAND,
 }	e_command_type;
+
+typedef enum {
+	READ,
+	WRITE,
+}	e_pipe;
 
 // execute_minishell.c
 void	execute_minishell(t_env_list env);
