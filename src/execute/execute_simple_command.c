@@ -27,8 +27,6 @@ void	execute_simple_command(t_token *token_list, t_env_list env_list)
 				cmd_argv = merge_arguments(curr_node);
 				envp = get_envp_in_list(&env_list);
 			}
-			// cat Makefile > outfile
-			// > outfile cat Makefile
 			else if (curr_token->type == REDIR_RIGHT)
 			{
 				outfile = open_file(curr_node->next, WRITE_MODE);
