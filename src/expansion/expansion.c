@@ -93,7 +93,7 @@ static char *remove_whitespace(char *str)
 	return (result);
 }
 
-static void	expand_env_variable(char *word, int *idx, t_word_list *word_list, e_quote type)
+static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word_list, e_quote quote_type)
 {
 	int		start;
 	int		word_length;
@@ -102,11 +102,12 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list, e_
 
 	*idx += 1;
 	start = *idx;
-	while (word[*idx] != '\0' && word[*idx] != '\"' && word[*idx] != '\'' && word[*idx] != '$')
+	while (token->word[*idx] != '\0' && token->word[*idx] != '\"' && \
+			token->word[*idx] != '\'' && token->word[*idx] != '$')
 	{
-		if (is_valid_variable_rule(word[*idx]) == FALSE)
+		if (is_valid_variable_rule(token->word[*idx]) == FALSE)
 			break ;
-		if (is_operator(&word[*idx]) == TRUE || is_whitespace(word[*idx]) == TRUE)
+		if (is_operator(&token->word[*idx]) == TRUE || is_whitespace(token->word[*idx]) == TRUE)
 			break ;
 		*idx += 1;
 	}
@@ -116,17 +117,16 @@ static void	expand_env_variable(char *word, int *idx, t_word_list *word_list, e_
 	{
 		word_length = *idx - start;
 		env_word = malloc(sizeof(char) * (word_length + 1));
-		ft_memcpy(env_word, &word[start], word_length);
-		if (type == NOT_QUOTED)
+		ft_memcpy(env_word, &token->word[start], word_length);
+		if (token->type == LIMITER)
+			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strjoin("$", env_word)));
+		else if (quote_type == NOT_QUOTED)
 		{
 			not_spaced_env_word = remove_whitespace(getenv(env_word));
 			ft_lstadd_back(&word_list->head_node, ft_lstnew(add_double_quotes(not_spaced_env_word)));
 		}
-		else
-		{
-			// TODO LIMITER 일 경우 확장하지 않음
+		else if (quote_type == QUOTED)
 			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
-		}
 		free(env_word);
 	}
 }
@@ -214,7 +214,7 @@ void	expansion(t_token *token_list)
 					// $ 만난 경우
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token->word, &idx, word_list, QUOTED);
+						expand_env_variable(curr_token, &idx, word_list, QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
@@ -237,7 +237,7 @@ void	expansion(t_token *token_list)
 					// 띄어쓰기 제거, 살릴 quote는 살리기
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token->word, &idx, word_list, NOT_QUOTED);
+						expand_env_variable(curr_token, &idx, word_list, NOT_QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
