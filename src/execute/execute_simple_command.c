@@ -3,7 +3,7 @@
 void	execute_simple_command(t_token *token_list, t_env_list env_list)
 {
 	pid_t			pid;
-	int				outfile;
+	int				file;
 	char			*cmd_path;
 	char			**cmd_argv;
 	char			**envp;
@@ -23,26 +23,36 @@ void	execute_simple_command(t_token *token_list, t_env_list env_list)
 				if (cmd_path == NULL)
 				{
 					printf("%s: command not found\n", curr_token->word);
+					exit(ERROR_CODE_COMMAND_NOT_FOUND);
 				}
 				cmd_argv = merge_arguments(curr_node);
 				envp = get_envp_in_list(&env_list);
 			}
 			else if (curr_token->type == REDIR_RIGHT)
 			{
-				outfile = open_file(curr_node->next, WRITE_MODE);
-				dup2(outfile, STDOUT_FILENO);
+				file = open_file(curr_node->next, WRITE_MODE);
+				dup2(file, STDOUT_FILENO);
 			}
 			else if (curr_token->type == REDIR_APPEND)
 			{
-				outfile = open_file(curr_node->next, APPEND_MODE);
-				dup2(outfile, STDOUT_FILENO);
+				file = open_file(curr_node->next, APPEND_MODE);
+				dup2(file, STDOUT_FILENO);
+			}
+			else if (curr_token->type == REDIR_LEFT)
+			{
+				file = open_file(curr_node->next, READ_MODE);
+				dup2(file, STDIN_FILENO);
 			}
 			curr_node = curr_node->next;
 		}
-		close(outfile);
+		close(file);
 		if (execve(cmd_path, cmd_argv, envp) == ERROR)
 		{
 			// printf("execve error occured\n");
 		}
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
 	}
 }
