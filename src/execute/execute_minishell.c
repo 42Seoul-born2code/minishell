@@ -52,7 +52,7 @@ void	execute_minishell(t_env_list env)
 			syntax_analysis(token_list);
 			expansion(token_list);
 			quote_removal(token_list);
-			print_token_word(token_list);
+			// print_token_word(token_list);
 			execute_command(token_list, env);
 			free_list_nodes(token_list);
 			add_history(line);

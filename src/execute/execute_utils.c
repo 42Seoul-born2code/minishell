@@ -79,7 +79,6 @@ char	*find_cmd_path(char *cmd)
 	// 1. 현재 폴더에 위치하는지 확인
 	if (access(cmd, F_OK | X_OK) == 0)
 	{
-		printf("cmd: %s\n", cmd);
 		return (ft_strdup(cmd));
 	}
 	// 2. PATH 환경변수에 존재하는지 확인
@@ -96,7 +95,6 @@ char	*find_cmd_path(char *cmd)
 		// 존재하는 경우
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
-			printf("cmd_path: %s\n", cmd_path);
 			return (cmd_path);
 		}
 		free(path);
