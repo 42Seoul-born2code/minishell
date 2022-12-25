@@ -58,6 +58,7 @@ int	count_argv(t_list *curr_node)
 		argv_count += 1;
 		curr_node = curr_node->next;
 	}
+	(void)curr_token;
 	return (argv_count);
 }
 

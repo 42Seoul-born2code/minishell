@@ -20,6 +20,8 @@
 # define READ_MODE		1
 # define APPEND_MODE	2
 
+# define NONE	-1
+
 # define ERROR_CODE_COMMAND_NOT_FOUND	127
 
 # define NO_FILE_OR_DIR			"❌Error: No such file or directory: "
@@ -27,6 +29,8 @@
 # define PIPE_ERROR				"❌Error: pipe function doesn't work."
 # define FORK_ERROR				"❌Error: fork error occured."
 # define COMMAND_NOT_FOUND		"❌Error: command not found: "
+
+# define HEREDOC_FILE			".heredoc.tmp"
 
 typedef enum {
 	SIMPLE_COMMAND,

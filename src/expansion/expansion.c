@@ -1,6 +1,6 @@
 #include "expansion.h"
 
-static	t_bool is_valid_variable_rule(char c)
+t_bool is_valid_variable_rule(char c)
 {
 	if (ft_isalnum(c) == TRUE || c == '_')
 		return (TRUE);

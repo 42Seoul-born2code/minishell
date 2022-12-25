@@ -5,6 +5,7 @@
 
 void	expansion(t_token *token_list);
 void	quote_removal(t_token *token_list);
+t_bool 	is_valid_variable_rule(char c);
 
 typedef enum {
 	NOT_QUOTED,
