@@ -55,10 +55,11 @@ int	count_argv(t_list *curr_node)
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
+		if (is_redirection(curr_token) == TRUE || curr_token->type == PIPE)
+			break ;
 		argv_count += 1;
 		curr_node = curr_node->next;
 	}
-	(void)curr_token;
 	return (argv_count);
 }
 
