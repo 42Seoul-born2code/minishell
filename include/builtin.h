@@ -21,4 +21,7 @@ int	ft_echo(char **argv);
 // ft_pwd.c
 int ft_pwd(char **argv);
 
+// ft_env.c
+int ft_env(char **argv, t_env_list *env_list);
+
 #endif
