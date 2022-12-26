@@ -16,7 +16,7 @@ static e_command_type	get_execute_type(t_token *token_list)
 	return (SIMPLE_COMMAND);
 }
 
-void	execute_command(t_token *token_list, t_env_list env_list)
+void	execute_command(t_token *token_list, t_env_list *env_list)
 {
 	// TODO
 	// 1. 파이프가 존재하지 않는 simple command 는 fork 를 수행해서 실행한다.

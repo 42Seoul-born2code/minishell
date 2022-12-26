@@ -4,16 +4,19 @@ NAME 						:=	minishell
 SRC_DIR						:=	./src/
 INCLUDE						:=	-I./include/
 
-SRC_EXECUTE_DIR				:=	builtin/
-SRC_EXECUTE					:=	echo.c					\
-								pwd.c					
+SRC_BUILTIN_DIR				:=	builtin/
+SRC_BUILTIN					:=	ft_echo.c						\
+								ft_pwd.c					
 
 SRC_EXECUTE_DIR				:=	execute/
-SRC_EXECUTE					:=	execute_minishell.c		\
-								execute_command.c		\
-								execute_simple_command.c\
-								execute_multi_command.c	\
-								execute_utils.c			\
+SRC_EXECUTE					:=	execute_minishell.c				\
+								process_builtin_function.c		\
+								execute_builtin_function.c		\
+								execute_command.c				\
+								execute_simple_command.c		\
+								execute_multi_command.c			\
+								execute_utils.c					\
+								fork_process.c					\
 								open_file.c				
 
 

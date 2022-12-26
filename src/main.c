@@ -17,7 +17,7 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	(void)argv;
 	save_envp_in_list(envp, &curr_env);
-	execute_minishell(curr_env);
+	execute_minishell(&curr_env);
 	// system("leaks minishell");
 	return (0);
 }

@@ -32,12 +32,11 @@ void	free_list_nodes(t_token *lst)
 	lst->head_node = NULL;
 }
 
-void	execute_minishell(t_env_list env)
+void	execute_minishell(t_env_list *env)
 {
 	char	*line;
 	t_token	*token_list;
 
-	(void)env;
 	token_list = malloc(sizeof(t_token));
 	token_list->head_node = NULL;
 	while (TRUE)
