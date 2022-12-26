@@ -14,3 +14,9 @@
 		- 바로 반영이 안될 수 있다.
 
 */
+
+int ft_echo(char **argv)
+{
+	(void)argv;
+	return 0;
+}

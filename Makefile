@@ -6,7 +6,8 @@ INCLUDE						:=	-I./include/
 
 SRC_BUILTIN_DIR				:=	builtin/
 SRC_BUILTIN					:=	ft_echo.c						\
-								ft_pwd.c					
+								ft_pwd.c						\
+								check_option.c
 
 SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c				\
@@ -44,7 +45,8 @@ SRC_FILES					:=	main.c												\
 								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) 	\
 								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) 	\
 								$(addprefix $(SRC_EXPANSION_DIR), $(SRC_EXPANSION)) \
-								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 
+								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 		\
+								$(addprefix $(SRC_BUILTIN_DIR), $(SRC_BUILTIN)) 
 
 SRCS						:=	$(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS						:=	$(SRCS:%.c=%.o)
