@@ -177,10 +177,12 @@ void	execute_simple_command(t_token *token_list, t_env_list env_list)
 		if (execve(cmd_path, cmd_argv, envp) == ERROR)
 		{
 			printf("execve error occured\n");
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
+		// TODO: 자식 프로세스 반환값 전역 변수에 저장
 		waitpid(pid, NULL, 0);
 		unlink(HEREDOC_FILE);
 	}
