@@ -4,6 +4,10 @@ NAME 						:=	minishell
 SRC_DIR						:=	./src/
 INCLUDE						:=	-I./include/
 
+SRC_EXECUTE_DIR				:=	builtin/
+SRC_EXECUTE					:=	echo.c					\
+								pwd.c					
+
 SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c		\
 								execute_command.c		\
