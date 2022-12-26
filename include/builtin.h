@@ -3,5 +3,6 @@
 
 # include <unistd.h>
 
+void	ft_echo(char **argv);
 
 #endif

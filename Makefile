@@ -40,6 +40,7 @@ SRC_UTILS					:=	env_utils.c
 
 
 SRC_FILES					:=	main.c												\
+								$(addprefix $(SRC_BUILTIN_DIR), $(SRC_BUILTIN)) 	\
 								$(addprefix $(SRC_EXECUTE_DIR), $(SRC_EXECUTE)) 	\
 								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) 	\
 								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) 	\

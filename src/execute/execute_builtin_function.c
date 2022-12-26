@@ -1,4 +1,5 @@
 #include "execute.h"
+#include "builtin.h"
 
 void	execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *env_list)
 {
@@ -17,7 +18,7 @@ void	execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *e
 	}
 	else if (ft_strcmp(cmd, "pwd") == 0)
 	{
-		ft_pwd(argv);
+		// ft_pwd(argv);
 		return ;
 	}
 	else if (ft_strcmp(cmd, "export") == 0)
