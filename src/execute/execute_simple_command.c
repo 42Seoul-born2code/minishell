@@ -176,6 +176,7 @@ void	execute_simple_command(t_token *token_list, t_env_list env_list)
 			close(file);
 		if (execve(cmd_path, cmd_argv, envp) == ERROR)
 		{
+			// TODO: printf 문 삭제
 			printf("execve error occured\n");
 			exit(EXIT_FAILURE);
 		}
