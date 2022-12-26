@@ -6,7 +6,12 @@ INCLUDE						:=	-I./include/
 
 SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c		\
-								execute_command.c
+								execute_command.c		\
+								execute_simple_command.c\
+								execute_multi_command.c	\
+								execute_utils.c			\
+								open_file.c				
+
 
 SRC_TOKENIZE_DIR			:=	tokenize/
 SRC_TOKENIZE				:=	tokenize_line.c			\
@@ -45,8 +50,8 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-READLINE_LINKING			:=	-lreadline -L ~/.brew/opt/readline/lib
-READLINE_COMPILE			:=	-I~/.brew/opt/readline/include
+READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
+READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
 
 ifdef DEBUG_MODE
 	CFLAGS					:=	$(CFLAGS) -g

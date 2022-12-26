@@ -52,7 +52,6 @@ static t_bool	is_quote_closed(char *line, int *i)
 	return (result);
 }
 
-// ls" "'
 static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 {
 	while (line[*i] != '\0')
@@ -98,31 +97,7 @@ void	tokenize_line(char *line, t_token *token_list)
 			get_operator_type(token_node, line, &i, &word_length);
 		}
 		
-		// CASE3. 따옴표를 만났을 때
-		// 1. "hello$NAME".hi -> 따옴표가 닫히지 않았다고 문법 오류를 뱉어냄 [ 해결 ] 
-		// 2. "hello$NAME".hi -> "hellojoonpark.hi" expansion 문제 해결 필요 [ 해결 ]
-		// 3. expansion에서 큰따옴표 처리를 잘 못하고 있음 버그 발견 예제 : 'b''a'"s""h" [ 해결 ]
-		// 4. "$NAME$" 입력 시 -> "joonparkjoonpark" 으로 출력되는 문제 발견 [ 해결 ]
-		// 5. echo ls" " 입력 시 공백이 들어오면 토큰을 잘라서 인식함 []
-		else if (is_quote(line[i]) == TRUE)
-		{
-			while (line[i] != '\0')
-			{
-				if (is_quote_closed(line, &i) == FALSE)
-				{
-					printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
-					break ;
-				}
-				if (is_operator(&line[i]) == TRUE || is_whitespace(line[i]) == TRUE)
-				{
-					break ;
-				}
-			}
-			word_length = i - start;
-			token_node->type = WORD;
-		}
-
-		// CASE4. word 를 만났을 때
+		// CASE3. 문자열을 만났을 때
 		else
 		{
 			word_length = get_word_length(token_node, line, &i, start);

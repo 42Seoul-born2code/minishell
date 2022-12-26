@@ -70,7 +70,7 @@ void	parsing(t_token *token_list)
 			parse_info.is_redirection_found = FALSE;
 			parse_info.is_heredoc_found = FALSE;
 		}
-		printf("type: %d, word: %s\n", curr_token->type, curr_token->word);
+		// printf("type: %d, word: %s\n", curr_token->type, curr_token->word);
 		curr_node = curr_node->next;
 	}
 }

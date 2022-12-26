@@ -43,18 +43,20 @@ void	execute_minishell(t_env_list env)
 	while (TRUE)
 	{
 		line = readline(PROMPT);
-		if (!line)
+		if (line == NULL)
 			break ;
-		tokenize_line(line, token_list);
-		parsing(token_list);
-		syntax_analysis(token_list);
-		expansion(token_list);
-		quote_removal(token_list);
-		print_token_word(token_list);
-		// set_redirection(token_list);
-		execute_command(token_list, env);
-		free_list_nodes(token_list);
-		add_history(line);
+		if (line[0] != '\0')
+		{
+			tokenize_line(line, token_list);
+			parsing(token_list);
+			syntax_analysis(token_list);
+			expansion(token_list);
+			quote_removal(token_list);
+			// print_token_word(token_list);
+			execute_command(token_list, env);
+			free_list_nodes(token_list);
+			add_history(line);
+		}
 		free(line);
 	}
 }
