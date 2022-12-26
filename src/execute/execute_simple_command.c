@@ -57,6 +57,7 @@ char	*expand_env_variable(char *input)
 
 	idx = 0;
 	word_list = malloc(sizeof(t_word_list));
+	word_list->head_node = NULL;
 	while (input[idx] != '\0')
 	{
 		if (input[idx] == '$')
