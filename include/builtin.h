@@ -7,21 +7,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
-# include "tokenize.h"
-# include "parsing.h"
-# include "expansion.h"
-# include "utils.h"
-
-// check_option.c
-int	check_option(char *argv);
-
-// ft_echo.c
-int	ft_echo(char **argv);
-
-// ft_pwd.c
-int ft_pwd(char **argv);
-
-// ft_env.c
-int ft_env(char **argv, t_env_list *env_list);
+void	ft_echo(char **argv);
 
 #endif
