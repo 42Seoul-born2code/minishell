@@ -46,7 +46,7 @@ typedef enum {
 void	execute_minishell(t_env_list *env);
 
 // execute_builtin_function.c
-void	execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *env_list);
+int		execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *env_list);
 
 // process_builtin_function.c
 t_bool	is_command_builtin_function(t_token *token_list);

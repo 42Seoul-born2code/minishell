@@ -1,6 +1,4 @@
-#include <stdio.h>
 #include "builtin.h"
-#include "libft.h"
 
 t_bool	is_valid_option(char *str)
 {
@@ -70,7 +68,7 @@ char	*merge_argv(char **argv, \
 	return (result);
 }
 
-void	ft_echo(char **argv)
+int	ft_echo(char **argv)
 {
 	char	*result;
 	t_bool	is_option_on;
@@ -88,6 +86,7 @@ void	ft_echo(char **argv)
 			printf("\n");
 	}
 	free(result);
+	return (EXIT_SUCCESS);
 }
 
 /*
@@ -143,9 +142,3 @@ void	ft_echo(char **argv)
 		- 바로 반영이 안될 수 있다.
 
 */
-
-int ft_echo(char **argv)
-{
-	(void)argv;
-	return 0;
-}
