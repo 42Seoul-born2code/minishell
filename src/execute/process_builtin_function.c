@@ -48,7 +48,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, e_comma
 	t_token_node	*curr_token;
 
 	(void)file;
-	printf("BUILTIN FUCNTION\n");
+	// printf("BUILTIN FUCNTION\n");
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
@@ -62,6 +62,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, e_comma
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
+			// TODO: echo hello > outfile 하면 dup2 를 원래 fd 로 바꿔줘야함
 			file = process_redirection(curr_node);
 		}
 		curr_node = curr_node->next;
