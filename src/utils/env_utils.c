@@ -64,13 +64,3 @@ void	save_envp_in_env_list(char **envp, t_env_list *env_list)
 		idx += 1;
 	}
 }
-
-t_env_list	*init_env_list(char **envp)
-{
-	t_env_list	*env_list;
-
-	env_list = malloc(sizeof(t_env_list));
-	env_list->head_node = NULL;
-	save_envp_in_env_list(envp, env_list);
-	return (env_list);
-}

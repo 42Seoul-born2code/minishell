@@ -14,6 +14,5 @@ typedef struct s_env_node {
 
 char		**get_envp_in_list(t_env_list *env_list);
 void		save_envp_in_env_list(char **envp, t_env_list *env_list);
-t_env_list	*init_env_list(char **envp);
 
 #endif
