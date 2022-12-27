@@ -6,7 +6,6 @@ typedef struct s_env_list {
 }	t_env_list;
 
 typedef struct s_env_node {
-	char	*line;
 	char	*key;
 	char	*value;
 }	t_env_node;

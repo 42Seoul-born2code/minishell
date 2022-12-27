@@ -9,27 +9,67 @@ t_bool	is_option_included(char *str)
 	while (str[idx] != '\0')
 	{
 		if (str[idx] == '-')
-			return (FALSE);
+			return (TRUE);
 		idx += 1;
 	}
-	return (TRUE);
+	return (FALSE);
 }
 
-t_bool	is_valid_variable_name(char *str)
+int	print_export_env_list(t_env_list *env_list)
 {
-	int	idx;
+	t_list		*list_node;
+	t_env_node	*curr_node;
 
-	if (ft_isdigit(str[0]) == TRUE)
-		return (FALSE);
-	idx = 0;
-	while (str[idx] != '\0')
+	list_node = env_list->head_node;
+	while (list_node != NULL)
 	{
-		if (ft_isalnum(str[idx]) == TRUE || str[idx] == '_')
-			idx += 1;
+		curr_node = list_node->content;
+		if (curr_node->value == NULL)
+			printf("declare -x %s\n", curr_node->key);
 		else
-			return (FALSE);
+			printf("declare -x %s=%s\n", curr_node->key, curr_node->value);
+		list_node = list_node->next;
 	}
-	return (TRUE);
+	return (EXIT_SUCCESS);
+}
+
+void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value)
+{
+	t_env_node	*new_node;
+
+	new_node = malloc(sizeof(t_env_node));
+	new_node->key = key;
+	new_node->value = value;
+	ft_lstadd_back(&env_list->head_node, ft_lstnew(new_node));
+}
+
+void	save_export(t_env_list *env_list, char **kv_pair)
+{
+	char		*key;
+	char		*value;
+	t_list		*list_node;
+	t_env_node	*curr_node;
+
+	list_node = env_list->head_node;
+	key = ft_strdup(kv_pair[KEY]);
+	if (kv_pair[VALUE] == NULL)
+		value = ft_strdup("");
+	else
+		value = ft_strdup(kv_pair[VALUE]);
+	while (list_node != NULL)
+	{
+		curr_node = list_node->content;
+		if (ft_strcmp(curr_node->key, kv_pair[KEY]) == 0)
+		{
+			free(curr_node->key);
+			free(curr_node->value);
+			curr_node->key = key;
+			curr_node->value = value;
+			return ;
+		}
+		list_node = list_node->next;
+	}
+	ft_lstadd_env_node(env_list, key, value);
 }
 
 int	ft_export(char **argv, t_env_list *env_list)
@@ -37,22 +77,19 @@ int	ft_export(char **argv, t_env_list *env_list)
 	int		idx;
 	char	**kv_pair;
 
+	if (argv[1] == NULL)
+		return (print_export_env_list(env_list));
 	idx = 1;
 	kv_pair = NULL;
-	(void)env_list;
 	while (argv[idx] != NULL)
 	{
 		kv_pair = ft_split(argv[idx], '=');
-		if (is_option_included(kv_pair[0]) == TRUE)
-		{
-			printf("option\n");
+		if (is_option_included(kv_pair[KEY]) == TRUE)
 			return (print_error(SYNTAX_ERROR, NULL));
-		}
-		if (is_valid_variable_name(kv_pair[0]) == FALSE)
-		{
-			printf("valid\n");
+		if (is_valid_variable_name(kv_pair[KEY]) == FALSE)
 			return (print_error(SYNTAX_ERROR, NULL));
-		}
+		save_export(env_list, kv_pair);
+		free_all(kv_pair);
 		idx += 1;
 	}
 	return (EXIT_SUCCESS);
