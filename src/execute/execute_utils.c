@@ -1,6 +1,6 @@
 #include "execute.h"
 
-void	print_error(char *msg, char *arg)
+int	print_error(char *msg, char *arg)
 {
 	char	*error_msg;
 
@@ -8,6 +8,7 @@ void	print_error(char *msg, char *arg)
 	ft_putstr_fd(error_msg, STDERR_FILENO);
 	ft_putstr_fd("\n", STDERR_FILENO);
 	free(error_msg);
+	return (EXIT_FAILURE);
 }
 
 t_bool	is_redirection(t_token_node *curr_token)
