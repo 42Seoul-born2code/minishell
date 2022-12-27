@@ -10,6 +10,8 @@ t_bool	is_valid_option(char *str)
 		return (FALSE);
 	if (str[0] != '-')
 		return (FALSE);
+	if (str[1] == '\0')
+		return (FALSE);
 	idx = 1;
 	while (str[idx] != '\0')
 	{
@@ -20,41 +22,63 @@ t_bool	is_valid_option(char *str)
 	return (TRUE);
 }
 
-void	ft_echo(char **argv)
+char	*save_result(char **argv, int idx, char *prev_word)
+{
+	char	*buffer;
+	char	*result;
+
+	buffer = NULL;
+	result = NULL;
+	buffer = ft_strdup(prev_word);
+	if (prev_word != NULL)
+		free(prev_word);
+	result = ft_strjoin(buffer, argv[idx]);
+	free(buffer);
+	if (argv[idx + 1] != NULL)
+	{
+		buffer = ft_strdup(result);
+		free(result);
+		result = ft_strjoin(buffer, " ");
+		free(buffer);
+	}
+	return (result);
+}
+
+char	*merge_argv(char **argv, \
+					t_bool is_first_option_valid, t_bool *is_option_on)
 {
 	int		idx;
-	char	*buffer;
+	char	*result;
+	t_bool	is_option_over;
+
+	idx = 1;
+	result = NULL;
+	is_option_over = FALSE;
+	while (argv[idx] != NULL)
+	{
+		if (is_first_option_valid == TRUE && \
+		is_valid_option(argv[idx]) == TRUE && is_option_over == FALSE)
+		{
+			*is_option_on = TRUE;
+			idx += 1;
+			continue ;
+		}
+		is_option_over = TRUE;
+		result = save_result(argv, idx, result);
+		idx += 1;
+	}
+	return (result);
+}
+
+void	ft_echo(char **argv)
+{
 	char	*result;
 	t_bool	is_option_on;
 	t_bool	is_first_option_valid;
 
-	idx = 1;
-	buffer = NULL;
-	result = NULL;
 	is_option_on = FALSE;
-	is_first_option_valid = is_valid_option(argv[idx]);
-	while (argv[idx] != NULL)
-	{
-		if (is_first_option_valid == TRUE && is_valid_option(argv[idx]) == TRUE)
-		{
-			is_option_on = TRUE;
-			idx += 1;
-		}
-		else
-		{
-			buffer = ft_strdup(result);
-			if (result != NULL)
-				free(result);
-			result = ft_strjoin(buffer, argv[idx]);
-			if (argv[idx + 1] != NULL)
-			{
-				buffer = ft_strdup(result);
-				free(result);
-				result = ft_strjoin(buffer, " ");
-			}
-			idx += 1;
-		}
-	}
+	is_first_option_valid = is_valid_option(argv[1]);
+	result = merge_argv(argv, is_first_option_valid, &is_option_on);
 	if (result == NULL)
 		printf("\n");
 	else
@@ -63,11 +87,30 @@ void	ft_echo(char **argv)
 		if (is_option_on == FALSE)
 			printf("\n");
 	}
+	free(result);
 }
 
 /*
 
 	TEST CASES
+
+	echo
+	>
+
+	echo -
+	> -
+
+	echo -n
+	>
+
+	echo -nnnn
+	>
+
+	echo -nnnn -n
+	>
+	
+	echo -nnnn -n hello -n
+	> hello -n$
 
 	echo -n hello
 	> hello$
