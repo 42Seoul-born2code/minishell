@@ -33,7 +33,7 @@ void	execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *e
 	}
 	else if (ft_strcmp(cmd, "env") == 0)
 	{
-		// ft_env(argv);
+		ft_env(argv, env_list);
 		return ;
 	}
 	else if (ft_strcmp(cmd, "exit") == 0)
