@@ -32,7 +32,7 @@ void	free_list_nodes(t_token *lst)
 	lst->head_node = NULL;
 }
 
-void	execute_minishell(t_env_list *env)
+void	execute_minishell(t_env_list *env_list)
 {
 	char	*line;
 	t_token	*token_list;
@@ -52,7 +52,7 @@ void	execute_minishell(t_env_list *env)
 			expansion(token_list);
 			quote_removal(token_list);
 			// print_token_word(token_list);
-			execute_command(token_list, env);
+			execute_command(token_list, env_list);
 			free_list_nodes(token_list);
 			add_history(line);
 		}

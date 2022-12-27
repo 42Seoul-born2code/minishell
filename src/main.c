@@ -11,13 +11,13 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_env_list	curr_env;
+	t_env_list	*env_list;
 
+	(void)argv;
 	if (argc != 1)
 		return (EXIT_FAILURE);
-	(void)argv;
-	save_envp_in_list(envp, &curr_env);
-	execute_minishell(&curr_env);
+	env_list = init_env_list(envp);
+	execute_minishell(env_list);
 	// system("leaks minishell");
 	return (0);
 }
