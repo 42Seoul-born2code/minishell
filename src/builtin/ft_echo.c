@@ -78,7 +78,10 @@ int	ft_echo(char **argv)
 	is_first_option_valid = is_valid_option(argv[1]);
 	result = merge_argv(argv, is_first_option_valid, &is_option_on);
 	if (result == NULL)
-		printf("\n");
+	{
+		if (is_option_on == FALSE)
+			printf("\n");
+	}
 	else
 	{
 		printf("%s", result);
