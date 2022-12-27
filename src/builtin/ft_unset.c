@@ -1,10 +1,11 @@
 #include "builtin.h"
+#include "execute.h"
 /*
     Invalid env_name -> exit_code = EXIT_FAILURE
     Invalid option -> exit_code = 2
 */
 
-static void remove_env(t_list *target, t_env_list *env_list)
+static void remove_env(t_list *target, t_env_list **env_list)
 {
     t_list  *prev_node;
     t_list  *curr_node;
@@ -12,14 +13,10 @@ static void remove_env(t_list *target, t_env_list *env_list)
     t_env_node  *target_env_node;
 
     prev_node = NULL;
-    curr_node = env_list->head_node;
+    curr_node = (*env_list)->head_node;
     next_node = NULL;
-    // 1. 환경변수가 첫번째에 잡혔을 경우
-    // head_node 를 target->next 로 이어주기
     if (curr_node == target)
-        env_list->head_node = target->next;
-    // 2. 중간에 있을 때 + 마지막일 때
-    // target->prev 랑 target->next 랑 이어주기
+        (*env_list)->head_node = target->next;
     else
     {
         while (curr_node != NULL)
@@ -55,60 +52,32 @@ static t_list *get_env(char *key, t_env_list *env_list)
     return (NULL);
 }
 
-static t_bool is_valid_variable_name(char *str)
-{
-    int idx;
-
-    if (ft_isdigit(str[0]) == TRUE)
-        return (FALSE);
-    idx = 0;
-    while (str[idx] != '\0')
-    {
-        if (ft_isalnum(str[idx]) == TRUE || str[idx] == '_')
-            idx += 1;
-        else
-            return (FALSE);
-    }
-    return (TRUE);
-}
-
 int ft_unset(char **argv, t_env_list *env_list)
 {
-    int exit_code;
     t_list *target;
 
-    exit_code = EXIT_SUCCESS;
     // argv 두번째 값이 널이면 그냥 리턴 (옵션 존재 안할때)
     if (!*(argv + 1))
-        return (exit_code);
+        return (EXIT_SUCCESS);
     argv++;
     while (*argv)
     {
         // 옵션이 있는 경우 에러
         if (check_option(*argv) == EXIT_FAILURE)
-        {
-            exit_code = EXIT_FAILURE;
-            printf("%s\n", SYNTAX_ERROR);
-        }
+            return (print_error(SYNTAX_ERROR, NULL));
         // argv가 = 인경우 에러처리
         else if (ft_strchr(*argv, '='))
-        {
-            exit_code = EXIT_FAILURE;
-            printf("%s\n", SYNTAX_ERROR);
-        }
+            return (print_error(SYNTAX_ERROR, NULL));
         // 유효하지 않은 환경변수 key는 에러처리
         else if (is_valid_variable_name(*argv) == FALSE)
-        {
-            exit_code = EXIT_FAILURE;
-            printf("%s\n", SYNTAX_ERROR);
-        }
+            return (print_error(SYNTAX_ERROR, NULL));
         else
         {
             target = get_env(*argv, env_list);
             if (target != NULL)
-                remove_env(target, env_list);
+                remove_env(target, &env_list);
         }
         argv++;
     }
-    return (exit_code);
+    return (EXIT_SUCCESS);
 }
