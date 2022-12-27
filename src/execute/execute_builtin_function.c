@@ -22,7 +22,7 @@ int	execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *en
 	}
 	else if (ft_strcmp(cmd, "unset") == 0)
 	{
-		// ft_unset(argv);
+		ft_unset(argv, env_list);
 		return (EXIT_SUCCESS);
 	}
 	else if (ft_strcmp(cmd, "env") == 0)

@@ -47,6 +47,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, e_comma
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	(void)file;
 	printf("BUILTIN FUCNTION\n");
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)

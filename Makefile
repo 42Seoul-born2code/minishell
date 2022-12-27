@@ -8,6 +8,7 @@ SRC_BUILTIN_DIR				:=	builtin/
 SRC_BUILTIN					:=	ft_echo.c						\
 								ft_pwd.c						\
 								ft_env.c						\
+								ft_unset.c						\
 								check_option.c
 
 SRC_EXECUTE_DIR				:=	execute/

@@ -25,4 +25,7 @@ int	ft_pwd(char **argv);
 // ft_env.c
 int	ft_env(char **argv, t_env_list *env_list);
 
+// ft_unset.c
+int	ft_unset(char **argv, t_env_list *env_list);
+
 #endif
