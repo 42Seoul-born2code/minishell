@@ -11,20 +11,22 @@
 */
 char	**get_envp_in_list(t_env_list *curr_env)
 {
-	int		i;
-	int		list_size;
-	char	**envp;
-	t_list	*curr_node;
+	int			idx;
+	int			list_size;
+	char		**envp;
+	t_list		*list_node;
+	t_env_node	*curr_node;
 
-	i = 0;
-	curr_node = curr_env->head_node;
-	list_size = ft_lstsize(curr_node);
+	idx = 0;
+	list_node = curr_env->head_node;
+	list_size = ft_lstsize(list_node);
 	envp = malloc(sizeof(char *) * (list_size + 1));
-	while (curr_node != NULL)
+	while (list_node != NULL)
 	{
-		envp[i] = ft_strdup(((t_env_node *)curr_node->content)->line);
-		i += 1;
-		curr_node = curr_node->next;
+		curr_node = list_node->content;
+		envp[idx] = ft_strjoin(curr_node->key, curr_node->value);
+		idx += 1;
+		list_node = list_node->next;
 	}
 	return (envp);
 }
@@ -51,7 +53,6 @@ void	save_envp_in_list(char **envp, t_env_list *curr_env)
 	{
 		kv_pair = ft_split(envp[i], '=');
 		env_node = malloc(sizeof(t_env_node));
-		env_node->line = ft_strdup(envp[i]);
 		env_node->key = kv_pair[0];
 		env_node->value = kv_pair[1];
 		ft_lstadd_back(&curr_env->head_node, ft_lstnew(env_node));
