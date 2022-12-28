@@ -16,7 +16,6 @@ char	**get_envp_in_list(t_env_list *env_list)
 	char		*buffer;
 	char		**envp;
 	t_list		*list_node;
-	t_env_node	*curr_node;
 
 	idx = 0;
 	list_node = env_list->head_node;
@@ -25,9 +24,9 @@ char	**get_envp_in_list(t_env_list *env_list)
 	envp = malloc(sizeof(char *) * (list_size + 1));
 	while (list_node != NULL)
 	{
-		curr_node = list_node->content;
-		buffer = ft_strjoin(curr_node->key, "=");
-		envp[idx] = ft_strjoin(buffer, curr_node->value);
+		buffer = ft_strjoin(((t_env_node *)list_node->content)->key, "=");
+		envp[idx] = ft_strjoin(buffer, \
+								((t_env_node *)list_node->content)->value);
 		free(buffer);
 		idx += 1;
 		list_node = list_node->next;
