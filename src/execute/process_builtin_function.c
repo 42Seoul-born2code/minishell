@@ -38,7 +38,7 @@ t_bool	is_command_builtin_function(t_token *token_list)
 	return (FALSE);
 }
 
-void	process_builtin_function(t_token *token_list, t_env_list *env_list, e_command_type type)
+void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_command_type type)
 {
 	int				file;
 	char			*cmd;

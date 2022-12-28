@@ -1,6 +1,6 @@
 #include "execute.h"
 
-static e_command_type	get_execute_type(t_token *token_list)
+static t_command_type	get_execute_type(t_token *token_list)
 {
 	t_list			*curr_node;
 	t_token_node	*curr_token;

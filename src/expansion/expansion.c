@@ -7,7 +7,7 @@ t_bool is_valid_variable_rule(char c)
 	return (FALSE);
 }
 
-static void	save_before_env_variable(char *word, int *idx, t_word_list *word_list, e_quote type)
+static void	save_before_env_variable(char *word, int *idx, t_word_list *word_list, t_quote type)
 {
 	int		start;
 	int		word_length;
@@ -93,7 +93,7 @@ static char *remove_whitespace(char *str)
 	return (result);
 }
 
-static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word_list, e_quote quote_type)
+static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word_list, t_quote quote_type)
 {
 	int		start;
 	int		word_length;

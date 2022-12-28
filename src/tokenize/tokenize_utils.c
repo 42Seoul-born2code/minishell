@@ -31,7 +31,7 @@ t_bool	is_quote(char c)
 	return (FALSE);
 }
 
-e_meta get_meta_type(char *str)
+t_meta get_meta_type(char *str)
 {
 	if (is_whitespace(*str) == TRUE)
 		return (WHITESPACE);

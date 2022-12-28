@@ -32,25 +32,27 @@
 
 # define HEREDOC_FILE			".heredoc.tmp"
 
-typedef enum {
+typedef enum e_command_type{
 	SIMPLE_COMMAND,
 	MULTI_COMMAND,
-}	e_command_type;
+}	t_command_type;
 
-typedef enum {
+typedef enum e_pipe{
 	READ,
-	WRITE,
-}	e_pipe;
+	WRITE
+}	t_pipe;
 
 // execute_minishell.c
 void	execute_minishell(t_env_list *env);
 
 // execute_builtin_function.c
-int		execute_builtin_function(char *cmd, char **argv, char **envp, t_env_list *env_list);
+int		execute_builtin_function(char *cmd, char **argv, char **envp, \
+								t_env_list *env_list);
 
 // process_builtin_function.c
 t_bool	is_command_builtin_function(t_token *token_list);
-void	process_builtin_function(t_token *token_list, t_env_list *env_list, e_command_type type);
+void	process_builtin_function(t_token *token_list, \
+							t_env_list *env_list, t_command_type type);
 
 // execute_command.c
 void	execute_command(t_token *token_list, t_env_list *env_list);
@@ -65,7 +67,7 @@ void	execute_simple_command(t_token *token_list, t_env_list *env_list);
 int		print_error(char *msg, char *arg);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
-int	    count_argv(t_list *curr_node);
+int		count_argv(t_list *curr_node);
 char	*find_cmd_path(char *cmd);
 
 // fork_process.c
@@ -73,7 +75,6 @@ int		process_redirection(t_list *curr_node);
 void	fork_process(t_token *token_list, t_env_list *env_list);
 
 // open_file.c
-int	    open_file(t_list *next_node, int mode);
-
+int		open_file(t_list *next_node, int mode);
 
 #endif

@@ -13,7 +13,7 @@ int	print_error(char *msg, char *arg)
 
 t_bool	is_redirection(t_token_node *curr_token)
 {
-	e_meta	type;
+	t_meta	type;
 
 	type = curr_token->type;
 	if (type == REDIR_APPEND || type == REDIR_HEREDOC || \
