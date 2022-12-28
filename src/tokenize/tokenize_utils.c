@@ -15,7 +15,7 @@ t_bool	is_operator(char *str)
 	{
 		return (TRUE);
 	}	
-	if (*str== '|' || *str == '<' || *str == '>')
+	if (*str == '|' || *str == '<' || *str == '>')
 	{
 		return (TRUE);
 	}
@@ -31,7 +31,7 @@ t_bool	is_quote(char c)
 	return (FALSE);
 }
 
-t_meta get_meta_type(char *str)
+t_meta	get_meta_type(char *str)
 {
 	if (is_whitespace(*str) == TRUE)
 		return (WHITESPACE);

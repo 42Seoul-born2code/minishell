@@ -68,18 +68,21 @@ char	*expand_env_variable(char *input)
 			{
 				if (is_valid_variable_rule(input[idx]) == FALSE)
 					break ;
-				if (is_operator(&input[idx]) == TRUE || is_whitespace(input[idx]) == TRUE)
+				if (is_operator(&input[idx]) == TRUE || \
+					is_whitespace(input[idx]) == TRUE)
 					break ;
 				idx += 1;
 			}
 			if (start == idx)
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
+				ft_lstadd_back(&word_list->head_node, \
+						ft_lstnew(ft_strdup("$")));
 			else
 			{
 				word_length = idx - start;
 				env_word = malloc(sizeof(char) * (word_length + 1));
 				ft_memcpy(env_word, &input[start], word_length);
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+				ft_lstadd_back(&word_list->head_node, \
+						ft_lstnew(ft_strdup(getenv(env_word))));
 				free(env_word);
 			}
 		}
@@ -95,7 +98,7 @@ char	*expand_env_variable(char *input)
 			free(buffer);
 		}
 	}
-	result = merge_word_list(word_list); 
+	result = merge_word_list(word_list);
 	free(word_list);
 	return (result);
 }

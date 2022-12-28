@@ -49,9 +49,9 @@ char	**merge_arguments(t_list *curr_node)
 
 int	count_argv(t_list *curr_node)
 {
-	int	            argv_count;
+	int				argv_count;
 	t_token_node	*curr_token;
-	
+
 	argv_count = 0;
 	while (curr_node != NULL)
 	{
@@ -66,11 +66,11 @@ int	count_argv(t_list *curr_node)
 
 char	*find_cmd_path(char *cmd)
 {
-	int		i;
-	char	*path;
-	char	**path_env;
-	char	*cmd_path;
-	struct stat buf;
+	int			i;
+	char		*path;
+	char		**path_env;
+	char		*cmd_path;
+	struct stat	buf;
 
 	stat(cmd, &buf);
 	if (S_ISDIR(buf.st_mode))

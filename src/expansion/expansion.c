@@ -1,13 +1,14 @@
 #include "expansion.h"
 
-t_bool is_valid_variable_rule(char c)
+t_bool	is_valid_variable_rule(char c)
 {
 	if (ft_isalnum(c) == TRUE || c == '_')
 		return (TRUE);
 	return (FALSE);
 }
 
-static void	save_before_env_variable(char *word, int *idx, t_word_list *word_list, t_quote type)
+static void	save_before_env_variable(\
+char *word, int *idx, t_word_list *word_list, t_quote type)
 {
 	int		start;
 	int		word_length;
@@ -64,13 +65,14 @@ static void	slice_and_save_str(char *str, int start, int idx, char **result)
 		free(prev_word);
 	}
 }
-static char *remove_whitespace(char *str)
+
+static char	*remove_whitespace(char *str)
 {
 	int		idx;
 	int		start;
 	char	*buffer;
 	char	*result;
-	
+
 	if (str == NULL)
 		return (NULL);
 	idx = 0;
@@ -93,7 +95,8 @@ static char *remove_whitespace(char *str)
 	return (result);
 }
 
-static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word_list, t_quote quote_type)
+static void	expand_env_variable(t_token_node *token, int *idx, \
+					t_word_list *word_list, t_quote quote_type)
 {
 	int		start;
 	int		word_length;
@@ -107,7 +110,8 @@ static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word
 	{
 		if (is_valid_variable_rule(token->word[*idx]) == FALSE)
 			break ;
-		if (is_operator(&token->word[*idx]) == TRUE || is_whitespace(token->word[*idx]) == TRUE)
+		if (is_operator(&token->word[*idx]) == TRUE || \
+			is_whitespace(token->word[*idx]) == TRUE)
 			break ;
 		*idx += 1;
 	}
@@ -119,19 +123,23 @@ static void	expand_env_variable(t_token_node *token, int *idx, t_word_list *word
 		env_word = malloc(sizeof(char) * (word_length + 1));
 		ft_memcpy(env_word, &token->word[start], word_length);
 		if (token->type == LIMITER)
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strjoin("$", env_word)));
+			ft_lstadd_back(&word_list->head_node, \
+				ft_lstnew(ft_strjoin("$", env_word)));
 		else if (quote_type == NOT_QUOTED)
 		{
 			not_spaced_env_word = remove_whitespace(getenv(env_word));
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(add_double_quotes(not_spaced_env_word)));
+			ft_lstadd_back(&word_list->head_node, \
+				ft_lstnew(add_double_quotes(not_spaced_env_word)));
 		}
 		else if (quote_type == QUOTED)
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(getenv(env_word))));
+			ft_lstadd_back(&word_list->head_node, \
+					ft_lstnew(ft_strdup(getenv(env_word))));
 		free(env_word);
 	}
 }
 
-static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list)
+static void	save_single_quoted_word(char *word, int *idx, \
+									t_word_list *word_list)
 {
 	int		start;
 	int		word_length;
@@ -157,7 +165,6 @@ static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list
 }
 
 // 환경변수를 확장하기 위해 연결 리스트로 저장했던 문자열들을 하나로 합치는 함수
-// replaced_word 에 char ** 를 사용한 이유는 char * 로 값을 바꾸면 expansion 함수에 변경 내용이 반영되지 않음
 void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 {	
 	char	*previous_word;
@@ -202,47 +209,55 @@ void	expansion(t_token *token_list)
 			{
 				save_single_quoted_word(curr_token->word, &idx, word_list);
 			}
-
 			// 2. 큰 따옴표 안에 있는 문자열
 			else if (curr_token->word[idx] == '\"')
 			{
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+				ft_lstadd_back(
+					&word_list->head_node, ft_lstnew(ft_strdup("\"")));
 				idx += 1;
 				// 치환이 이루어지는 과정
-				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"')
+				while (curr_token->word[idx] != '\0' \
+					&& curr_token->word[idx] != '\"')
 				{
 					// $ 만난 경우
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token, &idx, word_list, QUOTED);
+						expand_env_variable(curr_token, &idx, \
+											word_list, QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
 					{
-						save_before_env_variable(curr_token->word, &idx, word_list, QUOTED);
+						save_before_env_variable(curr_token->word, &idx, \
+											word_list, QUOTED);
 					}
 				}
 				if (curr_token->word[idx] == '\"')
 				{
-					ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
+					ft_lstadd_back(
+						&word_list->head_node, ft_lstnew(ft_strdup("\"")));
 					idx += 1;
 				}
 			}
 			// 3. 따옴표에 둘러 쌓이지 않은 문자열
 			else
 			{
-				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"' && curr_token->word[idx] != '\'')
+				while (curr_token->word[idx] != '\0' && \
+					curr_token->word[idx] != '\"' && \
+						curr_token->word[idx] != '\'')
 				{
 					// $ 만난 경우
 					// 띄어쓰기 제거, 살릴 quote는 살리기
 					if (curr_token->word[idx] == '$')
 					{
-						expand_env_variable(curr_token, &idx, word_list, NOT_QUOTED);
+						expand_env_variable(curr_token, &idx, \
+											word_list, NOT_QUOTED);
 					}
 					// $ 만나기 전의 경우
 					else
 					{
-						save_before_env_variable(curr_token->word, &idx, word_list, NOT_QUOTED);
+						save_before_env_variable(curr_token->word, &idx, \
+												word_list, NOT_QUOTED);
 					}
 				}
 			}

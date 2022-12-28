@@ -48,7 +48,8 @@ void	syntax_analysis(t_token *token_list)
 				printf("파이프 뒤에 파이프네유? FAIL 드립니다.\n");
 			}
 			// 3. redirection 바로 뒤에 operator 가 왔는가?
-			else if (curr_token->type != PIPE && is_next_token_operator(curr_node) == TRUE)
+			else if (curr_token->type != PIPE && \
+					is_next_token_operator(curr_node) == TRUE)
 			{
 				printf("redirection 뒤에 operator 가 왔네유? FAIL 드립니다.\n");
 			}

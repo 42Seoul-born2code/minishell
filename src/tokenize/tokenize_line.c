@@ -1,27 +1,29 @@
 #include "tokenize.h"
 
-static void	save_token(t_token *token_list, t_token_node *node, char *line, int length)
+static void	save_token(t_token *token_list, t_token_node *node, \
+						char *line, int length)
 {
 	char	*word;
 
 	word = malloc(sizeof(char) * (length + 1));
 	ft_memcpy(word, line, length);
 	node->word = word;
-	ft_lstadd_back(&token_list->head_node, ft_lstnew(node));	
+	ft_lstadd_back(&token_list->head_node, ft_lstnew(node));
 }
 
-static void	get_operator_type(t_token_node *node, char *line, int *i, int *length)
+static void	get_operator_type(t_token_node *node, char *line, \
+								int *idx, int *length)
 {
-	node->type = get_meta_type(&line[*i]);
+	node->type = get_meta_type(&line[*idx]);
 	if (node->type == REDIR_HEREDOC || node->type == REDIR_APPEND)
 	{
 		*length = 2;
-		*i += 2;
+		*idx += 2;
 	}
 	else
 	{
 		*length = 1;
-		*i += 1;
+		*idx += 1;
 	}
 }
 
@@ -96,7 +98,6 @@ void	tokenize_line(char *line, t_token *token_list)
 		{
 			get_operator_type(token_node, line, &i, &word_length);
 		}
-		
 		// CASE3. 문자열을 만났을 때
 		else
 		{

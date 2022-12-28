@@ -5,7 +5,7 @@
 	Invalid option -> exit_code = 2
 */
 
-static void remove_env(t_list *target, t_env_list *env_list)
+static void	remove_env(t_list *target, t_env_list *env_list)
 {
 	t_list		*prev_node;
 	t_list		*curr_node;
@@ -32,10 +32,10 @@ static void remove_env(t_list *target, t_env_list *env_list)
 	free(target);
 }
 
-static t_list *get_env(char *key, t_env_list *env_list)
+static t_list	*get_env(char *key, t_env_list *env_list)
 {
 	t_list		*list_node;
-	t_env_node *env_node;
+	t_env_node	*env_node;
 
 	list_node = env_list->head_node;
 	while (list_node)
@@ -48,9 +48,9 @@ static t_list *get_env(char *key, t_env_list *env_list)
 	return (NULL);
 }
 
-int ft_unset(char **argv, t_env_list *env_list)
+int	ft_unset(char **argv, t_env_list *env_list)
 {
-	t_list *target;
+	t_list	*target;
 
 	// argv 두번째 값이 널이면 그냥 리턴 (옵션 존재 안할때)
 	if (!*(argv + 1))
