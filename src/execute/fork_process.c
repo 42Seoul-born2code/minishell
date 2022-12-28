@@ -1,4 +1,5 @@
 #include "execute.h"
+#include "utils.h"
 
 void	throw_error(char *msg)
 {

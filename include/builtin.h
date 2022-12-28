@@ -12,6 +12,7 @@
 # include "utils.h"
 
 # define SYNTAX_ERROR	"Error: Syntax Error"
+# define NOT_EXISTED	"Error: No such file or directory"
 
 typedef enum e_kv_pair{
 	KEY,
@@ -23,6 +24,9 @@ t_bool	is_valid_variable_name(char *str);
 
 // check_option.c
 int		check_option(char *argv);
+
+// ft_cd.c
+int		ft_cd(char **argv, t_env_list *env_list);
 
 // ft_echo.c
 int		ft_echo(char **argv);

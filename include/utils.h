@@ -12,7 +12,14 @@ typedef struct s_env_node {
 	char	*value;
 }	t_env_node;
 
+// env_utils.c
+t_bool		is_env_existed(t_env_list *env_list, char *key);
+char		*get_env_value(t_env_list *env_list, char *key);
+void		replace_env_value(t_env_list *env_list, char *key, char *new_value);
 char		**get_envp_in_list(t_env_list *env_list);
 void		save_envp_in_env_list(char **envp, t_env_list *env_list);
+
+// error.c
+int		print_error(char *msg, char *arg);
 
 #endif
