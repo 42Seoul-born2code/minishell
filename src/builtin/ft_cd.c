@@ -1,17 +1,21 @@
 #include "builtin.h"
 #include <dirent.h>
 
-int	move_to_path(char *path, char *curr_path, t_env_list *env_list)
+int	move_to_env_path(char *env_path, t_env_list *env_list)
 {
+	char	*curr_path;
 	char	*target_path;
 
-	if (is_env_existed(env_list, path) == FALSE)
+	if (is_env_existed(env_list, env_path) == FALSE)
 		return (EXIT_FAILURE);
-	target_path = get_env_value(env_list, path);
+	target_path = get_env_value(env_list, env_path);
 	if (chdir(target_path) == ERROR)
 		return (EXIT_FAILURE);
+	curr_path = getcwd(NULL, BUFSIZ);
 	replace_env_value(env_list, "OLDPWD", curr_path);
 	replace_env_value(env_list, "PWD", target_path);
+	free(curr_path);
+	free(target_path);
 	return (EXIT_SUCCESS);
 }
 
@@ -161,21 +165,17 @@ void	change_directories(char *path, t_env_list *env_list)
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
-	char	*curr_path;
-
-	curr_path = getcwd(NULL, BUFSIZ);
 	if (argv[1] == NULL)
 	{
 		if (is_env_existed(env_list, "HOME") == TRUE)
-			return (move_to_path("HOME", curr_path, env_list));
+			return (move_to_env_path("HOME", env_list));
 		return (print_error(HOME_IS_UNSET, NULL));
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
-		return (move_to_path("OLDPWD", curr_path, env_list));
+		return (move_to_env_path("OLDPWD", env_list));
 	if (is_valid_path(argv[1]) == FALSE)
 		return (print_error(NOT_EXISTED, argv[1]));
 	change_directories(argv[1], env_list);
-	free(curr_path);
 	return (EXIT_SUCCESS);
 }
 
@@ -230,6 +230,13 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	> Users 폴더로 이동
 
 	cd .././42born2code
+
+	cd ../
+	> 상위 디렉토리 이동
+	cd -
+	> 이전 디렉토리 이동
+	cd -
+	> 다시 한번 이전 디렉토리 이동 (이 부분이 안됨)
 
 */
 
