@@ -8,14 +8,17 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 
 	if (is_env_existed(env_list, env_path) == FALSE)
 		return (EXIT_FAILURE);
+	curr_path = getcwd(NULL, BUFSIZ);
 	target_path = get_env_value(env_list, env_path);
 	if (chdir(target_path) == ERROR)
+	{
+		free(curr_path);
+		free(target_path);
 		return (EXIT_FAILURE);
-	curr_path = getcwd(NULL, BUFSIZ);
+	}
 	replace_env_value(env_list, "OLDPWD", curr_path);
 	replace_env_value(env_list, "PWD", target_path);
 	free(curr_path);
-	free(target_path);
 	return (EXIT_SUCCESS);
 }
 
