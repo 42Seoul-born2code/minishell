@@ -97,19 +97,19 @@ fclean : clean
 re : fclean all
 
 debugh : fclean
-	make DEBUG_MODE=1 HOME=1 all
+	make -j4 DEBUG_MODE=1 HOME=1 all
 
 dsanih : fclean
-	make D_SANI=1 HOME=1 all
+	make -j4 D_SANI=1 HOME=1 all
 
 debug : fclean
-	make DEBUG_MODE=1 all
+	make -j4 DEBUG_MODE=1 all
 
 dsani : fclean
-	make D_SANI=1 all
+	make -j4 D_SANI=1 all
 
 $(NAME) : $(OBJS)
-	$(MAKE) -C $(LIB_DIR)
+	$(MAKE) -j4 -C $(LIB_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(READLINE_LINKING) $(LIB_FLAGS)
 
 %.o : %.c
