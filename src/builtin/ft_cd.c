@@ -1,24 +1,25 @@
 #include "builtin.h"
 #include <dirent.h>
 
-t_bool	is_valid_path(char *path)
+/*
+	실제로 디렉토리를 이동하기 전에, 미리 모든 경로가 유효한지 탐색
+*/
+t_bool	is_valid_path(char **paths)
 {
 	int		idx;
 	char	*curr_path;
-	char	*parent_dir;
-	char	**paths;
 
 	idx = 0;
 	curr_path = NULL;
-	paths = ft_split(path, '/');
 	while (paths[idx] != NULL)
 	{
 		if (ft_strcmp(paths[idx], ".") == 0)
 			idx += 1;
 		else if (ft_strcmp(paths[idx], "..") == 0)
 		{
-			parent_dir = get_parent_directory();
-			curr_path = parent_dir;
+			if (curr_path != NULL)
+				free(curr_path);
+			curr_path = get_parent_directory();
 			idx += 1;
 		}
 		else if (is_path_existed(&curr_path, paths, &idx) == FALSE)
@@ -74,6 +75,8 @@ void	change_directories(char *path, t_env_list *env_list)
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
+	char	**paths;
+
 	if (argv[1] == NULL)
 	{
 		if (is_env_existed(env_list, "HOME") == TRUE)
@@ -82,7 +85,8 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
-	if (is_valid_path(argv[1]) == FALSE)
+	paths = ft_split(argv[1], '/');
+	if (is_valid_path(paths) == FALSE)
 		return (print_error(NOT_EXISTED, argv[1]));
 	change_directories(argv[1], env_list);
 	return (EXIT_SUCCESS);
