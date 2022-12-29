@@ -72,3 +72,42 @@ char	*join_path(char **paths, int *idx)
 	}
 	return (joined_path);
 }
+
+static t_bool	is_dir_openable(char *path)
+{
+	DIR		*dir;
+
+	dir = opendir(path);
+	if (dir == NULL)
+		return (FALSE);
+	closedir(dir);
+	return (TRUE);
+}
+
+/*
+	현재 있는 디렉토리를 먼저 찾아보고 없으면 절대 경로로 찾음.
+*/
+t_bool	is_path_existed(char **curr_path, char **paths, int *idx)
+{
+	char	*path;
+	char	*abs_path;
+
+	if (*curr_path == NULL)
+		*curr_path = getcwd(NULL, BUFSIZ);
+	path = join_path(paths, idx);
+	if (is_dir_openable(path) == TRUE)
+	{
+		free(*curr_path);
+		*curr_path = path;
+		return (TRUE);
+	}
+	abs_path = ft_strjoin(*curr_path, path);
+	if (is_dir_openable(abs_path) == TRUE)
+	{
+		free(path);
+		free(*curr_path);
+		*curr_path = abs_path;
+		return (TRUE);
+	}
+	return (FALSE);
+}

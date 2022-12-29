@@ -1,36 +1,6 @@
 #include "builtin.h"
 #include <dirent.h>
 
-t_bool	move_to_directory(char **curr_path, char **paths, int *idx)
-{
-	DIR		*dir;
-	DIR		*abs_dir;
-	char	*joined_path;
-	char	*abs_path;
-
-	if (*curr_path == NULL)
-		*curr_path = getcwd(NULL, BUFSIZ);
-	abs_path = join_path(paths, idx);
-	abs_dir = opendir(abs_path);
-	if (abs_dir != NULL)
-	{
-		closedir(abs_dir);
-		free(*curr_path);
-		*curr_path = abs_path;
-	}
-	else
-	{
-		joined_path = ft_strjoin(*curr_path, abs_path);
-		dir = opendir(joined_path);
-		if (dir == NULL)
-			return (FALSE);
-		closedir(dir);
-		free(*curr_path);
-		*curr_path = joined_path;
-	}
-	return (TRUE);
-}
-
 t_bool	is_valid_path(char *path)
 {
 	int		idx;
@@ -51,7 +21,7 @@ t_bool	is_valid_path(char *path)
 			curr_path = parent_dir;
 			idx += 1;
 		}
-		else if (move_to_directory(&curr_path, paths, &idx) == FALSE)
+		else if (is_path_existed(&curr_path, paths, &idx) == FALSE)
 		{
 			free(curr_path);
 			free_all(paths);
