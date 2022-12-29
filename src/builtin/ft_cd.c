@@ -31,44 +31,49 @@ t_bool	is_valid_path(char **paths)
 	return (TRUE);
 }
 
-void	change_directories(char *path, t_env_list *env_list)
+static char	*change_current_directory(char **paths, int *idx)
 {
-	int		idx;
 	char	*curr_path;
 	char	*target_path;
 	char	*buffer;
-	char	**paths;
+
+	if (ft_strcmp(paths[*idx], "..") == 0)
+	{
+		target_path = get_parent_directory();
+		chdir(target_path);
+		*idx += 1;
+	}
+	else
+	{
+		curr_path = getcwd(NULL, BUFSIZ);
+		buffer = join_path(paths, idx);
+		target_path = ft_strjoin(curr_path, buffer);
+		if (chdir(target_path) == ERROR)
+			chdir(buffer);
+		free(buffer);
+		free(curr_path);
+	}
+	return (target_path);
+}
+
+void	change_directories(char **paths, t_env_list *env_list)
+{
+	int		idx;
+	char	*target_path;
 
 	idx = 0;
 	replace_env_value(env_list, "OLDPWD", getcwd(NULL, BUFSIZ));
-	paths = ft_split(path, '/');
 	while (paths[idx] != NULL)
 	{
 		if (ft_strcmp(paths[idx], ".") == 0)
-		{
 			idx += 1;
-			continue ;
-		}
-		if (ft_strcmp(paths[idx], "..") == 0)
-		{
-			target_path = get_parent_directory();
-			chdir(target_path);
-			idx += 1;
-		}
 		else
 		{
-			curr_path = getcwd(NULL, BUFSIZ);
-			buffer = join_path(paths, &idx);
-			target_path = ft_strjoin(curr_path, buffer);
-			if (chdir(target_path) == ERROR)
-				chdir(buffer);
-			free(buffer);
-			free(curr_path);
+			target_path = change_current_directory(paths, &idx);
+			replace_env_value(env_list, "PWD", target_path);
+			free(target_path);
 		}
-		replace_env_value(env_list, "PWD", target_path);
-		free(target_path);
 	}
-	free_all(paths);
 }
 
 int	ft_cd(char **argv, t_env_list *env_list)
