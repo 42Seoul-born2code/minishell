@@ -1,6 +1,11 @@
 #include "builtin.h"
 #include <dirent.h>
 
+/*
+	매개변수로 전달된 환경변수의 경로로 현재 위치를 변경
+	- env_path: 이동할 환경변수
+	- env_list: 환경변수 리스트
+*/
 int	move_to_env_path(char *env_path, t_env_list *env_list)
 {
 	char	*curr_path;
