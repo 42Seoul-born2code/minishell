@@ -25,11 +25,9 @@ t_bool	is_valid_path(char **paths)
 		else if (is_path_existed(&curr_path, paths, &idx) == FALSE)
 		{
 			free(curr_path);
-			free_all(paths);
 			return (FALSE);
 		}
 	}
-	free_all(paths);
 	return (TRUE);
 }
 
@@ -87,8 +85,12 @@ int	ft_cd(char **argv, t_env_list *env_list)
 		return (move_to_env_path("OLDPWD", env_list));
 	paths = ft_split(argv[1], '/');
 	if (is_valid_path(paths) == FALSE)
+	{
+		free_all(paths);
 		return (print_error(NOT_EXISTED, argv[1]));
-	change_directories(argv[1], env_list);
+	}
+	change_directories(paths, env_list);
+	free_all(paths);
 	return (EXIT_SUCCESS);
 }
 
