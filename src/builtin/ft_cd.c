@@ -127,27 +127,6 @@ t_bool	is_valid_path(char *path)
 		{
 			free_all(paths);
 			return (FALSE);
-			// if (curr_path == NULL)
-			// 	curr_path = getcwd(NULL, BUFSIZ);
-			// buffer = join_path(paths, &idx);
-			// joined_path = ft_strjoin(curr_path, buffer);
-			// dir = opendir(joined_path);
-			// abs_dir = opendir(buffer);
-			// free(curr_path);
-			// if (dir == NULL && abs_dir == NULL)
-			// 	return (FALSE);
-			// if (dir != NULL)
-			// {
-			// 	closedir(dir);
-			// 	free(buffer);
-			// 	curr_path = joined_path;
-			// }
-			// else
-			// {
-			// 	closedir(abs_dir);
-			// 	free(joined_path);
-			// 	curr_path = buffer;
-			// }
 		}
 	}
 	free_all(paths);
@@ -163,8 +142,7 @@ void	change_directories(char *path, t_env_list *env_list)
 	char	**paths;
 
 	idx = 0;
-	curr_path = getcwd(NULL, BUFSIZ);
-	replace_env_value(env_list, "OLDPWD", curr_path);
+	replace_env_value(env_list, "OLDPWD", getcwd(NULL, BUFSIZ));
 	paths = ft_split(path, '/');
 	while (paths[idx] != NULL)
 	{
@@ -173,8 +151,6 @@ void	change_directories(char *path, t_env_list *env_list)
 			idx += 1;
 			continue ;
 		}
-		if (curr_path != NULL)
-			free(curr_path);
 		if (ft_strcmp(paths[idx], "..") == 0)
 		{
 			target_path = get_parent_directory();
@@ -190,7 +166,6 @@ void	change_directories(char *path, t_env_list *env_list)
 				chdir(buffer);
 			free(buffer);
 			free(curr_path);
-			curr_path = NULL;
 		}
 		replace_env_value(env_list, "PWD", target_path);
 		free(target_path);
@@ -271,7 +246,7 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	cd -
 	> 이전 디렉토리 이동
 	cd -
-	> 다시 한번 이전 디렉토리 이동 (이 부분이 안됨)
+	> 다시 한번 이전 디렉토리 이동
 
 	cd ../minishell/src/./../
 
