@@ -27,18 +27,20 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
-char	*get_parent_directory(char *path)
+char	*get_parent_directory(void)
 {
 	size_t	len;
+	char	*curr_path;
 	char	*parent_dir;
 
-	len = ft_strlen(path);
-	while (path[len] != '/')
+	curr_path = getcwd(NULL, BUFSIZ);
+	len = ft_strlen(curr_path);
+	while (curr_path[len] != '/')
 		len -= 1;
-	parent_dir = ft_substr(path, 0, len);
+	parent_dir = ft_substr(curr_path, 0, len);
+	free(curr_path);
 	return (parent_dir);
 }
-
 
 char	*join_path(char **paths, int *idx)
 {
@@ -65,20 +67,45 @@ char	*join_path(char **paths, int *idx)
 	return (joined_path);
 }
 
+t_bool	move_to_directory(char **curr_path, char **paths, int *idx)
+{
+	DIR		*dir;
+	DIR		*abs_dir;
+	char	*joined_path;
+	char	*abs_path;
+
+	if (*curr_path == NULL)
+		*curr_path = getcwd(NULL, BUFSIZ);
+	abs_path = join_path(paths, idx);
+	abs_dir = opendir(abs_path);
+	if (abs_dir != NULL)
+	{
+		closedir(abs_dir);
+		free(*curr_path);
+		*curr_path = abs_path;
+	}
+	else
+	{
+		joined_path = ft_strjoin(*curr_path, abs_path);
+		dir = opendir(joined_path);
+		if (dir == NULL)
+			return (FALSE);
+		closedir(dir);
+		free(*curr_path);
+		*curr_path = joined_path;
+	}
+	return (TRUE);
+}
+
 t_bool	is_valid_path(char *path)
 {
 	int		idx;
 	char	*curr_path;
 	char	*parent_dir;
-	char	*buffer;
-	char	*joined_path;
 	char	**paths;
-	DIR		*dir;
-	DIR		*abs_dir;
 
 	idx = 0;
 	curr_path = NULL;
-	buffer = NULL;
 	paths = ft_split(path, '/');
 	while (paths[idx] != NULL)
 	{
@@ -91,35 +118,36 @@ t_bool	is_valid_path(char *path)
 		{
 			if (curr_path == NULL)
 				curr_path = getcwd(NULL, BUFSIZ);
-			parent_dir = get_parent_directory(curr_path);
+			parent_dir = get_parent_directory();
 			free(curr_path);
 			curr_path = parent_dir;
 			idx += 1;
 		}
-		else
+		else if (move_to_directory(&curr_path, paths, &idx) == FALSE)
 		{
-			// move_to_directory(curr_path, paths, &idx);
-			if (curr_path == NULL)
-				curr_path = getcwd(NULL, BUFSIZ);
-			buffer = join_path(paths, &idx);
-			joined_path = ft_strjoin(curr_path, buffer);
-			dir = opendir(joined_path);
-			abs_dir = opendir(buffer);
-			free(curr_path);
-			if (dir == NULL && abs_dir == NULL)
-				return (FALSE);
-			if (dir != NULL)
-			{
-				closedir(dir);
-				free(buffer);
-				curr_path = joined_path;
-			}
-			else
-			{
-				closedir(abs_dir);
-				free(joined_path);
-				curr_path = buffer;
-			}
+			free_all(paths);
+			return (FALSE);
+			// if (curr_path == NULL)
+			// 	curr_path = getcwd(NULL, BUFSIZ);
+			// buffer = join_path(paths, &idx);
+			// joined_path = ft_strjoin(curr_path, buffer);
+			// dir = opendir(joined_path);
+			// abs_dir = opendir(buffer);
+			// free(curr_path);
+			// if (dir == NULL && abs_dir == NULL)
+			// 	return (FALSE);
+			// if (dir != NULL)
+			// {
+			// 	closedir(dir);
+			// 	free(buffer);
+			// 	curr_path = joined_path;
+			// }
+			// else
+			// {
+			// 	closedir(abs_dir);
+			// 	free(joined_path);
+			// 	curr_path = buffer;
+			// }
 		}
 	}
 	free_all(paths);
@@ -147,25 +175,25 @@ void	change_directories(char *path, t_env_list *env_list)
 		}
 		if (curr_path != NULL)
 			free(curr_path);
-		curr_path = getcwd(NULL, BUFSIZ);
 		if (ft_strcmp(paths[idx], "..") == 0)
 		{
-			target_path = get_parent_directory(curr_path);
+			target_path = get_parent_directory();
 			chdir(target_path);
 			idx += 1;
 		}
 		else
 		{
+			curr_path = getcwd(NULL, BUFSIZ);
 			buffer = join_path(paths, &idx);
 			target_path = ft_strjoin(curr_path, buffer);
 			if (chdir(target_path) == ERROR)
 				chdir(buffer);
 			free(buffer);
+			free(curr_path);
+			curr_path = NULL;
 		}
 		replace_env_value(env_list, "PWD", target_path);
-		free(curr_path);
 		free(target_path);
-		curr_path = NULL;
 	}
 	free_all(paths);
 }
@@ -244,6 +272,8 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	> 이전 디렉토리 이동
 	cd -
 	> 다시 한번 이전 디렉토리 이동 (이 부분이 안됨)
+
+	cd ../minishell/src/./../
 
 */
 

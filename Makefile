@@ -66,8 +66,13 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
-READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
+ifdef HOME
+	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
+	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
+else
+	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
+	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
+endif
 
 ifdef DEBUG_MODE
 	CFLAGS					:=	$(CFLAGS) -g
@@ -90,6 +95,12 @@ fclean : clean
 
 .PHONY : re
 re : fclean all
+
+debugh : fclean
+	make DEBUG_MODE=1 HOME=1 all
+
+dsanih : fclean
+	make D_SANI=1 HOME=1 all
 
 debug : fclean
 	make DEBUG_MODE=1 all
