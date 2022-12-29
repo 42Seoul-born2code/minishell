@@ -7,6 +7,7 @@ INCLUDE						:=	-I./include/
 SRC_BUILTIN_DIR				:=	builtin/
 SRC_BUILTIN					:=	execute_builtin_function.c		\
 								ft_cd.c							\
+								ft_cd_utils.c					\
 								ft_echo.c						\
 								ft_pwd.c						\
 								ft_unset.c						\
