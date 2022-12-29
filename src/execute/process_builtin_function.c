@@ -43,7 +43,6 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	int				file;
 	char			*cmd;
 	char			**cmd_argv;
-	char			**envp;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
@@ -57,7 +56,6 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		{
 			cmd = ft_strdup(curr_token->word);
 			cmd_argv = merge_arguments(curr_node);
-			envp = get_envp_in_list(env_list);
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
