@@ -31,6 +31,9 @@ t_bool	is_valid_path(char **paths)
 	return (TRUE);
 }
 
+/*
+	change_directory 함수의 서브함수
+*/
 static char	*change_current_directory(char **paths, int *idx)
 {
 	char	*curr_path;
@@ -56,6 +59,9 @@ static char	*change_current_directory(char **paths, int *idx)
 	return (target_path);
 }
 
+/*
+	실제로 현재 디렉토리를 이동하는 함수
+*/
 void	change_directories(char **paths, t_env_list *env_list)
 {
 	int		idx;
