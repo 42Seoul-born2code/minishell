@@ -22,34 +22,6 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
-char	*join_path(char **paths, int *idx)
-{
-	int		sub_idx;
-	char	*buffer;
-	char	*slashed_path;
-	char	*joined_path;
-
-	sub_idx = 0;
-	buffer = NULL;
-	joined_path = NULL;
-	while (paths[sub_idx] != NULL)
-	{
-		if (ft_strcmp(paths[sub_idx], ".") == 0 || \
-			ft_strcmp(paths[sub_idx], "..") == 0)
-			break ;
-		buffer = ft_strdup(joined_path);
-		slashed_path = ft_strjoin(buffer, "/");
-		if (joined_path != NULL)
-			free(joined_path);
-		joined_path = ft_strjoin(slashed_path, paths[sub_idx]);
-		free(buffer);
-		free(slashed_path);
-		sub_idx += 1;
-		*idx += 1;
-	}
-	return (joined_path);
-}
-
 char	*get_parent_directory(char *path)
 {
 	size_t	len;
@@ -60,6 +32,32 @@ char	*get_parent_directory(char *path)
 		len -= 1;
 	parent_dir = ft_substr(path, 0, len);
 	return (parent_dir);
+}
+
+
+char	*join_path(char **paths, int *idx)
+{
+	char	*buffer;
+	char	*slashed_path;
+	char	*joined_path;
+
+	buffer = NULL;
+	joined_path = NULL;
+	while (paths[*idx] != NULL)
+	{
+		if (ft_strcmp(paths[*idx], ".") == 0 || \
+			ft_strcmp(paths[*idx], "..") == 0)
+			break ;
+		buffer = ft_strdup(joined_path);
+		slashed_path = ft_strjoin(buffer, "/");
+		if (joined_path != NULL)
+			free(joined_path);
+		joined_path = ft_strjoin(slashed_path, paths[*idx]);
+		free(buffer);
+		free(slashed_path);
+		*idx += 1;
+	}
+	return (joined_path);
 }
 
 t_bool	is_valid_path(char *path)
@@ -95,9 +93,10 @@ t_bool	is_valid_path(char *path)
 		}
 		else
 		{
+			// move_to_directory(curr_path, paths, &idx);
 			if (curr_path == NULL)
 				curr_path = getcwd(NULL, BUFSIZ);
-			buffer = join_path(&paths[idx], &idx);
+			buffer = join_path(paths, &idx);
 			joined_path = ft_strjoin(curr_path, buffer);
 			dir = opendir(joined_path);
 			abs_dir = opendir(buffer);
@@ -152,7 +151,7 @@ void	change_directories(char *path, t_env_list *env_list)
 		}
 		else
 		{
-			buffer = join_path(&paths[idx], &idx);
+			buffer = join_path(paths, &idx);
 			target_path = ft_strjoin(curr_path, buffer);
 			if (chdir(target_path) == ERROR)
 				chdir(buffer);
