@@ -10,6 +10,7 @@ SRC_BUILTIN					:=	ft_echo.c						\
 								ft_unset.c						\
 								ft_env.c						\
 								ft_export.c						\
+								ft_exit.c						\
 								builtin_utils.c					\
 								check_option.c
 
@@ -21,6 +22,7 @@ SRC_EXECUTE					:=	execute_minishell.c				\
 								execute_simple_command.c		\
 								execute_multi_command.c			\
 								execute_utils.c					\
+								execute_utils2.c				\
 								fork_process.c					\
 								open_file.c				
 

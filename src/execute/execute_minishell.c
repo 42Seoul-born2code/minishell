@@ -46,6 +46,8 @@ void	execute_minishell(t_env_list *env_list)
 			break ;
 		if (line[0] != '\0')
 		{
+			if (check_all_whitespace(line) == TRUE)
+				continue;
 			tokenize_line(line, token_list);
 			parsing(token_list);
 			syntax_analysis(token_list);

@@ -29,7 +29,7 @@ int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list)
 	}
 	else if (ft_strcmp(cmd, "exit") == 0)
 	{
-		// ft_exit(argv);
+		ft_exit(argv, env_list);
 		return (EXIT_SUCCESS);
 	}
 	return (EXIT_SUCCESS);
