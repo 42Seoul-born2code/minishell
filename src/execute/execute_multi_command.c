@@ -39,7 +39,7 @@
 // 	else
 // 	{
 // 		close(pipe_fd[WRITE]);
-// 		dup2(pipe_fd[READ], STDIN_FILENO);
+// 		dup2(pipe_fd[READ], STDIN_FILENO);ffff
 // 		close(pipe_fd[READ]);
 // 		waitpid(pid, NULL, WNOHANG);
 // 	}

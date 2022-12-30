@@ -6,8 +6,8 @@ static void	handle_sigint_change(int signum)
 {
 	if (signum != SIGINT)
 		return ;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	exit_code = 1;
+	exit(exit_code);
 }
 
 void	change_heredoc_signal(void)

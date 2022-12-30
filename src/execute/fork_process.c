@@ -112,22 +112,33 @@ static void	get_user_input(char *limiter)
 	int		fd;
 	char	*input;
 	char	*expand_result;
+	pid_t	pid;
 
 	change_heredoc_signal();
-	fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	while (!exit_code)
+	pid = fork();
+	if (pid == CHILD_PROCESS)
 	{
-		ft_putstr_fd("heredoc> ", STDIN_FILENO);
-		input = get_next_line(STDIN_FILENO);
-		if (is_equal_to_limiter(input, limiter))
-			break ;
-		expand_result = expand_env_variable(input);
-		ft_putstr_fd(expand_result, fd);
+		fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		while (TRUE)
+		{
+			ft_putstr_fd("heredoc> ", STDIN_FILENO);
+			input = get_next_line(STDIN_FILENO);
+			if (is_equal_to_limiter(input, limiter))
+				break ;
+			expand_result = expand_env_variable(input);
+			ft_putstr_fd(expand_result, fd);
+		}
+		close(fd);
+		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+		exit(EXIT_SUCCESS);
 	}
-	close(fd);
-	fd = open(HEREDOC_FILE, O_RDONLY, 0644);
-	dup2(fd, STDIN_FILENO);
-	close(fd);
+	else
+	{
+		waitpid(pid, NULL, 0);
+		init_signal();
+	}
 }
 
 int	process_redirection(t_list *curr_node)
@@ -169,8 +180,9 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	pid = fork();
+	cmd_path = NULL;
 	change_signal();
+	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
 		// 자식 프로세스에서 시그널을 받았을 때 처리
@@ -201,6 +213,8 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		if (file != NONE)
 			close(file);
 		// TODO: 멀티 파이프인 경우에는 fork 를 사용해서 빌트인 함수를 실행시켜야 한다.
+		if (cmd_path == NULL)
+			exit(EXIT_SUCCESS);
 		if (execve(cmd_path, cmd_argv, envp) == ERROR)
 		{
 			// TODO: printf 문 삭제
