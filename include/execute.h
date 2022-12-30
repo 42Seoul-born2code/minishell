@@ -67,9 +67,6 @@ char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
 char	*find_cmd_path(char *cmd);
 
-// execute_utils2.c
-t_bool	check_all_whitespace(char *line);
-
 // fork_process.c
 int		process_redirection(t_list *curr_node);
 void	fork_process(t_token *token_list, t_env_list *env_list);

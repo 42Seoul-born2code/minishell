@@ -14,7 +14,7 @@ void	print_token_word(t_token *token_list)
 	}
 }
 
-void	free_list_nodes(t_token *lst)
+static void	free_list_nodes(t_token *lst)
 {
 	t_list			*curr_list;
 	t_list			*next_list;
@@ -32,6 +32,23 @@ void	free_list_nodes(t_token *lst)
 	lst->head_node = NULL;
 }
 
+static t_bool	is_all_whitespace(char *line)
+{
+	int i;
+	t_bool all_whitespace;
+
+	i = 0;
+	all_whitespace = TRUE;
+	while (line[i] != '\0')
+	{
+		if (is_whitespace(line[i]) == FALSE)
+			all_whitespace = FALSE;
+		return all_whitespace;
+		i += 1;
+	}
+	return all_whitespace;
+}
+
 void	execute_minishell(t_env_list *env_list)
 {
 	char	*line;
@@ -45,10 +62,8 @@ void	execute_minishell(t_env_list *env_list)
 		line = readline(PROMPT);
 		if (line == NULL)
 			break ;
-		if (line[0] != '\0')
+		if (line[0] != '\0' && is_all_whitespace(line) == FALSE)
 		{
-			if (check_all_whitespace(line) == TRUE)
-				continue;
 			tokenize_line(line, token_list);
 			parsing(token_list);
 			syntax_analysis(token_list);
