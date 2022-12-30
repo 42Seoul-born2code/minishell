@@ -1,5 +1,59 @@
 #include "utils.h"
 
+t_bool	is_env_existed(t_env_list *env_list, char *key)
+{
+	t_list		*list_node;
+	t_env_node	*env_node;
+
+	list_node = env_list->head_node;
+	while (list_node != NULL)
+	{
+		env_node = list_node->content;
+		if (ft_strcmp(env_node->key, key) == 0)
+			return (TRUE);
+		list_node = list_node->next;
+	}
+	return (FALSE);
+}
+
+char	*get_env_value(t_env_list *env_list, char *key)
+{
+	t_list		*list_node;
+	t_env_node	*env_node;
+
+	list_node = env_list->head_node;
+	while (list_node != NULL)
+	{
+		env_node = list_node->content;
+		if (ft_strcmp(env_node->key, key) == 0)
+			return (env_node->value);
+		list_node = list_node->next;
+	}
+	return (NULL);
+}
+
+void	replace_env_value(t_env_list *env_list, char *key, char *new_value)
+{
+	t_list		*list_node;
+	t_env_node	*env_node;
+
+	list_node = env_list->head_node;
+	while (list_node != NULL)
+	{
+		env_node = list_node->content;
+		if (ft_strcmp(env_node->key, key) == 0)
+		{
+			free(env_node->value);
+			env_node->value = ft_strdup(new_value);
+			return ;
+		}
+		list_node = list_node->next;
+	}
+	env_node = malloc(sizeof(t_env_node));
+	env_node->key = ft_strdup(key);
+	env_node->value = ft_strdup(new_value);
+	ft_lstadd_back(&env_list->head_node, ft_lstnew(env_node));
+}
 /*
 	get_envp_in_list()				- Convert data type t_env_list into char **
 	
@@ -34,7 +88,6 @@ char	**get_envp_in_list(t_env_list *env_list)
 	envp[idx] = NULL;
 	return (envp);
 }
-
 /*
 	save_envp_in_env_list()				- Save envp in 3 ways line, key, value by linked list
 	

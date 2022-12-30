@@ -41,14 +41,12 @@ t_bool	is_command_builtin_function(t_token *token_list)
 void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_command_type type)
 {
 	int				file;
+	int				origin_fd[2];
 	char			*cmd;
 	char			**cmd_argv;
-	char			**envp;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	(void)envp;
-	(void)file;
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
@@ -58,11 +56,10 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		{
 			cmd = ft_strdup(curr_token->word);
 			cmd_argv = merge_arguments(curr_node);
-			envp = get_envp_in_list(env_list);
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
-			// TODO: echo hello > outfile 하면 dup2 를 원래 fd 로 바꿔줘야함
+			save_origin_fd(origin_fd);
 			file = process_redirection(curr_node);
 		}
 		curr_node = curr_node->next;
@@ -70,6 +67,9 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	if (type == SIMPLE_COMMAND)
 	{
 		execute_builtin_function(cmd, cmd_argv, env_list);
+		if (file != NONE)
+			close(file);
+		rollback_origin_fd(origin_fd);
 	}
 	else
 	{

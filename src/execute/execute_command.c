@@ -23,7 +23,14 @@ void	execute_command(t_token *token_list, t_env_list *env_list)
 	// 2. 파이프가 존재하는 multi command 는 파이프 생성 후 fork 를 실행한다.
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
-		execute_simple_command(token_list, env_list);
+		if (is_command_builtin_function(token_list) == TRUE)
+		{
+			process_builtin_function(token_list, env_list, SIMPLE_COMMAND);
+		}
+		else
+		{
+			fork_process(token_list, env_list);
+		}
 	}
 	else
 	{

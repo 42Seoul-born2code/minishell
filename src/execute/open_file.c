@@ -1,4 +1,5 @@
 #include "execute.h"
+#include "utils.h"
 
 static int	open_read_mode_file(char *file)
 {

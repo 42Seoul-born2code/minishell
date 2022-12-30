@@ -12,6 +12,8 @@
 # include "utils.h"
 
 # define SYNTAX_ERROR	"Error: Syntax Error"
+# define NOT_EXISTED	"Error: No such file or directory: "
+# define HOME_IS_UNSET	"Error: HOME not set"
 
 typedef enum e_kv_pair{
 	KEY,
@@ -23,6 +25,15 @@ t_bool	is_valid_variable_name(char *str);
 
 // check_option.c
 int		check_option(char *argv);
+
+// ft_cd.c
+int		ft_cd(char **argv, t_env_list *env_list);
+
+// ft_cd_utils.c
+int		move_to_env_path(char *env_path, t_env_list *env_list);
+char	*get_parent_directory(void);
+char	*join_path(char **paths, int *idx);
+t_bool	is_path_existed(char **curr_path, char **paths, int *idx);
 
 // ft_echo.c
 int		ft_echo(char **argv);

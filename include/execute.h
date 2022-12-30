@@ -61,11 +61,7 @@ void	execute_command(t_token *token_list, t_env_list *env_list);
 // execute_multi_command.c
 void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 
-// execute_simple_command.c
-void	execute_simple_command(t_token *token_list, t_env_list *env_list);
-
 // execute_utils.c
-int		print_error(char *msg, char *arg);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
@@ -81,5 +77,8 @@ void	fork_process(t_token *token_list, t_env_list *env_list);
 // open_file.c
 int		open_file(t_list *next_node, int mode);
 
+// redirection_utils.c
+void	save_origin_fd(int origin_fd[2]);
+void	rollback_origin_fd(int origin_fd[2]);
 
 #endif

@@ -6,10 +6,7 @@ int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list)
 	if (ft_strcmp(cmd, "echo") == 0)
 		return (ft_echo(argv));
 	else if (ft_strcmp(cmd, "cd") == 0)
-	{
-		// ft_cd(argv);
-		return (EXIT_SUCCESS);
-	}
+		return (ft_cd(argv, env_list));
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		return (ft_pwd(argv));
 	else if (ft_strcmp(cmd, "export") == 0)

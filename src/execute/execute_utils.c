@@ -1,16 +1,5 @@
 #include "execute.h"
 
-int	print_error(char *msg, char *arg)
-{
-	char	*error_msg;
-
-	error_msg = ft_strjoin(msg, arg);
-	ft_putstr_fd(error_msg, STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);
-	free(error_msg);
-	return (EXIT_FAILURE);
-}
-
 t_bool	is_redirection(t_token_node *curr_token)
 {
 	t_meta	type;
@@ -35,7 +24,7 @@ char	**merge_arguments(t_list *curr_node)
 	while (idx < argv_count)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE)
+		if (is_redirection(curr_token) == TRUE || curr_token->type == PIPE)
 		{
 			break ;
 		}

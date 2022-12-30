@@ -1,5 +1,4 @@
 #include "builtin.h"
-#include "execute.h"
 /*
 	Invalid env_name -> exit_code = EXIT_FAILURE
 	Invalid option -> exit_code = 2
