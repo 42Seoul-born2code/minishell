@@ -38,7 +38,8 @@ SRC_PARSING					:=	parsing.c				\
 								syntax_analysis.c
 
 SRC_SIGNAL_DIR				:=	signal/
-SRC_SIGNAL					:=	init_signal.c
+SRC_SIGNAL					:=	init_signal.c			\
+								change_signal.c
 
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c				\

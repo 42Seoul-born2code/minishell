@@ -1,5 +1,6 @@
 #include "execute.h"
 #include "utils.h"
+#include "mini_signal.h"
 
 void	throw_error(char *msg)
 {
@@ -166,11 +167,11 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	t_token_node	*curr_token;
 
 	pid = fork();
+	change_signal();
 	if (pid == CHILD_PROCESS)
 	{
 		// 자식 프로세스에서 시그널을 받았을 때 처리
 		// 자식에서 ctrl-c exit();
-		init_signal();
 		file = NONE;
 		curr_node = token_list->head_node;
 		while (curr_node != NULL)
