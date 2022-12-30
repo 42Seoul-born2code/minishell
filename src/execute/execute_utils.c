@@ -24,7 +24,7 @@ char	**merge_arguments(t_list *curr_node)
 	while (idx < argv_count)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE)
+		if (is_redirection(curr_token) == TRUE || curr_token->type == PIPE)
 		{
 			break ;
 		}
