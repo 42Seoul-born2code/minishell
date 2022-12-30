@@ -23,7 +23,6 @@ SRC_EXECUTE					:=	execute_minishell.c				\
 								execute_command.c				\
 								execute_multi_command.c			\
 								execute_utils.c					\
-								execute_utils2.c				\
 								fork_process.c					\
 								open_file.c						\
 								redirection_utils.c
