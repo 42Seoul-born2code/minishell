@@ -30,18 +30,17 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 /*
 	현재 디렉토리의 상위 디렉토리 경로를 가져오는 함수
 */
-char	*get_parent_directory(void)
+char	*get_parent_directory(t_env_list *env_list)
 {
 	size_t	len;
 	char	*curr_path;
 	char	*parent_dir;
 
-	curr_path = getcwd(NULL, BUFSIZ);
+	curr_path = get_env_value(env_list, "PWD");
 	len = ft_strlen(curr_path);
 	while (curr_path[len] != '/')
 		len -= 1;
 	parent_dir = ft_substr(curr_path, 0, len);
-	free(curr_path);
 	return (parent_dir);
 }
 

@@ -4,7 +4,7 @@
 /*
 	실제로 디렉토리를 이동하기 전에, 미리 모든 경로가 유효한지 탐색
 */
-t_bool	is_valid_path(char **paths)
+t_bool	is_valid_path(char **paths, t_env_list *env_list)
 {
 	int		idx;
 	char	*curr_path;
@@ -19,7 +19,7 @@ t_bool	is_valid_path(char **paths)
 		{
 			if (curr_path != NULL)
 				free(curr_path);
-			curr_path = get_parent_directory();
+			curr_path = get_parent_directory(env_list);
 			idx += 1;
 		}
 		else if (is_path_existed(&curr_path, paths, &idx) == FALSE)
@@ -34,7 +34,7 @@ t_bool	is_valid_path(char **paths)
 /*
 	change_directory 함수의 서브함수
 */
-static char	*change_current_directory(char **paths, int *idx)
+static char	*change_current_directory(char **paths, int *idx, t_env_list *env_list)
 {
 	char	*curr_path;
 	char	*target_path;
@@ -42,7 +42,7 @@ static char	*change_current_directory(char **paths, int *idx)
 
 	if (ft_strcmp(paths[*idx], "..") == 0)
 	{
-		target_path = get_parent_directory();
+		target_path = get_parent_directory(env_list);
 		chdir(target_path);
 		*idx += 1;
 	}
@@ -75,7 +75,7 @@ void	change_directories(char **paths, t_env_list *env_list)
 			idx += 1;
 		else
 		{
-			target_path = change_current_directory(paths, &idx);
+			target_path = change_current_directory(paths, &idx, env_list);
 			replace_env_value(env_list, "PWD", target_path);
 			free(target_path);
 		}
@@ -95,7 +95,7 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
 	paths = ft_split(argv[1], '/');
-	if (is_valid_path(paths) == FALSE)
+	if (is_valid_path(paths, env_list) == FALSE)
 	{
 		free_all(paths);
 		return (print_error(NOT_EXISTED, argv[1]));

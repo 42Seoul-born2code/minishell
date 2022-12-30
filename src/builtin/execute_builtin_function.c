@@ -8,7 +8,7 @@ int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list)
 	else if (ft_strcmp(cmd, "cd") == 0)
 		return (ft_cd(argv, env_list));
 	else if (ft_strcmp(cmd, "pwd") == 0)
-		return (ft_pwd(argv));
+		return (ft_pwd(argv, env_list));
 	else if (ft_strcmp(cmd, "export") == 0)
 	{
 		ft_export(argv, env_list);
