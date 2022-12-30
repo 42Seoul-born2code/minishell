@@ -41,6 +41,7 @@ void	execute_minishell(t_env_list *env_list)
 	token_list->head_node = NULL;
 	while (TRUE)
 	{
+		init_signal();
 		line = readline(PROMPT);
 		if (line == NULL)
 			break ;

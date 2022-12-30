@@ -11,6 +11,7 @@
 # include "parsing.h"
 # include "expansion.h"
 # include "utils.h"
+# include "mini_signal.h"
 
 # define PROMPT "./minishell$ "
 

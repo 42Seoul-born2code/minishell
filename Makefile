@@ -33,6 +33,9 @@ SRC_PARSING_DIR				:=	parsing/
 SRC_PARSING					:=	parsing.c				\
 								syntax_analysis.c
 
+SRC_SIGNAL_DIR				:=	signal/
+SRC_SIGNAL					:=	init_signal.c
+
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c				\
 								quote_removal.c
@@ -49,6 +52,7 @@ SRC_FILES					:=	main.c												\
 								$(addprefix $(SRC_EXECUTE_DIR), $(SRC_EXECUTE)) 	\
 								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) 	\
 								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) 	\
+								$(addprefix $(SRC_SIGNAL_DIR), $(SRC_SIGNAL)) 		\
 								$(addprefix $(SRC_EXPANSION_DIR), $(SRC_EXPANSION)) \
 								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 		\
 								$(addprefix $(SRC_BUILTIN_DIR), $(SRC_BUILTIN)) 
