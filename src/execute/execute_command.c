@@ -18,9 +18,6 @@ static t_command_type	get_execute_type(t_token *token_list)
 
 void	execute_command(t_token *token_list, t_env_list *env_list)
 {
-	// TODO
-	// 1. 파이프가 존재하지 않는 simple command 는 fork 를 수행해서 실행한다.
-	// 2. 파이프가 존재하는 multi command 는 파이프 생성 후 fork 를 실행한다.
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
 		if (is_command_builtin_function(token_list) == TRUE)
@@ -34,7 +31,7 @@ void	execute_command(t_token *token_list, t_env_list *env_list)
 	}
 	else
 	{
-		// execute_multi_command(token_list, env_list);
+		execute_multi_command(token_list, env_list);
 	}
 }
 
