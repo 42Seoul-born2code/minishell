@@ -72,4 +72,8 @@ void	fork_process(t_token *token_list, t_env_list *env_list);
 // open_file.c
 int		open_file(t_list *next_node, int mode);
 
+// redirection_utils.c
+void	save_origin_fd(int origin_fd[2]);
+void	rollback_origin_fd(int origin_fd[2]);
+
 #endif

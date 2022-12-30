@@ -23,7 +23,8 @@ SRC_EXECUTE					:=	execute_minishell.c				\
 								execute_multi_command.c			\
 								execute_utils.c					\
 								fork_process.c					\
-								open_file.c				
+								open_file.c						\
+								redirection_utils.c
 
 
 SRC_TOKENIZE_DIR			:=	tokenize/
