@@ -9,6 +9,8 @@
 ** envp					- The Environment Variables on the Entry Time
 */
 
+int	exit_code;
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_env_list	env_list;

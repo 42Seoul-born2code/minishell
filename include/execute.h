@@ -11,6 +11,7 @@
 # include "parsing.h"
 # include "expansion.h"
 # include "utils.h"
+# include "mini_signal.h"
 
 # define PROMPT "./minishell$ "
 
@@ -44,6 +45,7 @@ typedef enum e_pipe{
 
 // execute_minishell.c
 void	execute_minishell(t_env_list *env);
+void	free_list_nodes(t_token *lst);
 
 // execute_builtin_function.c
 int		execute_builtin_function(char *cmd, char **argv, t_env_list *env_list);
@@ -64,6 +66,9 @@ t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
 char	*find_cmd_path(char *cmd);
+
+// execute_utils2.c
+t_bool	check_all_whitespace(char *line);
 
 // fork_process.c
 int		process_redirection(t_list *curr_node);

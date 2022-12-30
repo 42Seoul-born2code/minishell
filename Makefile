@@ -13,6 +13,7 @@ SRC_BUILTIN					:=	execute_builtin_function.c		\
 								ft_unset.c						\
 								ft_env.c						\
 								ft_export.c						\
+								ft_exit.c						\
 								builtin_utils.c					\
 								check_option.c
 
@@ -22,6 +23,7 @@ SRC_EXECUTE					:=	execute_minishell.c				\
 								execute_command.c				\
 								execute_multi_command.c			\
 								execute_utils.c					\
+								execute_utils2.c				\
 								fork_process.c					\
 								open_file.c						\
 								redirection_utils.c
@@ -34,6 +36,9 @@ SRC_TOKENIZE				:=	tokenize_line.c			\
 SRC_PARSING_DIR				:=	parsing/
 SRC_PARSING					:=	parsing.c				\
 								syntax_analysis.c
+
+SRC_SIGNAL_DIR				:=	signal/
+SRC_SIGNAL					:=	init_signal.c
 
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c				\
@@ -52,6 +57,7 @@ SRC_FILES					:=	main.c												\
 								$(addprefix $(SRC_EXECUTE_DIR), $(SRC_EXECUTE)) 	\
 								$(addprefix $(SRC_TOKENIZE_DIR), $(SRC_TOKENIZE)) 	\
 								$(addprefix $(SRC_PARSING_DIR), $(SRC_PARSING)) 	\
+								$(addprefix $(SRC_SIGNAL_DIR), $(SRC_SIGNAL)) 		\
 								$(addprefix $(SRC_EXPANSION_DIR), $(SRC_EXPANSION)) \
 								$(addprefix $(SRC_UTILS_DIR), $(SRC_UTILS)) 		\
 								$(addprefix $(SRC_BUILTIN_DIR), $(SRC_BUILTIN)) 
@@ -74,6 +80,11 @@ else
 	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
 	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
 endif
+
+### For M1 Mac Mini ###
+# READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
+# READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
+### For M1 Mac Mini ###
 
 ifdef DEBUG_MODE
 	CFLAGS					:=	$(CFLAGS) -g
