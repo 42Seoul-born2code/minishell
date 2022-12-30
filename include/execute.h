@@ -59,9 +59,6 @@ void	execute_command(t_token *token_list, t_env_list *env_list);
 // execute_multi_command.c
 void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 
-// execute_simple_command.c
-void	execute_simple_command(t_token *token_list, t_env_list *env_list);
-
 // execute_utils.c
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
