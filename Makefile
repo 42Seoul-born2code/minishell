@@ -73,7 +73,7 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-ifdef HOME
+ifdef HOME_ENV
 	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
 	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
 else
@@ -109,10 +109,10 @@ fclean : clean
 re : fclean all
 
 debugh : fclean
-	make -j4 DEBUG_MODE=1 HOME=1 all
+	make -j4 DEBUG_MODE=1 HOME_ENV=1 all
 
 dsanih : fclean
-	make -j4 D_SANI=1 HOME=1 all
+	make -j4 D_SANI=1 HOME_ENV=1 all
 
 debug : fclean
 	make -j4 DEBUG_MODE=1 all
