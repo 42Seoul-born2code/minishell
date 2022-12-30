@@ -2,6 +2,8 @@
 #include "utils.h"
 #include "mini_signal.h"
 
+int	exit_code;
+
 void	throw_error(char *msg)
 {
 	print_error(msg, NULL);
@@ -111,8 +113,9 @@ static void	get_user_input(char *limiter)
 	char	*input;
 	char	*expand_result;
 
+	change_heredoc_signal();
 	fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	while (TRUE)
+	while (!exit_code)
 	{
 		ft_putstr_fd("heredoc> ", STDIN_FILENO);
 		input = get_next_line(STDIN_FILENO);

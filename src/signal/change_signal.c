@@ -4,7 +4,7 @@ static void	handle_sigint_change(int signum)
 {
 	if (signum != SIGINT)
 		return ;
-	write(1, "\n", 1);
+	printf("\n");
 }
 
 /* do nothing */
@@ -12,7 +12,7 @@ static void	handle_sigquit_change(int signum)
 {
 	if (signum == SIGQUIT)
 	{
-		ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
+		printf("Quit: 3\n");
 		return ;
 	}
 }

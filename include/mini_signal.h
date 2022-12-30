@@ -11,7 +11,6 @@
 
 void	init_signal(void);
 void	change_signal(void);
-// void	heredoc_signal(void);
-// void	multishell_signal(void);
+void	change_heredoc_signal(void);
 
 #endif
