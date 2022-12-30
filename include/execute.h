@@ -45,7 +45,6 @@ typedef enum e_pipe{
 
 // execute_minishell.c
 void	execute_minishell(t_env_list *env);
-void	free_list_nodes(t_token *lst);
 
 // execute_builtin_function.c
 int		execute_builtin_function(char *cmd, char **argv, t_env_list *env_list);
