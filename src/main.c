@@ -1,4 +1,6 @@
 #include "minishell.h"
+#include "execute.h"
+#include "utils.h"
 
 /*
 ** main ()				- Entry Function of Minishell

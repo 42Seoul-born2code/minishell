@@ -1,19 +1,19 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-/*	CUSTOM HEADERS		*/
-# include "libft.h"
-# include "tokenize.h"
-# include "execute.h"
-# include "parsing.h"
-# include "utils.h"
+// /*	CUSTOM HEADERS		*/
+// # include "libft.h"
+// # include "tokenize.h"
+// # include "execute.h"
+// # include "parsing.h"
+// # include "utils.h"
 
-/*	BUILTIN HEADERS		*/
-# include <signal.h>
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
+// /*	BUILTIN HEADERS		*/
+// # include <signal.h>
+// # include <stdio.h>
+// # include <unistd.h>
+// # include <stdlib.h>
+// # include <string.h>
 
 # define ERROR	-1
 

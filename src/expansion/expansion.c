@@ -1,6 +1,6 @@
+#include "minishell.h"
 #include "expansion.h"
 
-int	exit_code;
 t_bool	is_valid_variable_rule(char c)
 {
 	if (ft_isalnum(c) == TRUE || c == '_')
@@ -120,7 +120,7 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
 	else if (token->word[*idx] == '?')
 	{
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(exit_code)));
+		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(g_exit_code)));
 		*idx += 1;
 	}
 	else
