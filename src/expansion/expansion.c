@@ -116,20 +116,19 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 			break ;
 		*idx += 1;
 	}
-	if (start == *idx)
+	if (start == *idx && token->word[*idx] != '?')
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
+	else if (token->word[*idx] == '?')
+	{
+		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(exit_code)));
+		*idx += 1;
+	}
 	else
 	{
 		word_length = *idx - start;
 		env_word = malloc(sizeof(char) * (word_length + 1));
-		printf("env_word:%s",env_word);
 		ft_memcpy(env_word, &token->word[start], word_length);
-		if (ft_strcmp("?", env_word) == 0)
-		{
-			printf("$? expansion");
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(exit_code)));
-		}
-		else if (token->type == LIMITER)
+		if (token->type == LIMITER)
 			ft_lstadd_back(&word_list->head_node, \
 				ft_lstnew(ft_strjoin("$", env_word)));
 		else if (quote_type == NOT_QUOTED)
