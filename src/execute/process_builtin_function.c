@@ -47,10 +47,12 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	redirect_info.file = NONE;
+	redirect_info.type = NORMAL;
 	curr_node = token_list->head_node;
+	save_origin_fd(origin_fd);
 	while (curr_node != NULL)
 	{
-		redirect_info.file = NONE;
 		curr_token = curr_node->content;
 		if (curr_token->type == COMMAND)
 		{
@@ -59,7 +61,6 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
-			save_origin_fd(origin_fd);
 			redirect_info = process_redirection(curr_node);
 		}
 		curr_node = curr_node->next;
