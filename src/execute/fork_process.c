@@ -119,25 +119,23 @@ static void	get_user_input(char *limiter)
 	if (pid == CHILD_PROCESS)
 	{
 		fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		while (TRUE)
+		while (exit_code != 1)
 		{
-			ft_putstr_fd("heredoc> ", STDIN_FILENO);
-			input = get_next_line(STDIN_FILENO);
+			input = readline(HEREDOC_PROMPT);
 			if (is_equal_to_limiter(input, limiter))
 				break ;
 			expand_result = expand_env_variable(input);
 			ft_putstr_fd(expand_result, fd);
 		}
 		close(fd);
-		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
 		waitpid(pid, NULL, 0);
-		init_signal();
+		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
+		dup2(fd, STDIN_FILENO);
+		close(fd);
 	}
 }
 
@@ -172,6 +170,7 @@ int	process_redirection(t_list *curr_node)
 
 void	fork_process(t_token *token_list, t_env_list *env_list)
 {
+	int				origin_fd[2];
 	pid_t			pid;
 	int				file;
 	char			*cmd_path;
@@ -180,39 +179,40 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	save_origin_fd(origin_fd);
 	cmd_path = NULL;
+	// 자식 프로세스에서 시그널을 받았을 때 처리
+	// 자식에서 ctrl-c exit();
+	file = NONE;
+	curr_node = token_list->head_node;
+	while (curr_node != NULL)
+	{
+		curr_token = curr_node->content;
+		if (curr_token->type == COMMAND)
+		{
+			// TODO: whitespace 인 경우에는 실행하지 않도록 처리
+			cmd_path = find_cmd_path(curr_token->word);
+			if (cmd_path == NULL)
+			{
+				printf("%s: command not found\n", curr_token->word);
+				exit(ERROR_CODE_COMMAND_NOT_FOUND);
+			}
+			cmd_argv = merge_arguments(curr_node);
+			envp = get_envp_in_list(env_list);
+		}
+		else if (is_redirection(curr_token) == TRUE)
+		{
+			file = process_redirection(curr_node);
+		}
+		curr_node = curr_node->next;
+	}
+	if (file != NONE)
+		close(file);
+	// TODO: 멀티 파이프인 경우에는 fork 를 사용해서 빌트인 함수를 실행시켜야 한다.
 	change_signal();
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		// 자식 프로세스에서 시그널을 받았을 때 처리
-		// 자식에서 ctrl-c exit();
-		file = NONE;
-		curr_node = token_list->head_node;
-		while (curr_node != NULL)
-		{
-			curr_token = curr_node->content;
-			if (curr_token->type == COMMAND)
-			{
-				// TODO: whitespace 인 경우에는 실행하지 않도록 처리
-				cmd_path = find_cmd_path(curr_token->word);
-				if (cmd_path == NULL)
-				{
-					printf("%s: command not found\n", curr_token->word);
-					exit(ERROR_CODE_COMMAND_NOT_FOUND);
-				}
-				cmd_argv = merge_arguments(curr_node);
-				envp = get_envp_in_list(env_list);
-			}
-			else if (is_redirection(curr_token) == TRUE)
-			{
-				file = process_redirection(curr_node);
-			}
-			curr_node = curr_node->next;
-		}
-		if (file != NONE)
-			close(file);
-		// TODO: 멀티 파이프인 경우에는 fork 를 사용해서 빌트인 함수를 실행시켜야 한다.
 		if (cmd_path == NULL)
 			exit(EXIT_SUCCESS);
 		if (execve(cmd_path, cmd_argv, envp) == ERROR)
@@ -227,5 +227,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		// TODO: 자식 프로세스 반환값 전역 변수에 저장
 		waitpid(pid, NULL, 0);
 		unlink(HEREDOC_FILE);
+		rollback_origin_fd(origin_fd);
 	}
 }

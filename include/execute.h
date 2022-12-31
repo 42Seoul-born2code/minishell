@@ -13,7 +13,8 @@
 # include "utils.h"
 # include "mini_signal.h"
 
-# define PROMPT "./minishell$ "
+# define PROMPT 		"./minishell$ "
+# define HEREDOC_PROMPT "heredoc> "
 
 # define CHILD_PROCESS	0
 
