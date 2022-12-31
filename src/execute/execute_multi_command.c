@@ -20,7 +20,7 @@ static void	execute_cmd(char *cmd_path, char **cmd_argv, char **envp)
 	}
 }
 
-void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin_fd[2])
+void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin_fd[2], t_redirect redirect_info)
 {
 	pid_t	pid;
 	int		status;
@@ -28,7 +28,8 @@ void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		dup2(origin_fd[1], STDOUT_FILENO);
+		if (redirect_info.type != OUTFILE)
+			dup2(origin_fd[1], STDOUT_FILENO);
 		execute_cmd(cmd_path, cmd_argv, envp);
 	}
 	else
@@ -37,25 +38,32 @@ void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin
 	}
 }
 
-static int	child_process(char *cmd_path, char **cmd_argv, char **envp)
+static int	child_process(char *cmd_path, char **cmd_argv, char **envp, t_redirect redirect_info)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
 
-	pipe(pipe_fd);
+	if (redirect_info.type != OUTFILE)
+		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		close(pipe_fd[READ]);
-		dup2(pipe_fd[WRITE], STDOUT_FILENO);
-		close(pipe_fd[WRITE]);
+		if (redirect_info.type != OUTFILE)
+		{
+			close(pipe_fd[READ]);
+			dup2(pipe_fd[WRITE], STDOUT_FILENO);
+			close(pipe_fd[WRITE]);
+		}
 		execute_cmd(cmd_path, cmd_argv, envp);
 	}
 	else
 	{
-		close(pipe_fd[WRITE]);
-		dup2(pipe_fd[READ], STDIN_FILENO);
-		close(pipe_fd[READ]);
+		if (redirect_info.type != OUTFILE)
+		{
+			close(pipe_fd[WRITE]);
+			dup2(pipe_fd[READ], STDIN_FILENO);
+			close(pipe_fd[READ]);
+		}
 		waitpid(pid, NULL, WNOHANG);
 	}
 	return (1);
@@ -63,7 +71,7 @@ static int	child_process(char *cmd_path, char **cmd_argv, char **envp)
 
 void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 {
-	// int				file;
+	t_redirect		redirect_info;
 	int				origin_fd[2];
 	int				process_count;
 	char			*cmd_path;
@@ -72,6 +80,8 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	redirect_info.file = NONE;
+	redirect_info.type = NORMAL;
 	process_count = 0;
 	curr_node = token_list->head_node;
 	save_origin_fd(origin_fd);
@@ -88,20 +98,22 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			cmd_argv = merge_arguments(curr_node);
 			envp = get_envp_in_list(env_list);
 		}
-		// else if (is_redirection(curr_token) == TRUE)
-		// {
-		// 	file = process_redirection(curr_node);
-		// }
+		else if (is_redirection(curr_token) == TRUE)
+		{
+			redirect_info = process_redirection(curr_node);
+		}
 		else if (curr_token->type == PIPE)
 		{
-			process_count += child_process(cmd_path, cmd_argv, envp);
+			process_count += child_process(cmd_path, cmd_argv, envp, redirect_info);
 			free(cmd_path);
 			free_all(cmd_argv);
 			free_all(envp);
+			redirect_info.file = NONE;
+			redirect_info.type = NORMAL;
 		}
 		curr_node = curr_node->next;
 	}
-	last_child_process(cmd_path, cmd_argv, envp, origin_fd);
+	last_child_process(cmd_path, cmd_argv, envp, origin_fd, redirect_info);
 	rollback_origin_fd(origin_fd);
 	while (process_count > 0)
 	{
@@ -114,6 +126,8 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 /*
 
 	1. 파이프 이전까지 command, argument 구분 및 redirection 처리
+		- redirection 이 존재한다면 파이프로 넘기지말고 redirection 을 처리해야함
+		- redirection 이 infile 처리인지 outfile 처리인지에 따라 파이프로 넘겨야 하는지가 결정됨
 	2. 파이프를 만나면 파이프 연결
 	3. 파이프 이전 명령어 실행
 	4. 반복
@@ -125,6 +139,12 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	TEST CASES
 
 	ls | cat
-	> ls 결과 출력
+	=> ls 결과 출력
 
+	ls > outfile
+	< outfile cat | wc -l
+	=> outfile 라인 수 출력
+
+	ls > outfile | cat outfile
+	=> 출력이 될 때도 있고 안될 때도 있음
 */
