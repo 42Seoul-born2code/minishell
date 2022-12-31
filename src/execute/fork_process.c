@@ -179,7 +179,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	t_redirect		redirect_info;
 	char			*cmd_path;
 	char			**cmd_argv;
-	char			**envp;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
@@ -218,8 +217,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	{
 		if (cmd_path == NULL)
 			exit(EXIT_SUCCESS);
-		envp = get_envp_in_list(env_list);
-		execute_cmd(cmd_path, cmd_argv, envp);
+		execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
 	{
