@@ -26,7 +26,6 @@ static int	valid_exit_code(const char *s)
 	}
 	while (*ptr)
 	{
-
 		res = res * 10 + (*ptr - '0');
 		ptr++;
 	}
@@ -42,16 +41,16 @@ static unsigned char	check_arg(char *arg)
 		ptr++;
 	while (*ptr)
 	{
-		if (!ft_isdigit(*ptr))
+		if (ft_isdigit(*ptr) == FALSE)
 		{
-			printf("numeric argument required\n");
+			printf("numeric argument required1\n");
 			exit(255);
 		}
 		ptr++;
 	}
 	if (valid_exit_code(arg) == FALSE)
 	{
-		printf("numeric argument required\n");
+		printf("numeric argument required2\n");
 		exit(255);
 	}
 	return (ft_atoi(arg));
@@ -81,13 +80,15 @@ static void	free_env_list(t_env_list *env_list)
 
 void	ft_exit(char **argv, t_env_list *env_list)
 {
+	char			*arg;
 	unsigned char	exit_code;
 
 	exit_code = EXIT_SUCCESS;
 	printf("exit\n");
 	if (*(argv + 1))
 	{
-		exit_code = check_arg(*(argv + 1));
+		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");
+		exit_code = check_arg(arg);
 		if (*(argv + 2))
 			printf("too many arguments\n");
 	}
