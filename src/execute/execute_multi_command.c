@@ -33,7 +33,10 @@ void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, i
 	{
 		if (redirect_info.type != OUTFILE)
 			dup2(origin_fd[1], STDOUT_FILENO);
-		execute_cmd(cmd_path, cmd_argv, env_list);
+		if (is_builtin_function(cmd_path) == TRUE)
+			exit(execute_builtin_function(cmd_path, cmd_argv, env_list));
+		else
+			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
 	{
