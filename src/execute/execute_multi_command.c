@@ -8,8 +8,11 @@
 	- 프로세스 카운트 + 1
 */
 
-void	execute_cmd(char *cmd_path, char **cmd_argv, char **envp)
+void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 {
+	char	**envp;
+
+	envp = get_envp_in_list(env_list);
 	if (execve(cmd_path, cmd_argv, envp) == ERROR)
 	{
 		print_error(COMMAND_NOT_FOUND, cmd_argv[0]);
@@ -20,7 +23,7 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, char **envp)
 	}
 }
 
-void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin_fd[2], t_redirect redirect_info)
+void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, int origin_fd[2], t_redirect redirect_info)
 {
 	pid_t	pid;
 	int		status;
@@ -30,15 +33,19 @@ void	last_child_process(char *cmd_path, char **cmd_argv, char **envp, int origin
 	{
 		if (redirect_info.type != OUTFILE)
 			dup2(origin_fd[1], STDOUT_FILENO);
-		execute_cmd(cmd_path, cmd_argv, envp);
+		if (is_builtin_function(cmd_path) == TRUE)
+			exit(execute_builtin_function(cmd_path, cmd_argv, env_list));
+		else
+			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
+		close(STDIN_FILENO);
 	}
 }
 
-static int	child_process(char *cmd_path, char **cmd_argv, char **envp, t_redirect redirect_info)
+static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, t_redirect redirect_info)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -54,7 +61,10 @@ static int	child_process(char *cmd_path, char **cmd_argv, char **envp, t_redirec
 			dup2(pipe_fd[WRITE], STDOUT_FILENO);
 			close(pipe_fd[WRITE]);
 		}
-		execute_cmd(cmd_path, cmd_argv, envp);
+		if (is_builtin_function(cmd_path) == TRUE)
+			exit(execute_builtin_function(cmd_path, cmd_argv, env_list));
+		else
+			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
 	{
@@ -76,7 +86,6 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	int				process_count;
 	char			*cmd_path;
 	char			**cmd_argv;
-	char			**envp;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
@@ -90,13 +99,15 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 		curr_token = curr_node->content;
 		if (curr_token->type == COMMAND)
 		{
-			cmd_path = find_cmd_path(curr_token->word);
+			if (is_builtin_function(curr_token->word) == TRUE)
+				cmd_path = ft_strdup(curr_token->word);
+			else
+				cmd_path = find_cmd_path(curr_token->word);
 			if (cmd_path == NULL)
 			{
 				printf("%s: command not found\n", curr_token->word);
 			}
 			cmd_argv = merge_arguments(curr_node);
-			envp = get_envp_in_list(env_list);
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
@@ -104,16 +115,15 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 		}
 		else if (curr_token->type == PIPE)
 		{
-			process_count += child_process(cmd_path, cmd_argv, envp, redirect_info);
+			process_count += child_process(cmd_path, cmd_argv, env_list, redirect_info);
 			free(cmd_path);
 			free_all(cmd_argv);
-			free_all(envp);
 			redirect_info.file = NONE;
 			redirect_info.type = NORMAL;
 		}
 		curr_node = curr_node->next;
 	}
-	last_child_process(cmd_path, cmd_argv, envp, origin_fd, redirect_info);
+	last_child_process(cmd_path, cmd_argv, env_list, origin_fd, redirect_info);
 	rollback_origin_fd(origin_fd);
 	while (process_count > 0)
 	{

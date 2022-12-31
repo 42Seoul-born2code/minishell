@@ -62,6 +62,7 @@ void	execute_minishell(t_env_list *env);
 int		execute_builtin_function(char *cmd, char **argv, t_env_list *env_list);
 
 // process_builtin_function.c
+t_bool	is_builtin_function(char *word);
 t_bool	is_command_builtin_function(t_token *token_list);
 void	process_builtin_function(t_token *token_list, \
 							t_env_list *env_list, t_command_type type);
@@ -70,7 +71,7 @@ void	process_builtin_function(t_token *token_list, \
 void	execute_command(t_token *token_list, t_env_list *env_list);
 
 // execute_multi_command.c
-void	execute_cmd(char *cmd_path, char **cmd_argv, char **envp);
+void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list);
 void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 
 // execute_utils.c

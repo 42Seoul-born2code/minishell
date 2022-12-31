@@ -1,11 +1,10 @@
 #ifndef MINI_SIGNAL_H
 # define MINI_SIGNAL_H
 
+# include <stdio.h>
 # include <signal.h>
 # include <unistd.h>
 # include <sys/ioctl.h>
-# include <execute.h>
-# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
