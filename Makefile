@@ -38,7 +38,9 @@ SRC_PARSING					:=	parsing.c				\
 								syntax_analysis.c
 
 SRC_SIGNAL_DIR				:=	signal/
-SRC_SIGNAL					:=	init_signal.c
+SRC_SIGNAL					:=	init_signal.c			\
+								change_signal.c			\
+								heredoc_signal.c
 
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c				\
@@ -73,17 +75,17 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-ifdef HOME
-	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
-	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
-else
-	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
-	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
-endif
+# ifdef HOME_ENV
+# 	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
+# 	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
+# else
+# 	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
+# 	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
+# endif
 
 ### For M1 Mac Mini ###
-# READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
-# READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
+READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
+READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
 ### For M1 Mac Mini ###
 
 ifdef DEBUG_MODE
@@ -109,10 +111,10 @@ fclean : clean
 re : fclean all
 
 debugh : fclean
-	make -j4 DEBUG_MODE=1 HOME=1 all
+	make -j4 DEBUG_MODE=1 HOME_ENV=1 all
 
 dsanih : fclean
-	make -j4 D_SANI=1 HOME=1 all
+	make -j4 D_SANI=1 HOME_ENV=1 all
 
 debug : fclean
 	make -j4 DEBUG_MODE=1 all
