@@ -1,4 +1,5 @@
 #include "parsing.h"
+#include "utils.h"
 
 t_bool	is_continuous_pipe(t_list *curr_node)
 {
@@ -26,7 +27,7 @@ t_bool	is_next_token_operator(t_list *curr_node)
 	return (FALSE);
 }
 
-void	syntax_analysis(t_token *token_list)
+int	syntax_analysis(t_token *token_list)
 {
 	t_list			*curr_node;
 	t_token_node	*curr_token;
@@ -40,20 +41,24 @@ void	syntax_analysis(t_token *token_list)
 			// 1. operator 다음에 아무 것도 없을 때
 			if (curr_node->next == NULL)
 			{
-				printf("다음 노드가 없네유? FAIL 드립니다.\n");
+				printf("operator 뒤에 아무 것도 없어요\n");
+				return (print_error(SYNTAX_ERROR, curr_token->word));
 			}
 			// 2. 파이프 바로 뒤에 파이프가 왔을 때
 			else if (is_continuous_pipe(curr_node) == TRUE)
 			{
 				printf("파이프 뒤에 파이프네유? FAIL 드립니다.\n");
+				return (print_error(SYNTAX_ERROR, curr_token->word));
 			}
 			// 3. redirection 바로 뒤에 operator 가 왔는가?
 			else if (curr_token->type != PIPE && \
 					is_next_token_operator(curr_node) == TRUE)
 			{
 				printf("redirection 뒤에 operator 가 왔네유? FAIL 드립니다.\n");
+				return (print_error(SYNTAX_ERROR, curr_token->word));
 			}
 		}
 		curr_node = curr_node->next;
 	}
+	return (TRUE);
 }

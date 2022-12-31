@@ -19,4 +19,6 @@
 
 # define INVALID_ARGUMENT	"❌Error: Invalid arguments"
 
+extern int	g_exit_code;
+
 #endif

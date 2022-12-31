@@ -2,6 +2,11 @@
 # define UTILS_H
 
 # include "libft.h"
+# include "tokenize.h"
+
+# define SYNTAX_ERROR	"Error: Syntax Error: "
+# define NOT_EXISTED	"Error: No such file or directory: "
+# define HOME_IS_UNSET	"Error: HOME not set"
 
 typedef struct s_env_list {
 	t_list	*head_node;
@@ -20,6 +25,6 @@ char		**get_envp_in_list(t_env_list *env_list);
 void		save_envp_in_env_list(char **envp, t_env_list *env_list);
 
 // error.c
-int		print_error(char *msg, char *arg);
+int			print_error(char *msg, char *arg);
 
 #endif

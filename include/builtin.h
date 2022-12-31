@@ -11,10 +11,6 @@
 # include "libft.h"
 # include "utils.h"
 
-# define SYNTAX_ERROR	"Error: Syntax Error"
-# define NOT_EXISTED	"Error: No such file or directory: "
-# define HOME_IS_UNSET	"Error: HOME not set"
-
 typedef enum e_kv_pair{
 	KEY,
 	VALUE
