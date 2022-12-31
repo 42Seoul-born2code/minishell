@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (argc != 1)
 		return (EXIT_FAILURE);
+	exit_code = EXIT_SUCCESS;
 	save_envp_in_env_list(envp, &env_list);
 	execute_minishell(&env_list);
 	// system("leaks minishell");

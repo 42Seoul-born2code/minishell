@@ -1,5 +1,6 @@
 #include "expansion.h"
 
+int	exit_code;
 t_bool	is_valid_variable_rule(char c)
 {
 	if (ft_isalnum(c) == TRUE || c == '_')
@@ -121,8 +122,14 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 	{
 		word_length = *idx - start;
 		env_word = malloc(sizeof(char) * (word_length + 1));
+		printf("env_word:%s",env_word);
 		ft_memcpy(env_word, &token->word[start], word_length);
-		if (token->type == LIMITER)
+		if (ft_strcmp("?", env_word) == 0)
+		{
+			printf("$? expansion");
+			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(exit_code)));
+		}
+		else if (token->type == LIMITER)
 			ft_lstadd_back(&word_list->head_node, \
 				ft_lstnew(ft_strjoin("$", env_word)));
 		else if (quote_type == NOT_QUOTED)
