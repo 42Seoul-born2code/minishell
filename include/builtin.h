@@ -31,7 +31,7 @@ int		ft_cd(char **argv, t_env_list *env_list);
 
 // ft_cd_utils.c
 int		move_to_env_path(char *env_path, t_env_list *env_list);
-char	*get_parent_directory(void);
+char	*get_parent_directory(t_env_list *env_list);
 char	*join_path(char **paths, int *idx);
 t_bool	is_path_existed(char **curr_path, char **paths, int *idx);
 
@@ -39,7 +39,7 @@ t_bool	is_path_existed(char **curr_path, char **paths, int *idx);
 int		ft_echo(char **argv);
 
 // ft_pwd.c
-int		ft_pwd(char **argv);
+int		ft_pwd(char **argv, t_env_list *env_list);
 
 // ft_env.c
 int		ft_env(char **argv, t_env_list *env_list);

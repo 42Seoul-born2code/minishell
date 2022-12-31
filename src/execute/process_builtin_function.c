@@ -40,7 +40,7 @@ t_bool	is_command_builtin_function(t_token *token_list)
 
 void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_command_type type)
 {
-	int				file;
+	t_redirect		redirect_info;
 	int				origin_fd[2];
 	char			*cmd;
 	char			**cmd_argv;
@@ -50,7 +50,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
-		file = NONE;
+		redirect_info.file = NONE;
 		curr_token = curr_node->content;
 		if (curr_token->type == COMMAND)
 		{
@@ -60,15 +60,15 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		else if (is_redirection(curr_token) == TRUE)
 		{
 			save_origin_fd(origin_fd);
-			file = process_redirection(curr_node);
+			redirect_info = process_redirection(curr_node);
 		}
 		curr_node = curr_node->next;
 	}
 	if (type == SIMPLE_COMMAND)
 	{
 		execute_builtin_function(cmd, cmd_argv, env_list);
-		if (file != NONE)
-			close(file);
+		if (redirect_info.file != NONE)
+			close(redirect_info.file);
 		rollback_origin_fd(origin_fd);
 	}
 	else
