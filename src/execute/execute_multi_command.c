@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include "execute.h"
 
 /*
@@ -19,6 +20,7 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 		free_all(cmd_argv);
 		free_all(envp);
 		free(cmd_path);
+		// g_exit_code = ERROR_CODE_COMMAND_NOT_FOUND;
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
 	}
 }

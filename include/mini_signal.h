@@ -2,6 +2,7 @@
 # define MINI_SIGNAL_H
 
 # include <stdio.h>
+# include <stdlib.h>
 # include <signal.h>
 # include <unistd.h>
 # include <sys/ioctl.h>

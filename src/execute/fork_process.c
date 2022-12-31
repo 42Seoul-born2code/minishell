@@ -1,8 +1,7 @@
+#include "minishell.h"
 #include "execute.h"
 #include "utils.h"
 #include "mini_signal.h"
-
-int	exit_code;
 
 void	throw_error(char *msg)
 {
@@ -114,12 +113,12 @@ static void	get_user_input(char *limiter)
 	char	*expand_result;
 	pid_t	pid;
 
-	change_heredoc_signal();
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
+		change_heredoc_signal();
 		fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		while (exit_code != 1)
+		while (g_exit_code != 1)
 		{
 			input = readline(HEREDOC_PROMPT);
 			if (is_equal_to_limiter(input, limiter))
@@ -128,11 +127,14 @@ static void	get_user_input(char *limiter)
 			ft_putstr_fd(expand_result, fd);
 		}
 		close(fd);
+		if (g_exit_code == 1)
+			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &g_exit_code, 0);
+		g_exit_code = WEXITSTATUS(g_exit_code);
 		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
@@ -195,11 +197,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		if (curr_token->type == COMMAND)
 		{
 			cmd_path = find_cmd_path(curr_token->word);
-			if (cmd_path == NULL)
-			{
-				printf("%s: command not found\n", curr_token->word);
-				exit(ERROR_CODE_COMMAND_NOT_FOUND);
-			}
 			cmd_argv = merge_arguments(curr_node);
 		}
 		else if (is_redirection(curr_token) == TRUE)
@@ -212,17 +209,21 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	if (redirect_info.file != NONE)
 		close(redirect_info.file);
 	change_signal();
+	if (g_exit_code != 0)
+	{
+		rollback_origin_fd(origin_fd);
+		return ;
+	}
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		if (cmd_path == NULL)
-			exit(EXIT_SUCCESS);
 		execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
 	{
 		// TODO: 자식 프로세스 반환값 전역 변수에 저장
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &g_exit_code, 0);
+		g_exit_code = WEXITSTATUS(g_exit_code);
 		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 	}
