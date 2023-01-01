@@ -169,15 +169,13 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	change_signal();
 	save_origin_fd(origin_fd);
 	cmd_path = NULL;
-	// 자식 프로세스에서 시그널을 받았을 때 처리
-	// 자식에서 ctrl-c exit();
 	curr_node = token_list->head_node;
 	redirect_info.file = NONE;
 	while (curr_node != NULL)
 	{
-		// TODO: whitespace 인 경우에는 실행하지 않도록 처리
 		curr_token = curr_node->content;
 		if (curr_token->type == COMMAND)
 		{
@@ -190,12 +188,11 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		}
 		curr_node = curr_node->next;
 	}
-	// TODO: 멀티 파이프인 경우에는 fork 를 사용해서 빌트인 함수를 실행시켜야 한다.
 	if (redirect_info.file != NONE)
 		close(redirect_info.file);
-	change_signal();
 	if (g_exit_code != 0)
 	{
+		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
 	}
@@ -206,7 +203,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	}
 	else
 	{
-		// TODO: 자식 프로세스 반환값 전역 변수에 저장
 		waitpid(pid, &g_exit_code, 0);
 		g_exit_code = WEXITSTATUS(g_exit_code);
 		unlink(HEREDOC_FILE);
