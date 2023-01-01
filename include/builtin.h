@@ -11,6 +11,9 @@
 # include "libft.h"
 # include "utils.h"
 
+# define NOT_NUMERIC_ARGUMENT	"Error: numeric argument required: "
+# define TOO_MANY_ARGUMNET		"Error: too many arguments. "
+
 typedef enum e_kv_pair{
 	KEY,
 	VALUE

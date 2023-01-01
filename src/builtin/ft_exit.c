@@ -43,14 +43,14 @@ static unsigned char	check_arg(char *arg)
 	{
 		if (ft_isdigit(*ptr) == FALSE)
 		{
-			printf("numeric argument required1\n");
+			print_error(NOT_NUMERIC_ARGUMENT, arg);
 			exit(255);
 		}
 		ptr++;
 	}
 	if (valid_exit_code(arg) == FALSE)
 	{
-		printf("numeric argument required2\n");
+		print_error(NOT_NUMERIC_ARGUMENT, arg);
 		exit(255);
 	}
 	return (ft_atoi(arg));
@@ -90,7 +90,7 @@ void	ft_exit(char **argv, t_env_list *env_list)
 		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");
 		exit_code = check_arg(arg);
 		if (*(argv + 2))
-			printf("too many arguments\n");
+			print_error(TOO_MANY_ARGUMNET, NULL);
 	}
 	free_env_list(env_list);
 	exit(exit_code);
