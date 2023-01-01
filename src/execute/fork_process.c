@@ -111,6 +111,7 @@ static void	get_user_input(char *limiter)
 				break ;
 			expand_result = expand_env_variable(input);
 			ft_putstr_fd(expand_result, fd);
+			ft_putstr_fd("\n", fd);
 		}
 		close(fd);
 		exit(EXIT_SUCCESS);
