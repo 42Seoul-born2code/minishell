@@ -3,12 +3,11 @@
 #include "utils.h"
 
 /*
-** main ()				- Entry Function of Minishell
-**
-** return				- Status Code of Exiting Minishell
-** argc					- The Number of Argument
-** argv					- The Actual Arguments
-** envp					- The Environment Variables on the Entry Time
+	main ()				- Entry function of minishell
+
+	argc				- The number of arguments
+	argv				- The actual arguments
+	envp				- The environment variables when executing minishell
 */
 
 int	g_exit_code = EXIT_SUCCESS;
@@ -22,23 +21,10 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	save_envp_in_env_list(envp, &env_list);
 	execute_minishell(&env_list);
-	// system("leaks minishell");
 	return (0);
 }
-
-
 /*
 
-	터지는 케이스
-
-	리다이렉션 하나만 입력 되었을 때
-	< , <<
-	- segfault
-
-	<<<
-	- heredoc 이 실행됨
-
-	lss
-	- 미니쉘이 바로 꺼짐
+	minishell 실행 후 minishell 실행 시 ctrl \ 누르면 Quit 3 출력되는 문제
 
 */
