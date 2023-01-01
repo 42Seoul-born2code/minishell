@@ -66,7 +66,7 @@ void	execute_minishell(t_env_list *env_list)
 		{
 			tokenize_line(line, token_list);
 			parsing(token_list);
-			if (syntax_analysis(token_list) == ERROR)
+			if (syntax_analysis(token_list) == EXIT_ERROR)
 			{
 				free(line);
 				free_list_nodes(token_list);
