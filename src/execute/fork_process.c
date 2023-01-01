@@ -9,20 +9,6 @@ void	throw_error(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-static int	is_equal_to_limiter(char *line, char *limiter)
-{
-	ssize_t	line_len;
-	ssize_t	limiter_len;
-
-	line_len = ft_strlen(line);
-	limiter_len = ft_strlen(limiter);
-	if (ft_strncmp(line, limiter, limiter_len) != 0)
-		return (FALSE);
-	if (line_len - 1 != limiter_len)
-		return (FALSE);
-	return (TRUE);
-}
-
 char	*merge_word_list(t_word_list *word_list)
 {
 	char	*buffer;
@@ -118,17 +104,15 @@ static void	get_user_input(char *limiter)
 	{
 		change_heredoc_signal();
 		fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		while (g_exit_code != 1)
+		while (TRUE)
 		{
 			input = readline(HEREDOC_PROMPT);
-			if (is_equal_to_limiter(input, limiter))
+			if (ft_strcmp(input, limiter) == 0)
 				break ;
 			expand_result = expand_env_variable(input);
 			ft_putstr_fd(expand_result, fd);
 		}
 		close(fd);
-		if (g_exit_code == 1)
-			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	else
