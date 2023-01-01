@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include "builtin.h"
 #include "execute.h"
 
@@ -78,7 +79,7 @@ static void	free_env_list(t_env_list *env_list)
 	env_list->head_node = NULL;
 }
 
-void	ft_exit(char **argv, t_env_list *env_list)
+int	ft_exit(char **argv, t_env_list *env_list)
 {
 	char			*arg;
 	unsigned char	exit_code;
@@ -89,9 +90,10 @@ void	ft_exit(char **argv, t_env_list *env_list)
 	{
 		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");
 		exit_code = check_arg(arg);
-		if (*(argv + 2))
-			print_error(TOO_MANY_ARGUMNET, NULL);
 	}
 	free_env_list(env_list);
-	exit(exit_code);
+	if (*(argv + 2))
+		return (print_error(TOO_MANY_ARGUMNET, NULL));
+	else
+		exit(exit_code);
 }
