@@ -14,6 +14,8 @@ typedef struct s_unit {
 	t_list	*head_node;
 }	t_unit;
 
+# define SYNTAX_OK	2
+
 void	parsing(t_token *token_list);
 int		syntax_analysis(t_token *token_list);
 

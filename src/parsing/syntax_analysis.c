@@ -34,7 +34,7 @@ int	syntax_analysis(t_token *token_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	result = TRUE;
+	result = SYNTAX_OK;
 	curr_node = token_list->head_node;
 	while (curr_node != NULL && result == TRUE)
 	{

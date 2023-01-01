@@ -87,3 +87,8 @@ void	execute_minishell(t_env_list *env_list)
 // execve(cmd_path, cmd_argv, envp);
 
 // cat Makefile > outfile
+
+// https://github-wiki-see.page/m/Minishell-V6/minishell/wiki/minishell-%ED%8F%89%EA%B0%80%ED%91%9C
+
+// 2021년 7월
+// https://velog.io/@hey-chocopie/minishell-%ED%8F%89%EA%B0%80%ED%91%9C-%ED%95%B4%EC%84%9D

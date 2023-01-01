@@ -142,7 +142,7 @@ t_redirect	process_redirection(t_list *curr_node)
 	else if (curr_token->type == REDIR_HEREDOC)
 	{
 		get_user_input(((t_token_node *)curr_node->next->content)->word);
-		redirect_info.type = INFILE;
+		redirect_info.type = HEREDOC;
 	}
 	else if (curr_token->type == REDIR_APPEND)
 	{
@@ -190,7 +190,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	}
 	if (redirect_info.file != NONE)
 		close(redirect_info.file);
-	if (g_exit_code != 0)
+	if (g_exit_code != 0 && redirect_info.type == HEREDOC)
 	{
 		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
