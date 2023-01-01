@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include "execute.h"
 
 t_bool	is_builtin_function(char *word)
@@ -67,7 +68,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	}
 	if (type == SIMPLE_COMMAND)
 	{
-		execute_builtin_function(cmd, cmd_argv, env_list);
+		g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list);
 		if (redirect_info.file != NONE)
 			close(redirect_info.file);
 		rollback_origin_fd(origin_fd);
