@@ -81,6 +81,7 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	return (1);
 }
 
+// TODO: 히어독 여러 개 왔을 때 처리하기 << eof cat | << foe cat
 void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 {
 	t_redirect		redirect_info;

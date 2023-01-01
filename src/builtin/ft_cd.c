@@ -76,6 +76,7 @@ void	change_directories(char **paths, t_env_list *env_list)
 		else
 		{
 			target_path = change_current_directory(paths, &idx, env_list);
+			// TODO: cd /dev 실행 후 PWD 변수에 현재 경로 + dev 로 저장됨
 			replace_env_value(env_list, "PWD", target_path);
 			free(target_path);
 		}

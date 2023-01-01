@@ -199,6 +199,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
+		// TODO: unset PATH 후 ls 가 실행되는 문제 수정하기
 		execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else
