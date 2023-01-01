@@ -8,7 +8,7 @@
 # define NOT_EXISTED	"Error: No such file or directory: "
 # define HOME_IS_UNSET	"Error: HOME not set"
 
-# define EXIT_ERROR	1
+# define EXIT_ERROR		1
 
 typedef struct s_env_list {
 	t_list	*head_node;
