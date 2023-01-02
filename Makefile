@@ -7,7 +7,6 @@ INCLUDE						:=	-I./include/
 SRC_BUILTIN_DIR				:=	builtin/
 SRC_BUILTIN					:=	execute_builtin_function.c		\
 								ft_cd.c							\
-								ft_cd_utils.c					\
 								ft_echo.c						\
 								ft_pwd.c						\
 								ft_unset.c						\
@@ -74,17 +73,17 @@ LIB_DIR						:=	./libft/
 LIB							:=	$(LIB_DIR)lib$(LIB_NAME).a
 LIB_FLAGS					:=	-L $(LIB_DIR) -l$(LIB_NAME) -I$(LIB_DIR)
 
-# ifdef HOME_ENV
-# 	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
-# 	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
-# else
-# 	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
-# 	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
-# endif
+ifdef HOME_ENV
+	READLINE_LINKING			:=	-lreadline -L/usr/local/opt/readline/lib
+	READLINE_COMPILE			:=	-I/usr/local/opt/readline/include
+else
+	READLINE_LINKING			:=	-lreadline -L ${HOME}/.brew/opt/readline/lib
+	READLINE_COMPILE			:=	-I${HOME}/.brew/opt/readline/include
+endif
 
 ### For M1 Mac Mini ###
-READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
-READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
+# READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
+# READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
 ### For M1 Mac Mini ###
 
 ifdef DEBUG_MODE

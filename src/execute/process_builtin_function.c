@@ -69,6 +69,8 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	if (type == SIMPLE_COMMAND)
 	{
 		g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list);
+		free(cmd);
+		free_all(cmd_argv);
 		if (redirect_info.file != NONE)
 			close(redirect_info.file);
 		rollback_origin_fd(origin_fd);
