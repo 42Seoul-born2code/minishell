@@ -52,12 +52,12 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	pid_t	pid;
 	int		pipe_fd[2];
 
-	if (redirect_info.type != OUTFILE)
+	if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		if (redirect_info.type != OUTFILE)
+		if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
 		{
 			close(pipe_fd[READ]);
 			dup2(pipe_fd[WRITE], STDOUT_FILENO);
@@ -68,9 +68,11 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 		else
 			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
+	// cat < infile | wc -l ==> INFILE
+	// ls | cat => NORMAL
 	else
 	{
-		if (redirect_info.type != OUTFILE)
+		if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
 		{
 			close(pipe_fd[WRITE]);
 			dup2(pipe_fd[READ], STDIN_FILENO);
@@ -81,7 +83,6 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	return (1);
 }
 
-// TODO: 히어독 여러 개 왔을 때 처리하기 << eof cat | << foe cat
 void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 {
 	t_redirect		redirect_info;

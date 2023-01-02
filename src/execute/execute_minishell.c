@@ -12,7 +12,7 @@ void	print_token_word(t_token *token_list)
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		printf("curr_token->word: %s\n", curr_token->word);
+		printf("curr_token->word: %s, type: %d\n", curr_token->word, curr_token->type);
 		curr_node = curr_node->next;
 	}
 }
@@ -61,7 +61,6 @@ void	execute_minishell(t_env_list *env_list)
 	token_list->head_node = NULL;
 	while (TRUE)
 	{
-		// print_env_list(env_list);
 		init_signal();
 		line = readline(PROMPT);
 		if (line == NULL)
@@ -83,7 +82,7 @@ void	execute_minishell(t_env_list *env_list)
 			}
 			expansion(token_list);
 			quote_removal(token_list);
-			// print_token_word(token_list);
+			print_token_word(token_list);
 			execute_command(token_list, env_list);
 			free_list_nodes(token_list);
 			add_history(line);
