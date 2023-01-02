@@ -86,8 +86,8 @@ void	execute_minishell(t_env_list *env_list)
 			execute_command(token_list, env_list);
 			free_list_nodes(token_list);
 			add_history(line);
-			system("leaks minishell");
 		}
 		free(line);
+		system("leaks minishell");
 	}
 }
