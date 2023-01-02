@@ -112,7 +112,6 @@ int	tokenize_line(char *line, t_token *token_list)
 			}
 		}
 		save_token(token_list, token_node, &line[start], word_length);
-		free(token_node);
 	}
 	return (EXIT_SUCCESS);
 }
