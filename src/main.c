@@ -20,6 +20,8 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (EXIT_FAILURE);
 	save_envp_in_env_list(envp, &env_list);
+	// printf("1st env_list\n");
+	// print_env_list(&env_list);
 	execute_minishell(&env_list);
 	return (0);
 }

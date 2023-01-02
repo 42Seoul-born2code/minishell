@@ -28,5 +28,5 @@ void		save_envp_in_env_list(char **envp, t_env_list *env_list);
 
 // error.c
 int			print_error(char *msg, char *arg);
-
+void		print_env_list(t_env_list *env_list);
 #endif

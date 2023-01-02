@@ -79,7 +79,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
-char	*find_cmd_path(char *cmd);
+char	*find_cmd_path(char *cmd, t_env_list *env_list);
 
 // fork_process.c
 t_redirect	process_redirection(t_list *curr_node);

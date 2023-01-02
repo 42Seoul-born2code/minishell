@@ -53,7 +53,15 @@ int	count_argv(t_list *curr_node)
 	return (argv_count);
 }
 
-char	*find_cmd_path(char *cmd)
+static char	**get_path_env(char *str)
+{
+	if (str == NULL)
+		return NULL;
+	else
+		return (ft_split(str + 5, ':'));	
+}
+
+char	*find_cmd_path(char *cmd, t_env_list *env_list)
 {
 	int			i;
 	char		*path;
@@ -74,7 +82,7 @@ char	*find_cmd_path(char *cmd)
 		return (ft_strdup(cmd));
 	}
 	// 2. PATH 환경변수에 존재하는지 확인
-	path_env = ft_split(getenv("PATH"), ':');
+	path_env = get_path_env(get_env_value(env_list, "PATH"));
 	if (path_env == NULL)
 	{
 		printf("환경 변수가 아리마셍.\n");
