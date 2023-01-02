@@ -4,6 +4,8 @@
 # include "libft.h"
 # include <stdio.h>
 
+# define NOT_CLOSED_QUOTE	"Error: Quote is not closed. : "
+
 typedef enum e_meta{
 	WHITESPACE,
 	WORD,
@@ -31,7 +33,7 @@ typedef struct s_token_node {
 	char	*word;
 }	t_token_node;
 
-void	tokenize_line(char *line, t_token *token_list);
+int		tokenize_line(char *line, t_token *token_list);
 t_bool	is_whitespace(char c);
 t_bool	is_operator(char *str);
 t_bool	is_quote(char c);

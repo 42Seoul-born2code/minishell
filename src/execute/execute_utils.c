@@ -55,7 +55,7 @@ int	count_argv(t_list *curr_node)
 
 char	*find_cmd_path(char *cmd)
 {
-	int			i;
+	int			idx;
 	char		*path;
 	char		**path_env;
 	char		*cmd_path;
@@ -67,7 +67,7 @@ char	*find_cmd_path(char *cmd)
 		printf("%s is a directory\n", cmd);
 		return (NULL);
 	}
-	i = 0;
+	idx = 0;
 	// 1. 현재 폴더에 위치하는지 확인
 	if (access(cmd, F_OK | X_OK) == 0)
 	{
@@ -80,19 +80,22 @@ char	*find_cmd_path(char *cmd)
 		printf("환경 변수가 아리마셍.\n");
 		return (NULL);
 	}
-	while (path_env[i] != NULL)
+	while (path_env[idx] != NULL)
 	{
-		path = ft_strjoin(path_env[i], "/");
+		path = ft_strjoin(path_env[idx], "/");
 		cmd_path = ft_strjoin(path, cmd);
 		// 존재하는 경우
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
+			free(path);
+			free(path_env);
 			return (cmd_path);
 		}
 		free(path);
 		free(cmd_path);
-		i += 1;
+		idx += 1;
 	}
+	free(path_env);
 	// 존재하지 않는 경우
 	return (NULL);
 }

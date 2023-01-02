@@ -1,4 +1,6 @@
+#include "minishell.h"
 #include "tokenize.h"
+#include "utils.h"
 
 static void	save_token(t_token *token_list, t_token_node *node, \
 						char *line, int length)
@@ -75,39 +77,41 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	return (*i - start);
 }
 
-void	tokenize_line(char *line, t_token *token_list)
+int	tokenize_line(char *line, t_token *token_list)
 {
-	int				i;
+	int				idx;
 	int				start;
 	int				word_length;
 	t_token_node	*token_node;
 
-	i = 0;
-	while (line[i] != '\0')
+	idx = 0;
+	while (line[idx] != '\0')
 	{
 		// CASE1. whitespace 인 경우
-		if (is_whitespace(line[i]) == TRUE)
+		if (is_whitespace(line[idx]) == TRUE)
 		{
-			i += 1;
+			idx += 1;
 			continue ;
 		}
 		// CASE2. operator 이면 무조건 저장
-		start = i;
+		start = idx;
 		token_node = malloc(sizeof(t_token_node));
-		if (is_operator(&line[i]) == TRUE)
+		if (is_operator(&line[idx]) == TRUE)
 		{
-			get_operator_type(token_node, line, &i, &word_length);
+			get_operator_type(token_node, line, &idx, &word_length);
 		}
 		// CASE3. 문자열을 만났을 때
 		else
 		{
-			word_length = get_word_length(token_node, line, &i, start);
+			word_length = get_word_length(token_node, line, &idx, start);
 			if (word_length == ERROR)
 			{
-				printf("앗챠챠! 따옴표가 안닫혔데스네!\n");
-				break ;
+				free(token_node);
+				g_exit_code = print_error(NOT_CLOSED_QUOTE, line);
+				return (EXIT_ERROR);
 			}
 		}
 		save_token(token_list, token_node, &line[start], word_length);
 	}
+	return (EXIT_SUCCESS);
 }
