@@ -13,6 +13,7 @@
 
 # define NOT_NUMERIC_ARGUMENT	"Error: numeric argument required: "
 # define TOO_MANY_ARGUMNET		"Error: too many arguments. "
+# define VARIABLE_IS_UNSET		"Error: variable is unset. "
 
 typedef enum e_kv_pair{
 	KEY,
@@ -27,12 +28,6 @@ int		check_option(char *argv);
 
 // ft_cd.c
 int		ft_cd(char **argv, t_env_list *env_list);
-
-// ft_cd_utils.c
-int		move_to_env_path(char *env_path, t_env_list *env_list);
-char	*get_parent_directory(t_env_list *env_list);
-char	*join_path(char **paths, int *idx);
-t_bool	is_path_existed(char **curr_path, char **paths, int *idx);
 
 // ft_echo.c
 int		ft_echo(char **argv);

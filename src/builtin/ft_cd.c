@@ -2,91 +2,67 @@
 #include <dirent.h>
 
 /*
-	실제로 디렉토리를 이동하기 전에, 미리 모든 경로가 유효한지 탐색
+	매개변수로 전달된 환경변수의 경로로 현재 위치를 변경
+	- env_path: 이동할 환경변수
+	- env_list: 환경변수 리스트
 */
-t_bool	is_valid_path(char **paths, t_env_list *env_list)
-{
-	int		idx;
-	char	*curr_path;
-
-	idx = 0;
-	curr_path = NULL;
-	while (paths[idx] != NULL)
-	{
-		if (ft_strcmp(paths[idx], ".") == 0)
-			idx += 1;
-		else if (ft_strcmp(paths[idx], "..") == 0)
-		{
-			if (curr_path != NULL)
-				free(curr_path);
-			curr_path = get_parent_directory(env_list);
-			idx += 1;
-		}
-		else if (is_path_existed(&curr_path, paths, &idx) == FALSE)
-		{
-			free(curr_path);
-			return (FALSE);
-		}
-	}
-	return (TRUE);
-}
-
-/*
-	change_directory 함수의 서브함수
-*/
-static char	*change_current_directory(char **paths, int *idx, t_env_list *env_list)
+int	move_to_env_path(char *env_path, t_env_list *env_list)
 {
 	char	*curr_path;
 	char	*target_path;
-	char	*buffer;
 
-	if (ft_strcmp(paths[*idx], "..") == 0)
+	if (is_env_existed(env_list, env_path) == FALSE)
+		return (print_error(VARIABLE_IS_UNSET, env_path));
+	curr_path = ft_strdup(get_env_value(env_list, "PWD"));
+	target_path = get_env_value(env_list, env_path);
+	if (chdir(target_path) == ERROR)
 	{
-		target_path = get_parent_directory(env_list);
-		chdir(target_path);
-		*idx += 1;
+		return (print_error(VARIABLE_IS_UNSET, env_path));
 	}
-	else
-	{
-		curr_path = getcwd(NULL, BUFSIZ);
-		buffer = join_path(paths, idx);
-		target_path = ft_strjoin(curr_path, buffer);
-		if (chdir(target_path) == ERROR)
-			chdir(buffer);
-		free(buffer);
-		free(curr_path);
-	}
-	return (target_path);
+	replace_env_value(env_list, "PWD", target_path);
+	replace_env_value(env_list, "OLDPWD", curr_path);
+	free(curr_path);
+	return (EXIT_SUCCESS);
 }
 
 /*
-	실제로 현재 디렉토리를 이동하는 함수
+	실제로 현재 디렉토리를 변경하는 함수
 */
-void	change_directories(char **paths, t_env_list *env_list)
+int	change_directories(char *argv, t_env_list *env_list)
 {
-	int		idx;
+	char	*old_pwd;
 	char	*target_path;
+	char	**paths;
 
-	idx = 0;
-	replace_env_value(env_list, "OLDPWD", getcwd(NULL, BUFSIZ));
-	while (paths[idx] != NULL)
+	paths = ft_split(argv, '/');
+	old_pwd = getcwd(NULL, BUFSIZ);
+	while (*paths != NULL)
 	{
-		if (ft_strcmp(paths[idx], ".") == 0)
-			idx += 1;
-		else
+		if (chdir(*paths) == ERROR)
 		{
-			target_path = change_current_directory(paths, &idx, env_list);
-			// TODO: cd /dev 실행 후 PWD 변수에 현재 경로 + dev 로 저장됨
-			replace_env_value(env_list, "PWD", target_path);
+			target_path = ft_strjoin("/", *paths);
+			if (chdir(target_path) == ERROR)
+			{
+				replace_env_value(env_list, "PWD", old_pwd);
+				print_error(NOT_EXISTED, argv);
+				free(old_pwd);
+				free(target_path);
+				free_all(paths);
+				return (EXIT_FAILURE);
+			}
 			free(target_path);
 		}
+		replace_env_value(env_list, "PWD", getcwd(NULL, BUFSIZ));
+		paths += 1;
 	}
+	replace_env_value(env_list, "OLDPWD", old_pwd);
+	free(old_pwd);
+	free_all(paths);
+	return (EXIT_SUCCESS);
 }
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
-	char	**paths;
-
 	if (argv[1] == NULL)
 	{
 		if (is_env_existed(env_list, "HOME") == TRUE)
@@ -95,15 +71,7 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
-	paths = ft_split(argv[1], '/');
-	if (is_valid_path(paths, env_list) == FALSE)
-	{
-		free_all(paths);
-		return (print_error(NOT_EXISTED, argv[1]));
-	}
-	change_directories(paths, env_list);
-	free_all(paths);
-	return (EXIT_SUCCESS);
+	return (change_directories(argv[1], env_list));
 }
 
 /*
