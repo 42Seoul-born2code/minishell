@@ -105,7 +105,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			if (is_builtin_function(curr_token->word) == TRUE)
 				cmd_path = ft_strdup(curr_token->word);
 			else
-				cmd_path = find_cmd_path(curr_token->word);
+				cmd_path = find_cmd_path(curr_token->word, env_list);
 			if (cmd_path == NULL)
 			{
 				printf("%s: command not found\n", curr_token->word);
