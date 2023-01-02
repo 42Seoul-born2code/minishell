@@ -93,6 +93,7 @@ void	quote_removal(t_token *token_list)
 				free(result_word);
 			}
 			result_word = ft_strjoin(buffer, prev_word);
+			free(buffer);
 			free(prev_word);
 			prev_word = NULL;
 		}

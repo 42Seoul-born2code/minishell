@@ -152,9 +152,10 @@ void	save_envp_in_env_list(char **envp, t_env_list *env_list)
 	{
 		kv_pair = ft_split(envp[idx], '=');
 		env_node = malloc(sizeof(t_env_node));
-		env_node->key = kv_pair[0];
-		env_node->value = kv_pair[1];
+		env_node->key = ft_strdup(kv_pair[0]);
+		env_node->value = ft_strdup(kv_pair[1]);
 		ft_lstadd_back(&env_list->head_node, ft_lstnew(env_node));
+		free_all(kv_pair);
 		idx += 1;
 	}
 }

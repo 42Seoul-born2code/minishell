@@ -59,6 +59,7 @@ static void	slice_and_save_str(char *str, int start, int idx, char **result)
 		free(*result);
 	*result = ft_strjoin(prev_word, buffer);
 	free(prev_word);
+	free(buffer);
 	if (str[idx] != '\0')
 	{
 		prev_word = ft_strdup(*result);
@@ -93,6 +94,7 @@ static char	*remove_whitespace(char *str)
 		}
 		slice_and_save_str(str, start, idx, &result);
 	}
+	free(str);
 	return (result);
 }
 
@@ -136,6 +138,7 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 			not_spaced_env_word = remove_whitespace(getenv(env_word));
 			ft_lstadd_back(&word_list->head_node, \
 				ft_lstnew(add_double_quotes(not_spaced_env_word)));
+			free(not_spaced_env_word);
 		}
 		else if (quote_type == QUOTED)
 			ft_lstadd_back(&word_list->head_node, \
@@ -184,6 +187,7 @@ void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 		previous_word = ft_strdup(*replaced_word);
 		free(*replaced_word);
 		*replaced_word = ft_strjoin(previous_word, (char *)curr_word->content);
+		free(previous_word);
 		free(curr_word->content);
 		free(curr_word);
 		curr_word = next_word;

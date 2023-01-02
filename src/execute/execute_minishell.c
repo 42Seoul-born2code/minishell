@@ -1,5 +1,8 @@
 #include "execute.h"
 
+/*
+	토큰화 확인용 함수
+*/
 void	print_token_word(t_token *token_list)
 {
 	t_list			*curr_node;
@@ -65,7 +68,12 @@ void	execute_minishell(t_env_list *env_list)
 			break ;
 		if (line[0] != '\0' && is_all_whitespace(line) == FALSE)
 		{
-			tokenize_line(line, token_list);
+			if (tokenize_line(line, token_list) == EXIT_ERROR)
+			{
+				free(line);
+				free_list_nodes(token_list);
+				continue ;
+			}
 			parsing(token_list);
 			if (syntax_analysis(token_list) == EXIT_ERROR)
 			{
@@ -81,15 +89,6 @@ void	execute_minishell(t_env_list *env_list)
 			add_history(line);
 		}
 		free(line);
+		system("leaks minishell");
 	}
 }
-
-// [cat] [Makefile]
-// execve(cmd_path, cmd_argv, envp);
-
-// cat Makefile > outfile
-
-// https://github-wiki-see.page/m/Minishell-V6/minishell/wiki/minishell-%ED%8F%89%EA%B0%80%ED%91%9C
-
-// 2021년 7월
-// https://velog.io/@hey-chocopie/minishell-%ED%8F%89%EA%B0%80%ED%91%9C-%ED%95%B4%EC%84%9D
