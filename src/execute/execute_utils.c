@@ -84,18 +84,17 @@ char	*find_cmd_path(char *cmd)
 	{
 		path = ft_strjoin(path_env[idx], "/");
 		cmd_path = ft_strjoin(path, cmd);
+		free(path);
 		// 존재하는 경우
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
-			free(path);
-			free(path_env);
+			free_all(path_env);
 			return (cmd_path);
 		}
-		free(path);
 		free(cmd_path);
 		idx += 1;
 	}
-	free(path_env);
+	free_all(path_env);
 	// 존재하지 않는 경우
 	return (NULL);
 }
