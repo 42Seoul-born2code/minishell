@@ -100,10 +100,7 @@ char	*find_cmd_path(char *cmd, t_env_list *env_list)
 	// 2. PATH 환경변수에 존재하는지 확인
 	path_env = get_path_env(get_env_value(env_list, "PATH"));
 	if (path_env == NULL)
-	{
-		printf("환경 변수가 아리마셍.\n");
 		return (NULL);
-	}
 	while (path_env[idx] != NULL)
 	{
 		path = ft_strjoin(path_env[idx], "/");
