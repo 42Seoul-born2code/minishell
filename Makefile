@@ -86,9 +86,9 @@ READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
 READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
 ### For M1 Mac Mini ###
 
-# ifdef DEBUG_MODE
-# 	CFLAGS					:=	$(CFLAGS) -g
-# endif
+ifdef DEBUG_MODE
+	CFLAGS					:=	$(CFLAGS) -g
+endif
 
 ifdef D_SANI
 	CFLAGS					:=	$(CFLAGS) -g -fsanitize=address

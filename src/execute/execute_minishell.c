@@ -29,6 +29,7 @@ static void	free_list_nodes(t_token *lst)
 		next_list = curr_list->next;
 		curr_node = curr_list->content;
 		free(curr_node->word);
+		free(curr_node);
 		free(curr_list);
 		curr_list = next_list;
 	}
@@ -57,6 +58,7 @@ void	execute_minishell(t_env_list *env_list)
 	char	*line;
 	t_token	*token_list;
 
+	(void)env_list;
 	token_list = malloc(sizeof(t_token));
 	token_list->head_node = NULL;
 	while (TRUE)
@@ -82,12 +84,12 @@ void	execute_minishell(t_env_list *env_list)
 			}
 			expansion(token_list);
 			quote_removal(token_list);
-			// print_token_word(token_list);
+			print_token_word(token_list);
 			execute_command(token_list, env_list);
 			free_list_nodes(token_list);
 			add_history(line);
 		}
 		free(line);
-		// system("leaks minishell");
+		system("leaks minishell");
 	}
 }
