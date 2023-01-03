@@ -82,14 +82,14 @@ void	execute_minishell(t_env_list *env_list)
 				free_list_nodes(token_list);
 				continue ;
 			}
-			expansion(token_list);
+			expansion(token_list, env_list);
 			quote_removal(token_list);
-			print_token_word(token_list);
+			// print_token_word(token_list);
 			execute_command(token_list, env_list);
 			free_list_nodes(token_list);
 			add_history(line);
 		}
 		free(line);
-		system("leaks minishell");
+		// system("leaks minishell");
 	}
 }

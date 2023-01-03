@@ -1,5 +1,6 @@
 #include "minishell.h"
 #include "expansion.h"
+#include "utils.h"
 
 t_bool	is_valid_variable_rule(char c)
 {
@@ -99,7 +100,7 @@ static char	*remove_whitespace(char *str)
 }
 
 static void	expand_env_variable(t_token_node *token, int *idx, \
-					t_word_list *word_list, t_quote quote_type)
+					t_word_list *word_list, t_quote quote_type, t_env_list *env_list)
 {
 	int		start;
 	int		word_length;
@@ -135,14 +136,14 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 				ft_lstnew(ft_strjoin("$", env_word)));
 		else if (quote_type == NOT_QUOTED)
 		{
-			not_spaced_env_word = remove_whitespace(getenv(env_word));
+			not_spaced_env_word = remove_whitespace(get_env_value(env_list, env_word));
 			ft_lstadd_back(&word_list->head_node, \
 				ft_lstnew(add_double_quotes(not_spaced_env_word)));
 			free(not_spaced_env_word);
 		}
 		else if (quote_type == QUOTED)
 			ft_lstadd_back(&word_list->head_node, \
-					ft_lstnew(ft_strdup(getenv(env_word))));
+					ft_lstnew(ft_strdup(get_env_value(env_list, env_word))));
 		free(env_word);
 	}
 }
@@ -195,7 +196,7 @@ void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 }
 
 // 환경 변수를 확장해서 기존의 토큰을 교체하는 함수
-void	expansion(t_token *token_list)
+void	expansion(t_token *token_list, t_env_list *env_list)
 {
 	int				idx;
 	char			*replaced_word;
@@ -233,7 +234,7 @@ void	expansion(t_token *token_list)
 					if (curr_token->word[idx] == '$')
 					{
 						expand_env_variable(curr_token, &idx, \
-											word_list, QUOTED);
+											word_list, QUOTED, env_list);
 					}
 					// $ 만나기 전의 경우
 					else
@@ -261,7 +262,7 @@ void	expansion(t_token *token_list)
 					if (curr_token->word[idx] == '$')
 					{
 						expand_env_variable(curr_token, &idx, \
-											word_list, NOT_QUOTED);
+											word_list, NOT_QUOTED, env_list);
 					}
 					// $ 만나기 전의 경우
 					else

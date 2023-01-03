@@ -2,8 +2,9 @@
 # define EXPANSION_H
 
 # include "tokenize.h"
+# include "utils.h"
 
-void	expansion(t_token *token_list);
+void	expansion(t_token *token_list, t_env_list *env_list);
 void	quote_removal(t_token *token_list);
 t_bool	is_valid_variable_rule(char c);
 
