@@ -27,6 +27,8 @@ static int	valid_exit_code(const char *s)
 	}
 	while (*ptr)
 	{
+		if (res > res * 10 + (*ptr - '0'))
+			return (FALSE);
 		res = res * 10 + (*ptr - '0');
 		ptr++;
 	}
