@@ -64,6 +64,7 @@ static void	slice_and_save_str(char *str, int start, int idx, char **result)
 	if (str[idx] != '\0')
 	{
 		prev_word = ft_strdup(*result);
+		free(*result);
 		*result = ft_strjoin(prev_word, " ");
 		free(prev_word);
 	}
@@ -80,21 +81,20 @@ static char	*remove_whitespace(char *str)
 		return (NULL);
 	idx = 0;
 	result = NULL;
-	buffer = ft_strdup(str);
-	str = ft_strtrim(buffer, " \n\t\f\v\r");
-	free(buffer);
+	buffer = ft_strtrim(str, " \n\t\f\v\r");
 	while (str[idx] != '\0')
 	{
 		start = idx;
-		while (is_whitespace(str[idx]) == FALSE && str[idx] != '\0')
+		while (is_whitespace(buffer[idx]) == FALSE && buffer[idx] != '\0')
 			idx += 1;
 		if (start == idx)
 		{
 			idx += 1;
 			continue ;
 		}
-		slice_and_save_str(str, start, idx, &result);
+		slice_and_save_str(buffer, start, idx, &result);
 	}
+	free(buffer);
 	free(str);
 	return (result);
 }
@@ -136,7 +136,7 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 				ft_lstnew(ft_strjoin("$", env_word)));
 		else if (quote_type == NOT_QUOTED)
 		{
-			not_spaced_env_word = remove_whitespace(get_env_value(env_list, env_word));
+			not_spaced_env_word = remove_whitespace(ft_strdup(get_env_value(env_list, env_word)));
 			ft_lstadd_back(&word_list->head_node, \
 				ft_lstnew(add_double_quotes(not_spaced_env_word)));
 			free(not_spaced_env_word);
