@@ -12,7 +12,10 @@ static void	handle_sigint(int signum)
 	g_exit_code = 1;
 }
 
-/* SIGINT : ctrl + c, SIGQUIT : ctrl + \ */
+/* 
+	SIGINT : ctrl + c
+	SIGQUIT : ctrl + \ 
+*/
 void	init_signal(void)
 {
 	signal(SIGINT, handle_sigint);
