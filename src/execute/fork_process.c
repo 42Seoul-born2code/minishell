@@ -202,7 +202,10 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	else
 	{
 		waitpid(pid, &g_exit_code, 0);
-		g_exit_code = WEXITSTATUS(g_exit_code);
+		if (WIFSIGNALED(g_exit_code))
+			g_exit_code = 128 + WTERMSIG(g_exit_code);
+		else
+			g_exit_code = WEXITSTATUS(g_exit_code);
 		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		free(cmd_path);
