@@ -33,6 +33,7 @@ int	change_directories(char *argv, t_env_list *env_list)
 	int		idx;
 	char	*old_pwd;
 	char	*target_path;
+	char	*curr_path;
 	char	**paths;
 
 	idx = 0;
@@ -54,7 +55,9 @@ int	change_directories(char *argv, t_env_list *env_list)
 			}
 			free(target_path);
 		}
-		replace_env_value(env_list, "PWD", getcwd(NULL, BUFSIZ));
+		curr_path = getcwd(NULL, BUFSIZ);
+		replace_env_value(env_list, "PWD", curr_path);
+		free(curr_path);
 		idx += 1;
 	}
 	replace_env_value(env_list, "OLDPWD", old_pwd);
