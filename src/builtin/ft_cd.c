@@ -30,17 +30,19 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 */
 int	change_directories(char *argv, t_env_list *env_list)
 {
+	int		idx;
 	char	*old_pwd;
 	char	*target_path;
 	char	**paths;
 
+	idx = 0;
 	paths = ft_split(argv, '/');
 	old_pwd = getcwd(NULL, BUFSIZ);
-	while (*paths != NULL)
+	while (paths[idx] != NULL)
 	{
-		if (chdir(*paths) == ERROR)
+		if (chdir(paths[idx]) == ERROR)
 		{
-			target_path = ft_strjoin("/", *paths);
+			target_path = ft_strjoin("/", paths[idx]);
 			if (chdir(target_path) == ERROR)
 			{
 				replace_env_value(env_list, "PWD", old_pwd);
@@ -53,7 +55,7 @@ int	change_directories(char *argv, t_env_list *env_list)
 			free(target_path);
 		}
 		replace_env_value(env_list, "PWD", getcwd(NULL, BUFSIZ));
-		paths += 1;
+		idx += 1;
 	}
 	replace_env_value(env_list, "OLDPWD", old_pwd);
 	free(old_pwd);
