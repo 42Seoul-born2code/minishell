@@ -92,7 +92,7 @@ char	*expand_env_variable(char *input)
 	return (result);
 }
 
-static void	get_user_input(char *limiter)
+void	get_user_input(char *limiter)
 {	
 	int		fd;
 	char	*input;
@@ -120,9 +120,6 @@ static void	get_user_input(char *limiter)
 	{
 		waitpid(pid, &g_exit_code, 0);
 		g_exit_code = WEXITSTATUS(g_exit_code);
-		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
 	}
 }
 
@@ -141,8 +138,9 @@ t_redirect	process_redirection(t_list *curr_node)
 	}
 	else if (curr_token->type == REDIR_HEREDOC)
 	{
-		get_user_input(((t_token_node *)curr_node->next->content)->word);
+		redirect_info.file = open(HEREDOC_FILE, O_RDONLY, 0644);
 		redirect_info.type = HEREDOC;
+		dup2(redirect_info.file, STDIN_FILENO);
 	}
 	else if (curr_token->type == REDIR_APPEND)
 	{
@@ -199,7 +197,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		// TODO: unset PATH 후 ls 가 실행되는 문제 수정하기
 		execute_cmd(cmd_path, cmd_argv, env_list);
 	}
 	else

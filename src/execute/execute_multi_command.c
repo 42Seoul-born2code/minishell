@@ -68,6 +68,8 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 		else
 			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
+	// cat < infile | wc -l ==> INFILE
+	// ls | cat => NORMAL
 	else
 	{
 		if (redirect_info.type != OUTFILE)
@@ -81,7 +83,6 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	return (1);
 }
 
-// TODO: 히어독 여러 개 왔을 때 처리하기 << eof cat | << foe cat
 void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 {
 	t_redirect		redirect_info;
@@ -134,6 +135,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			exit(EXIT_FAILURE);
 		process_count -= 1;
 	}
+	unlink(HEREDOC_FILE);
 }
 
 /*

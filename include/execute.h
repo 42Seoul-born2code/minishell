@@ -84,6 +84,7 @@ char	*find_cmd_path(char *cmd, t_env_list *env_list);
 // fork_process.c
 t_redirect	process_redirection(t_list *curr_node);
 void	fork_process(t_token *token_list, t_env_list *env_list);
+void	get_user_input(char *limiter);
 
 // open_file.c
 int		open_file(t_list *next_node, int mode);

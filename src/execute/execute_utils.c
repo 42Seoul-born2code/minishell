@@ -24,12 +24,20 @@ char	**merge_arguments(t_list *curr_node)
 	while (idx < argv_count)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE || curr_token->type == PIPE)
+		if (curr_token->type == PIPE)
 		{
 			break ;
 		}
-		cmd_argv[idx] = ft_strdup(curr_token->word);
-		idx += 1;
+		else if (curr_token->type == REDIR_HEREDOC)
+		{
+			curr_node = curr_node->next;
+			continue ;
+		}
+		if (curr_token->type == ARGUMENT || curr_token->type == COMMAND)
+		{
+			cmd_argv[idx] = ft_strdup(curr_token->word);
+			idx += 1;
+		}
 		curr_node = curr_node->next;
 	}
 	cmd_argv[argv_count] = NULL;
@@ -45,9 +53,17 @@ int	count_argv(t_list *curr_node)
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE || curr_token->type == PIPE)
+		if (curr_token->type == REDIR_HEREDOC)
+		{
+			curr_node = curr_node->next;
+			continue ;
+		}
+		if ((curr_token->type != REDIR_HEREDOC && is_redirection(curr_token) == TRUE) || curr_token->type == PIPE)
 			break ;
-		argv_count += 1;
+		if (curr_token->type == ARGUMENT || curr_token->type == COMMAND)
+		{
+			argv_count += 1;
+		}
 		curr_node = curr_node->next;
 	}
 	return (argv_count);
