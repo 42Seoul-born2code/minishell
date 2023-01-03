@@ -87,10 +87,12 @@ int	ft_export(char **argv, t_env_list *env_list)
 			return (print_error(SYNTAX_ERROR, NULL));
 		if (is_valid_variable_name(kv_pair[KEY]) == FALSE)
 			return (print_error(SYNTAX_ERROR, NULL));
-		if (get_env_value(env_list, kv_pair[KEY]) == FALSE)
+		if (get_env_value(env_list, kv_pair[KEY]) != NULL \
+			&& kv_pair[VALUE] == NULL)
 		{
-			save_export(env_list, kv_pair);
 		}
+		else
+			save_export(env_list, kv_pair);
 		free_all(kv_pair);
 		idx += 1;
 	}
