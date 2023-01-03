@@ -71,7 +71,7 @@ static void	free_env_list(t_env_list *env_list)
 		next_list = curr_list->next;
 		curr_node = curr_list->content;
 		free(curr_node->key);
-		if (curr_node->value != NULL) 
+		if (curr_node->value != NULL)
 		{
 			free(curr_node->value);
 		}

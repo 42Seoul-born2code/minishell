@@ -77,6 +77,17 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	return (*i - start);
 }
 
+/*
+
+	LINE96: CASE1. whitspace인 경우
+	LINE104: CASE2. operator 이면 무조건 저장
+	LINE108: CASE3. 문자열을 만났을 때
+
+*/
+
+
+
+
 int	tokenize_line(char *line, t_token *token_list)
 {
 	int				idx;
@@ -87,20 +98,15 @@ int	tokenize_line(char *line, t_token *token_list)
 	idx = 0;
 	while (line[idx] != '\0')
 	{
-		// CASE1. whitespace 인 경우
 		if (is_whitespace(line[idx]) == TRUE)
 		{
 			idx += 1;
 			continue ;
 		}
-		// CASE2. operator 이면 무조건 저장
 		start = idx;
 		token_node = malloc(sizeof(t_token_node));
 		if (is_operator(&line[idx]) == TRUE)
-		{
 			get_operator_type(token_node, line, &idx, &word_length);
-		}
-		// CASE3. 문자열을 만났을 때
 		else
 		{
 			word_length = get_word_length(token_node, line, &idx, start);
