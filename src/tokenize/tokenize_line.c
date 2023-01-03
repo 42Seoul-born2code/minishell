@@ -84,10 +84,6 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	LINE108: CASE3. 문자열을 만났을 때
 
 */
-
-
-
-
 int	tokenize_line(char *line, t_token *token_list)
 {
 	int				idx;
@@ -119,5 +115,5 @@ int	tokenize_line(char *line, t_token *token_list)
 		}
 		save_token(token_list, token_node, &line[start], word_length);
 	}
-	return (EXIT_SUCCESS);
+	return (TRUE);
 }
