@@ -90,9 +90,9 @@ READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
 # 	CFLAGS					:=	$(CFLAGS) -g
 # endif
 
-# ifdef D_SANI
-# 	CFLAGS					:=	$(CFLAGS) -g -fsanitize=address
-# endif
+ifdef D_SANI
+	CFLAGS					:=	$(CFLAGS) -g -fsanitize=address
+endif
 
 .PHONY : all
 all : $(NAME)

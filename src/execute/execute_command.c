@@ -22,15 +22,13 @@ void	check_heredoc(t_token *token_list)
 	t_token_node	*limiter_node;
 	t_token_node	*curr_token;
 
-	printf("check heredoc");
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		if (curr_token->type == HEREDOC)
+		if (curr_token->type == REDIR_HEREDOC)
 		{
 			limiter_node = curr_node->next->content;
-			printf("limiter word: %s", limiter_node->word);
 			get_user_input(limiter_node->word);
 		}
 		curr_node = curr_node->next;
@@ -39,13 +37,6 @@ void	check_heredoc(t_token *token_list)
 
 void	execute_command(t_token *token_list, t_env_list *env_list)
 {
-	// TODO: 히어독 여러 개 왔을 때 처리하기 << eof cat | << foe cat
-	// << eof [cat]-->COMMAND << foe [cat]-->ARGUMENT
-	// << eof cat | << foe cat | wc -l
-	// heredoc 개수를 세서 미리 임시파일에 저장을 한다.
-	// heredoc 일 경우에는 해당 임시파일을 infile fd 로 연결한다.
-	// [선택사항] 임시파일을 하나만 만들고 있는데, 이거를 여러 개가 오면 여러 생성할 수 있도록 수정
-	// << eof cat | wc -l | << foe cat | wc -l
 	check_heredoc(token_list);
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{

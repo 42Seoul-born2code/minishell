@@ -120,9 +120,6 @@ void	get_user_input(char *limiter)
 	{
 		waitpid(pid, &g_exit_code, 0);
 		g_exit_code = WEXITSTATUS(g_exit_code);
-		fd = open(HEREDOC_FILE, O_RDONLY, 0644);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
 	}
 }
 

@@ -52,12 +52,12 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	pid_t	pid;
 	int		pipe_fd[2];
 
-	if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
+	if (redirect_info.type != OUTFILE)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
+		if (redirect_info.type != OUTFILE)
 		{
 			close(pipe_fd[READ]);
 			dup2(pipe_fd[WRITE], STDOUT_FILENO);
@@ -72,7 +72,7 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 	// ls | cat => NORMAL
 	else
 	{
-		if (redirect_info.type == INFILE || redirect_info.type == NORMAL)
+		if (redirect_info.type != OUTFILE)
 		{
 			close(pipe_fd[WRITE]);
 			dup2(pipe_fd[READ], STDIN_FILENO);
@@ -135,6 +135,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			exit(EXIT_FAILURE);
 		process_count -= 1;
 	}
+	unlink(HEREDOC_FILE);
 }
 
 /*
