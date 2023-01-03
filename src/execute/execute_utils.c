@@ -74,7 +74,7 @@ static char	**get_path_env(char *str)
 	if (str == NULL)
 		return NULL;
 	else
-		return (ft_split(str + 5, ':'));	
+		return (ft_split(str, ':'));	
 }
 
 char	*find_cmd_path(char *cmd, t_env_list *env_list)
