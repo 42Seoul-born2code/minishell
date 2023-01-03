@@ -17,7 +17,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argv;
 	if (argc != 1)
-		return (EXIT_FAILURE);
+		return (print_error(INVALID_ARGUMENT, argv[1]));
 	save_envp_in_env_list(envp, &env_list);
 	execute_minishell(&env_list);
 	return (0);
