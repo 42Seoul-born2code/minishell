@@ -90,6 +90,6 @@ void	execute_minishell(t_env_list *env_list)
 			add_history(line);
 		}
 		free(line);
-		// system("leaks minishell");
+		system("leaks minishell");
 	}
 }

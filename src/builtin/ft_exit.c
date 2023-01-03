@@ -75,6 +75,7 @@ static void	free_env_list(t_env_list *env_list)
 		{
 			free(curr_node->value);
 		}
+		free(curr_node);
 		free(curr_list);
 		curr_list = next_list;
 	}
@@ -92,9 +93,9 @@ int	ft_exit(char **argv, t_env_list *env_list)
 	{
 		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");
 		exit_code = check_arg(arg);
+		free(arg);
 		if (*(argv + 2) != NULL)
 		{
-			free_env_list(env_list);
 			return (print_error(TOO_MANY_ARGUMNET, NULL));
 		}
 	}
