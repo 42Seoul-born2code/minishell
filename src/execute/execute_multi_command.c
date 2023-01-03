@@ -1,6 +1,5 @@
 #include "minishell.h"
 #include "execute.h"
-
 /*
 	리다이렉션은 없고 파이프만 들어온 경우
 	- ls | cat
@@ -28,7 +27,6 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, int origin_fd[2], t_redirect redirect_info)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid == CHILD_PROCESS)
@@ -38,11 +36,17 @@ void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, i
 		if (is_builtin_function(cmd_path) == TRUE)
 			exit(execute_builtin_function(cmd_path, cmd_argv, env_list));
 		else
+		{
 			execute_cmd(cmd_path, cmd_argv, env_list);
+		}
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
+		waitpid(pid, &g_exit_code, 0);
+		if (WIFSIGNALED(g_exit_code))
+			g_exit_code = 128 + WTERMSIG(g_exit_code);
+		else
+			g_exit_code = WEXITSTATUS(g_exit_code);
 		close(STDIN_FILENO);
 	}
 }
@@ -65,11 +69,11 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 		}
 		if (is_builtin_function(cmd_path) == TRUE)
 			exit(execute_builtin_function(cmd_path, cmd_argv, env_list));
+		else if (redirect_info.file == NONE && redirect_info.type != NORMAL)
+			exit(EXIT_FAILURE);
 		else
 			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
-	// cat < infile | wc -l ==> INFILE
-	// ls | cat => NORMAL
 	else
 	{
 		if (redirect_info.type != OUTFILE)

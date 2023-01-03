@@ -172,6 +172,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	cmd_path = NULL;
 	curr_node = token_list->head_node;
 	redirect_info.file = NONE;
+	redirect_info.type = NORMAL;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
@@ -190,6 +191,15 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		close(redirect_info.file);
 	if (g_exit_code != 0 && redirect_info.type == HEREDOC)
 	{
+		unlink(HEREDOC_FILE);
+		rollback_origin_fd(origin_fd);
+		return ;
+	}
+	if (redirect_info.file == NONE && redirect_info.type != NORMAL)
+	{
+		g_exit_code = 1;
+		free(cmd_path);
+		free_all(cmd_argv);
 		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
