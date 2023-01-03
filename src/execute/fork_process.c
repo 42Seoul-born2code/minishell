@@ -92,7 +92,7 @@ char	*expand_env_variable(char *input)
 	return (result);
 }
 
-static void	get_user_input(char *limiter)
+void	get_user_input(char *limiter)
 {	
 	int		fd;
 	char	*input;

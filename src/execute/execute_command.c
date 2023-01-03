@@ -18,16 +18,22 @@ static t_command_type	get_execute_type(t_token *token_list)
 
 void	check_heredoc(t_token *token_list)
 {
-	t_list			*list_node;
-	t_token_node	*curr_node;
+	t_list			*curr_node;
+	t_token_node	*limiter_node;
+	t_token_node	*curr_token;
 
-	while (list_node != NULL)
+	printf("check heredoc");
+	curr_node = token_list->head_node;
+	while (curr_node != NULL)
 	{
+		curr_token = curr_node->content;
 		if (curr_token->type == HEREDOC)
 		{
-			get_user_input();
+			limiter_node = curr_node->next->content;
+			printf("limiter word: %s", limiter_node->word);
+			get_user_input(limiter_node->word);
 		}
-		list_node = list_node->next;
+		curr_node = curr_node->next;
 	}
 }
 
