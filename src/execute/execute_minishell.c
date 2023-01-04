@@ -102,8 +102,7 @@ void	execute_minishell(t_env_list *env_list)
 		line = readline(PROMPT);
 		if (line == NULL)
 			break ;
-		if (is_all_whitespace(line) == FALSE && \
-			tokenize_line(line, token_list) == EXIT_SUCCESS)
+		if (is_all_whitespace(line) == FALSE && tokenize_line(line, token_list) == EXIT_SUCCESS)
 		{
 			parsing(token_list);
 			if (syntax_analysis(token_list) == SYNTAX_OK)
@@ -117,7 +116,7 @@ void	execute_minishell(t_env_list *env_list)
 		}
 		free(line);
 		free_list_nodes(token_list);
-		system("leaks minishell");// TODO: 통합 테스트 끝난 다음에 삭제하기 (noriminette 은 OK)
+		// system("leaks minishell");// TODO: 통합 테스트 끝난 다음에 삭제하기 (noriminette 은 OK)
 	}
 }
 

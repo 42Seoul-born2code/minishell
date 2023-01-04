@@ -170,6 +170,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	change_signal();
 	save_origin_fd(origin_fd);
 	cmd_path = NULL;
+	cmd_argv = NULL;
 	curr_node = token_list->head_node;
 	redirect_info.file = NONE;
 	redirect_info.type = NORMAL;
@@ -218,7 +219,9 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 			g_exit_code = WEXITSTATUS(g_exit_code);
 		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
-		free(cmd_path);
-		free_all(cmd_argv);
+		if (cmd_path != NULL)
+			free(cmd_path);
+		if (cmd_argv != NULL)
+			free_all(cmd_argv);
 	}
 }

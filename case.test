@@ -4,6 +4,8 @@
 - > outfile ls not_existed_folder (not_existed_folder: No such file or directory)
 -              echo 1
 
+[ v ] < infile : command 가 NULL 일 때 free 를 시도해서 오류가 발생함
+
 [파싱]
 - < | > >> syntax error
 
