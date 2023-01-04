@@ -1,0 +1,14 @@
+Makefile
+README.md
+case.test
+env_utils.o
+execute_minishell.o
+functions
+include
+libft
+main.o
+minishell
+minishell_test.sh
+outfile
+readline
+src

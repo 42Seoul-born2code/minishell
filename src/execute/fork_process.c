@@ -91,19 +91,27 @@ char	*expand_env_variable(char *input)
 	free(word_list);
 	return (result);
 }
+char	*make_heredoc_file_name(int idx)
+{
+	return (ft_strjoin(HEREDOC_FILE,ft_itoa(idx)));
+}
 
-void	get_user_input(char *limiter)
+void	get_user_input(char *limiter, int idx)
 {	
 	int		fd;
 	char	*input;
 	char	*expand_result;
 	pid_t	pid;
+	char	*h_name;
 
+	printf("make heredoc file name : %d", idx);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
 		change_heredoc_signal();
-		fd = open(HEREDOC_FILE, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		h_name = make_heredoc_file_name(idx);
+		fd = open(h_name, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		free(h_name);
 		while (TRUE)
 		{
 			input = readline(HEREDOC_PROMPT);
