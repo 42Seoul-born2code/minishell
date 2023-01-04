@@ -53,6 +53,7 @@ typedef enum e_redir_type{
 
 typedef struct s_redirect{
 	int				file;
+	int				heredoc_file_num;
 	t_redir_type	type;
 }	t_redirect;
 
@@ -82,15 +83,19 @@ int		count_argv(t_list *curr_node);
 char	*find_cmd_path(char *cmd, t_env_list *env_list);
 
 // fork_process.c
-t_redirect	process_redirection(t_list *curr_node);
+void	process_redirection(t_list *curr_node, t_redirect *redirect_info);
 void	fork_process(t_token *token_list, t_env_list *env_list);
 void	get_user_input(char *limiter, int idx);
-
+char	*make_heredoc_file_name(int idx);
 // open_file.c
 int		open_file(t_list *next_node, int mode);
 
 // redirection_utils.c
 void	save_origin_fd(int origin_fd[2]);
 void	rollback_origin_fd(int origin_fd[2]);
+
+// heredoc_utils.c
+void	check_heredoc(t_token *token_list);
+void	delete_heredoc_file(int heredoc_file_num);
 
 #endif

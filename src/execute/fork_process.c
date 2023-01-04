@@ -91,27 +91,34 @@ char	*expand_env_variable(char *input)
 	free(word_list);
 	return (result);
 }
-char	*make_heredoc_file_name(int idx)
+
+int	get_heredoc_file_fd(int heredoc_idx, int mode)
 {
-	return (ft_strjoin(HEREDOC_FILE,ft_itoa(idx)));
+	int		fd;
+	char	*heredoc_file_name;
+
+	fd = NONE;
+	heredoc_file_name = ft_strjoin(HEREDOC_FILE, ft_itoa(heredoc_idx));
+	if (mode == READ_MODE)
+		fd = open(heredoc_file_name, O_RDONLY, 0644);
+	else if (mode == WRITE_MODE)
+		fd = open(heredoc_file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	free(heredoc_file_name);
+	return (fd);
 }
 
-void	get_user_input(char *limiter, int idx)
+void	get_user_input(char *limiter, int heredoc_idx)
 {	
 	int		fd;
 	char	*input;
 	char	*expand_result;
 	pid_t	pid;
-	char	*h_name;
 
-	printf("make heredoc file name : %d", idx);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
 		change_heredoc_signal();
-		h_name = make_heredoc_file_name(idx);
-		fd = open(h_name, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		free(h_name);
+		fd = get_heredoc_file_fd(heredoc_idx, WRITE_MODE);
 		while (TRUE)
 		{
 			input = readline(HEREDOC_PROMPT);
@@ -131,38 +138,46 @@ void	get_user_input(char *limiter, int idx)
 	}
 }
 
-t_redirect	process_redirection(t_list *curr_node)
+void	process_redirection(t_list *curr_node, t_redirect *redirect_info)
 {
-	t_redirect		redirect_info;
 	t_token_node	*curr_token;
 
-	redirect_info.file = NONE;
+	// << eof cat << foe cat
+	if (redirect_info->file != NONE)
+	{
+		close(redirect_info->file);
+		if (redirect_info->type == OUTFILE)
+			close(STDOUT_FILENO);
+		else if (redirect_info->type == INFILE)
+			close(STDIN_FILENO);
+	}
 	curr_token = curr_node->content;
 	if (curr_token->type == REDIR_RIGHT)
 	{
-		redirect_info.file = open_file(curr_node->next, WRITE_MODE);
-		redirect_info.type = OUTFILE;
-		dup2(redirect_info.file, STDOUT_FILENO);
+		redirect_info->file = open_file(curr_node->next, WRITE_MODE);
+		redirect_info->type = OUTFILE;
+		dup2(redirect_info->file, STDOUT_FILENO);
 	}
 	else if (curr_token->type == REDIR_HEREDOC)
 	{
-		redirect_info.file = open(HEREDOC_FILE, O_RDONLY, 0644);
-		redirect_info.type = HEREDOC;
-		dup2(redirect_info.file, STDIN_FILENO);
+		//TODO: heredoc file 이름 바꿔야함
+		redirect_info->file = get_heredoc_file_fd(redirect_info->heredoc_file_num, READ_MODE);
+		redirect_info->type = HEREDOC;
+		dup2(redirect_info->file, STDIN_FILENO);
+		redirect_info->heredoc_file_num += 1;
 	}
 	else if (curr_token->type == REDIR_APPEND)
 	{
-		redirect_info.file = open_file(curr_node->next, APPEND_MODE);
-		redirect_info.type = OUTFILE;
-		dup2(redirect_info.file, STDOUT_FILENO);
+		redirect_info->file = open_file(curr_node->next, APPEND_MODE);
+		redirect_info->type = OUTFILE;
+		dup2(redirect_info->file, STDOUT_FILENO);
 	}
 	else if (curr_token->type == REDIR_LEFT)
 	{
-		redirect_info.file = open_file(curr_node->next, READ_MODE);
-		redirect_info.type = INFILE;
-		dup2(redirect_info.file, STDIN_FILENO);
+		redirect_info->file = open_file(curr_node->next, READ_MODE);
+		redirect_info->type = INFILE;
+		dup2(redirect_info->file, STDIN_FILENO);
 	}
-	return (redirect_info);
 }
 
 void	fork_process(t_token *token_list, t_env_list *env_list)
@@ -182,6 +197,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	curr_node = token_list->head_node;
 	redirect_info.file = NONE;
 	redirect_info.type = NORMAL;
+	redirect_info.heredoc_file_num = 0;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
@@ -192,7 +208,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
-			redirect_info = process_redirection(curr_node);
+			process_redirection(curr_node, &redirect_info);
 		}
 		curr_node = curr_node->next;
 	}
@@ -200,16 +216,18 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		close(redirect_info.file);
 	if (g_exit_code != 0 && redirect_info.type == HEREDOC)
 	{
-		unlink(HEREDOC_FILE);
+		// unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
 	}
 	if (redirect_info.file == NONE && redirect_info.type != NORMAL)
 	{
 		g_exit_code = 1;
-		free(cmd_path);
-		free_all(cmd_argv);
-		unlink(HEREDOC_FILE);
+		if (cmd_path != NULL)
+			free(cmd_path);
+		if (cmd_argv != NULL)
+			free_all(cmd_argv);
+		// unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
 	}
@@ -231,5 +249,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 			free(cmd_path);
 		if (cmd_argv != NULL)
 			free_all(cmd_argv);
+		delete_heredoc_file(redirect_info.heredoc_file_num);
 	}
 }

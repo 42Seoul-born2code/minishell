@@ -16,30 +16,10 @@ static t_command_type	get_execute_type(t_token *token_list)
 	return (SIMPLE_COMMAND);
 }
 
-void	check_heredoc(t_token *token_list)
-{
-	t_list			*curr_node;
-	t_token_node	*limiter_node;
-	t_token_node	*curr_token;
-	int				idx;
-
-	idx = 0;
-	curr_node = token_list->head_node;
-	while (curr_node != NULL)
-	{
-		curr_token = curr_node->content;
-		if (curr_token->type == REDIR_HEREDOC)
-		{
-			idx += 1;
-			limiter_node = curr_node->next->content;
-			get_user_input(limiter_node->word, idx);
-		}
-		curr_node = curr_node->next;
-	}
-}
 
 void	execute_command(t_token *token_list, t_env_list *env_list)
 {
+
 	check_heredoc(token_list);
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
@@ -57,6 +37,9 @@ void	execute_command(t_token *token_list, t_env_list *env_list)
 		execute_multi_command(token_list, env_list);
 	}
 }
+
+// [<< eof] cat [<< foe] cat
+// 			COMMAND		 ARGUMENT
 
 /*
 
