@@ -50,6 +50,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 
 	redirect_info.file = NONE;
 	redirect_info.type = NORMAL;
+	redirect_info.heredoc_file_num = 0;
 	curr_node = token_list->head_node;
 	save_origin_fd(origin_fd);
 	while (curr_node != NULL)
@@ -62,18 +63,21 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
-			redirect_info = process_redirection(curr_node);
+			process_redirection(curr_node, &redirect_info);
 		}
 		curr_node = curr_node->next;
 	}
 	if (type == SIMPLE_COMMAND)
 	{
 		g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list);
-		free(cmd);
-		free_all(cmd_argv);
+		if (cmd != NULL)
+			free(cmd);
+		if (cmd_argv != NULL)
+			free_all(cmd_argv);
 		if (redirect_info.file != NONE)
 			close(redirect_info.file);
 		rollback_origin_fd(origin_fd);
+		delete_heredoc_file(redirect_info.heredoc_file_num);
 	}
 	else
 	{

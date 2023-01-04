@@ -101,6 +101,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 
 	redirect_info.file = NONE;
 	redirect_info.type = NORMAL;
+	redirect_info.heredoc_file_num = 0;
 	process_count = 0;
 	curr_node = token_list->head_node;
 	save_origin_fd(origin_fd);
@@ -121,7 +122,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 		}
 		else if (is_redirection(curr_token) == TRUE)
 		{
-			redirect_info = process_redirection(curr_node);
+			process_redirection(curr_node, &redirect_info);
 		}
 		else if (curr_token->type == PIPE)
 		{
@@ -143,7 +144,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			exit(EXIT_FAILURE);
 		process_count -= 1;
 	}
-	unlink(HEREDOC_FILE);
+	delete_heredoc_file(redirect_info.heredoc_file_num);
 }
 
 /*
