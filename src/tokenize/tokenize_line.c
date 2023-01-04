@@ -13,22 +13,6 @@ static void	save_token(t_token *token_list, t_token_node *node, \
 	ft_lstadd_back(&token_list->head_node, ft_lstnew(node));
 }
 
-static void	get_operator_type(t_token_node *node, char *line, \
-								int *idx, int *length)
-{
-	node->type = get_meta_type(&line[*idx]);
-	if (node->type == REDIR_HEREDOC || node->type == REDIR_APPEND)
-	{
-		*length = 2;
-		*idx += 2;
-	}
-	else
-	{
-		*length = 1;
-		*idx += 1;
-	}
-}
-
 // 따옴표로 묶인 문자들을 연속으로 만났을 때 하나의 word 로 처리하기 위한 반복문
 static t_bool	is_quote_closed(char *line, int *i)
 {
@@ -77,6 +61,29 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	return (*i - start);
 }
 
+int	add_token_lstback(t_token *token_list, char *line, int *idx)
+{
+	int				start;
+	int				word_length;
+	t_token_node	*token_node;
+
+	start = *idx;
+	token_node = malloc(sizeof(t_token_node));
+	if (is_operator(&line[*idx]) == TRUE)
+		get_operator_type(token_node, line, idx, &word_length);
+	else
+	{
+		word_length = get_word_length(token_node, line, idx, start);
+		if (word_length == ERROR)
+		{
+			free(token_node);
+			return (EXIT_ERROR);
+		}
+	}
+	save_token(token_list, token_node, &line[start], word_length);
+	return (EXIT_SUCCESS);
+}
+
 /*
 
 	LINE96: CASE1. whitspace인 경우
@@ -86,34 +93,21 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 */
 int	tokenize_line(char *line, t_token *token_list)
 {
-	int				idx;
-	int				start;
-	int				word_length;
-	t_token_node	*token_node;
+	int	idx;
 
 	idx = 0;
 	while (line[idx] != '\0')
 	{
-		if (is_whitespace(line[idx]) == TRUE)
+		if (is_whitespace(line[idx]) == FALSE)
 		{
-			idx += 1;
-			continue ;
-		}
-		start = idx;
-		token_node = malloc(sizeof(t_token_node));
-		if (is_operator(&line[idx]) == TRUE)
-			get_operator_type(token_node, line, &idx, &word_length);
-		else
-		{
-			word_length = get_word_length(token_node, line, &idx, start);
-			if (word_length == ERROR)
+			if (add_token_lstback(token_list, line, &idx) == EXIT_ERROR)
 			{
-				free(token_node);
 				g_exit_code = print_error(NOT_CLOSED_QUOTE, line);
 				return (EXIT_ERROR);
 			}
 		}
-		save_token(token_list, token_node, &line[start], word_length);
+		else
+			idx += 1;
 	}
-	return (TRUE);
+	return (EXIT_SUCCESS);
 }

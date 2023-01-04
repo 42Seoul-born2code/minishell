@@ -1,5 +1,12 @@
 #include "tokenize.h"
 
+t_bool	is_whitespace(char c);
+t_bool	is_operator(char *str);
+t_bool	is_quote(char c);
+t_meta	get_meta_type(char *str);
+void	get_operator_type(t_token_node *node, char *line, \
+								int *idx, int *length);
+
 t_bool	is_whitespace(char c)
 {
 	if (c == ' ' || c == '\n' || c == '\r' || c == '\v'
@@ -49,4 +56,20 @@ t_meta	get_meta_type(char *str)
 		return (PIPE);
 	else
 		return (WORD);
+}
+
+void	get_operator_type(t_token_node *node, char *line, \
+								int *idx, int *length)
+{
+	node->type = get_meta_type(&line[*idx]);
+	if (node->type == REDIR_HEREDOC || node->type == REDIR_APPEND)
+	{
+		*length = 2;
+		*idx += 2;
+	}
+	else
+	{
+		*length = 1;
+		*idx += 1;
+	}
 }

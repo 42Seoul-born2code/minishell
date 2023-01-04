@@ -5,6 +5,20 @@ static t_bool	is_all_whitespace(char *line);
 static void		free_list_nodes(t_token *lst);
 void			execute_minishell(t_env_list *env_list);
 
+void	print_token_word(t_token *token_list)
+{
+	t_list			*curr_node;
+	t_token_node	*curr_token;
+
+	curr_node = token_list->head_node;
+	while (curr_node != NULL)
+	{
+		curr_token = curr_node->content;
+		printf("curr_token->word: %s, type: %d\n", curr_token->word, curr_token->type);
+		curr_node = curr_node->next;
+	}
+}
+
 /*
 	init_token_list()	- Initialize token list
 
@@ -89,12 +103,13 @@ void	execute_minishell(t_env_list *env_list)
 		if (line == NULL)
 			break ;
 		if (is_all_whitespace(line) == FALSE && \
-			tokenize_line(line, token_list) == TRUE)
+			tokenize_line(line, token_list) == EXIT_SUCCESS)
 		{
 			parsing(token_list);
 			if (syntax_analysis(token_list) == SYNTAX_OK)
 			{
 				expansion(token_list, env_list);
+				// print_token_word(token_list);
 				quote_removal(token_list);
 				execute_command(token_list, env_list);
 				add_history(line);
