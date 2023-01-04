@@ -1,4 +1,4 @@
-#include "libft.h"
+#include "utils.h"
 
 t_bool	is_valid_variable_name(char *str)
 {
@@ -15,4 +15,14 @@ t_bool	is_valid_variable_name(char *str)
 			return (FALSE);
 	}
 	return (TRUE);
+}
+
+void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value)
+{
+	t_env_node	*new_node;
+
+	new_node = malloc(sizeof(t_env_node));
+	new_node->key = key;
+	new_node->value = value;
+	ft_lstadd_back(&env_list->head_node, ft_lstnew(new_node));
 }

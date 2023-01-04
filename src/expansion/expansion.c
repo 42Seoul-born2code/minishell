@@ -117,17 +117,17 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 			break ;
 		*idx += 1;
 	}
-	if (start == *idx && token->word[start - 1] == '$')
+	if (start == *idx && token->word[start - 1] == '$' && token->word[*idx] != '?')
 	{
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
 	}
-	else if (start == *idx && token->word[*idx] == '\0')
-		return ;
 	else if (token->word[*idx] == '?')
 	{
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_itoa(g_exit_code)));
 		*idx += 1;
 	}
+	else if (start == *idx && token->word[*idx] == '\0')
+		return ;
 	else
 	{
 		word_length = *idx - start;
