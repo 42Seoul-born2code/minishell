@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include "builtin.h"
 
 t_bool	is_option_included(char *str)
@@ -32,16 +33,6 @@ int	print_export_env_list(t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
-void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value)
-{
-	t_env_node	*new_node;
-
-	new_node = malloc(sizeof(t_env_node));
-	new_node->key = key;
-	new_node->value = value;
-	ft_lstadd_back(&env_list->head_node, ft_lstnew(new_node));
-}
-
 void	save_export(t_env_list *env_list, char **kv_pair)
 {
 	char		*key;
@@ -71,33 +62,51 @@ void	save_export(t_env_list *env_list, char **kv_pair)
 	ft_lstadd_env_node(env_list, key, value);
 }
 
-int	ft_export(char **argv, t_env_list *env_list)
+int	process_export(char **argv, t_env_list *env_list)
 {
 	int		idx;
+	int		result;
 	char	**kv_pair;
 
-	if (argv[1] == NULL)
-		return (print_export_env_list(env_list));
 	idx = 1;
 	kv_pair = NULL;
 	while (argv[idx] != NULL)
 	{
 		kv_pair = ft_split(argv[idx], '=');
-		if (is_option_included(kv_pair[KEY]) == TRUE)
-			return (print_error(SYNTAX_ERROR, NULL));
-		if (is_valid_variable_name(kv_pair[KEY]) == FALSE)
-			return (print_error(SYNTAX_ERROR, NULL));
-		if (get_env_value(env_list, kv_pair[KEY]) != NULL \
-			&& kv_pair[VALUE] == NULL)
-		{
-		}
+		if (ft_strcmp(argv[idx], "=") == 0)
+			result = print_error(NOT_VALID_IDENTIFIER, argv[idx]);
 		else
-			save_export(env_list, kv_pair);
+		{
+			if (is_option_included(kv_pair[KEY]) == TRUE)
+				result = print_error(SYNTAX_ERROR, NULL);
+			else if (is_valid_variable_name(kv_pair[KEY]) == FALSE)
+				result = print_error(NOT_VALID_IDENTIFIER, argv[idx]);
+			else if (!(get_env_value(env_list, kv_pair[KEY]) != NULL \
+				&& kv_pair[VALUE] == NULL))
+				save_export(env_list, kv_pair);
+		}
 		free_all(kv_pair);
 		idx += 1;
 	}
-	return (EXIT_SUCCESS);
+	return (result);
 }
+
+int	ft_export(char **argv, t_env_list *env_list)
+{
+	int		result;
+
+	if (argv[1] == NULL)
+		return (print_export_env_list(env_list));
+	result = process_export(argv, env_list);
+	return (result);
+}
+
+/*
+	1. get_env_value(env_list, kv_pair[KEY]) == NULL && kv_pair[VALUE] == NULL
+	2. get_env_value(env_list, kv_pair[KEY]) != NULL && kv_pair[VALUE] == NULL **
+	3. get_env_value(env_list, kv_pair[KEY]) == NULL && kv_pair[VALUE] != NULL
+	4. get_env_value(env_list, kv_pair[KEY]) != NULL && kv_pair[VALUE] != NULL
+*/
 
 /*
 
@@ -119,6 +128,13 @@ int	ft_export(char **argv, t_env_list *env_list)
 	환경 변수 등록
 	- 변수명만 들어온 경우에는 빈 문자열로 저장
 	- "키=값" 형태로 들어오는 경우에는 정상적으로 저장
+
+	빈 값으로 a 저장
+	export a=
+
+	not a valid identifier
+	export 0a=
+	export =
 
 */
 
