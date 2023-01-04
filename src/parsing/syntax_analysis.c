@@ -36,7 +36,7 @@ int	syntax_analysis(t_token *token_list)
 
 	result = SYNTAX_OK;
 	curr_node = token_list->head_node;
-	while (curr_node != NULL && result == TRUE)
+	while (curr_node != NULL && result == SYNTAX_OK)
 	{
 		curr_token = curr_node->content;
 		if (is_operator(curr_token->word) == TRUE)
