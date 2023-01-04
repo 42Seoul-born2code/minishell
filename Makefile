@@ -82,8 +82,10 @@ else
 endif
 
 ### For M1 Mac Mini ###
-READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
-READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
+ifdef MAC_MINI
+	READLINE_LINKING			:=	-lreadline -L/opt/homebrew/opt/readline/lib
+	READLINE_COMPILE			:=	-I/opt/homebrew/opt/readline/include
+endif
 ### For M1 Mac Mini ###
 
 ifdef DEBUG_MODE
@@ -113,6 +115,12 @@ debugh : fclean
 
 dsanih : fclean
 	make -j4 D_SANI=1 HOME_ENV=1 all
+
+debugm : fclean
+	make -j4 MAC_MINI=1 all
+
+dsanim : fclean
+	make -j4 D_SANI=1 MAC_MINI=1 all
 
 debug : fclean
 	make -j4 DEBUG_MODE=1 all
