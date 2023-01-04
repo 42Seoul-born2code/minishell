@@ -12,6 +12,8 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 {
 	char	**envp;
 
+	if (cmd_path == NULL && cmd_argv == NULL)
+		exit(EXIT_SUCCESS);
 	envp = get_envp_in_list(env_list);
 	if (execve(cmd_path, cmd_argv, envp) == ERROR)
 	{

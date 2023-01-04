@@ -1,8 +1,14 @@
 ######## 수정 필요 ############
 
-- ls > outfile not_existed_folder (not_existed_folder: No such file or directory)
-- > outfile ls not_existed_folder (not_existed_folder: No such file or directory)
--              echo 1
+- [ ] ls > outfile not_existed_folder (not_existed_folder: No such file or directory)
+- [ ] > outfile ls not_existed_folder (not_existed_folder: No such file or directory)
+- [ ]             echo 1
+
+- [ v ] < infile : command 가 NULL 일 때 free 를 시도해서 오류가 발생함
+// arguments 를 [cat, Makefile] 로 인식하지 못하는 문제
+- [ v ] < infile cat Makefile > outfile
+- [ v ] cat < infile Makefile 
+- [ v ] << eof cat > outfile > outfile2
 
 [파싱]
 - < | > >> syntax error
@@ -19,10 +25,11 @@
 - 히어독 싱글모드
 - 히어독 여러 개 들어오는 경우 파일 여러 개로 저장하기
 - 히어독 저장 경로 /dev/tmp 로 변경하기 (unlink 로 폴더 삭제하면 파일 지울 수 있는 지 확인)
-- << eof 입력 후 ctrl - d 입력하면 터지는 경우 (파싱 쪽이랑 관련 있을 듯)
+- [ v ] << eof 입력 후 ctrl - d 입력하면 터지는 경우 (파싱 쪽이랑 관련 있을 듯)
 
 [시그널]
 - 시그널 입력 시 아무 것도 띄우지 않도록 수정
+- << eof 입력 후 ctrl - c 하면 프롬프트 2개 나옴
 
 ######## 수정 필요 ############
 
