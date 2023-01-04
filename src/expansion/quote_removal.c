@@ -66,6 +66,8 @@ void	quote_removal(t_token *token_list)
 					ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
 					idx += 1;
 				}
+				else
+					idx += 1;
 			}
 
 			// 2. 따옴표가 아닌 경우
@@ -84,6 +86,8 @@ void	quote_removal(t_token *token_list)
 					prev_word = malloc(sizeof(char) * word_length + 1);
 					ft_memcpy(prev_word, &curr_token->word[start_idx], word_length);
 				}
+				else
+					idx += 1;
 			}
 
 			// 1-3. 따옴표 이전 문자열과 strjoin
@@ -93,11 +97,11 @@ void	quote_removal(t_token *token_list)
 				free(result_word);
 			}
 			result_word = ft_strjoin(buffer, prev_word);
+			// printf("result_word: %s\n", result_word);
 			free(buffer);
 			free(prev_word);
 			prev_word = NULL;
 		}
-		// printf("result_word: %s\n", result_word);
 		free(curr_token->word);
 		curr_token->word = result_word;
 		curr_node = curr_node->next;
