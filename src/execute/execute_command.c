@@ -21,15 +21,18 @@ void	check_heredoc(t_token *token_list)
 	t_list			*curr_node;
 	t_token_node	*limiter_node;
 	t_token_node	*curr_token;
+	int				idx;
 
+	idx = 0;
 	curr_node = token_list->head_node;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
 		if (curr_token->type == REDIR_HEREDOC)
 		{
+			idx += 1;
 			limiter_node = curr_node->next->content;
-			get_user_input(limiter_node->word);
+			get_user_input(limiter_node->word, idx);
 		}
 		curr_node = curr_node->next;
 	}
