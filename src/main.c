@@ -1,7 +1,7 @@
 #include "minishell.h"
 #include "execute.h"
 #include "utils.h"
-
+#include <termios.h>
 /*
 	main ()				- Entry function of minishell
 
@@ -13,6 +13,11 @@ int	g_exit_code = EXIT_SUCCESS;
 
 int	main(int argc, char **argv, char **envp)
 {
+	struct termios  term;
+
+	tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~(ECHOCTL);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	t_env_list	env_list;
 
 	(void)argv;
