@@ -20,6 +20,10 @@
 - [ v ] < | cat
 	- 리다이렉션 바로 뒤에 operator 가 오면 에러 처리
 
+[확장]
+- [ ] export a='a    "a"   b'; echo $a 출력 시 쌍따옴표 제거되는 문제
+	- 
+
 [빌트인]
 - [ v ] exit code $? 출력 안되는 문제
 - [ v ] export = 에러 메세지
