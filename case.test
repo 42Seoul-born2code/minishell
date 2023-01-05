@@ -15,8 +15,12 @@
 - [ v ] < infile cat Makefile > outfile
 - [ v ] cat < infile Makefile
 // 
-- [  ] << eof cat > outfile > outfile2
+- [ v ] << eof cat > outfile > outfile2
 	- cat: stdout: Bad file descriptor
+	- close(STDOUT_FILENO) 를 수행하면 outfile fd 가 1로 설정되는 문제 발생
+	- close(STDOUT_FILENO) 를 제거해서 문제 해결
+- [ ] < infile cat > outfile < outfile cat
+	- cat: No such file or directory 오류가 안뜨는 문제 발견
 
 [파싱]
 - [ v ] < | > >> syntax error
