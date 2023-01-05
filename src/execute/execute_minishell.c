@@ -5,6 +5,7 @@ static t_bool	is_all_whitespace(char *line);
 static void		free_list_nodes(t_token *lst);
 void			execute_minishell(t_env_list *env_list);
 
+// TODO: 전부 끝내고 삭제하기
 void	print_token_word(t_token *token_list)
 {
 	t_list			*curr_node;
@@ -99,13 +100,13 @@ void	execute_minishell(t_env_list *env_list)
 		line = readline(PROMPT);
 		if (line == NULL)
 			break ;
-		if (is_all_whitespace(line) == FALSE && tokenize_line(line, token_list) == EXIT_SUCCESS)
+		if (is_all_whitespace(line) == FALSE \
+			&& tokenize_line(line, token_list) == EXIT_SUCCESS)
 		{
 			parsing(token_list);
 			if (syntax_analysis(token_list) == SYNTAX_OK)
 			{
 				expansion(token_list, env_list);
-				// print_token_word(token_list);
 				quote_removal(token_list);
 				execute_command(token_list, env_list);
 				add_history(line);
