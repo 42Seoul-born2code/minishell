@@ -19,7 +19,6 @@ static t_command_type	get_execute_type(t_token *token_list)
 
 void	execute_command(t_token *token_list, t_env_list *env_list)
 {
-
 	check_heredoc(token_list);
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
