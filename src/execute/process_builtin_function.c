@@ -43,7 +43,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list)
 {
 	t_redirect		redirect_info;
 	int				origin_fd[2];
-	char			*cmd;
+	char			*cmd_name;
 	char			**cmd_argv;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
@@ -59,7 +59,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list)
 		curr_token = curr_node->content;
 		if (curr_token->type == COMMAND)
 		{
-			cmd = ft_strdup(curr_token->word);
+			cmd_name = ft_strdup(curr_token->word);
 			cmd_argv = merge_arguments(curr_node);
 		}
 		else if (is_redirection(curr_token) == TRUE)
@@ -68,12 +68,11 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list)
 		}
 		curr_node = curr_node->next;
 	}
-	g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list, SIMPLE_COMMAND);
-	if (cmd != NULL)
-		free(cmd);
+	g_exit_code = execute_builtin_function(cmd_name, cmd_argv, env_list, SIMPLE_COMMAND);
+	if (cmd_name != NULL)
+		free(cmd_name);
 	if (cmd_argv != NULL)
 		free_all(cmd_argv);
-	// TODO: fd 설정 다시하기
 	if (redirect_info.infile != NONE)
 		close(redirect_info.infile);
 	if (redirect_info.outfile != NONE)
