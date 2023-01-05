@@ -14,13 +14,18 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 
 	if (cmd_path == NULL && cmd_argv == NULL)
 		exit(EXIT_SUCCESS);
+	// FIXME: 주석 풀면 작동됨
+	if (cmd_path == NULL)
+		exit(EXIT_SUCCESS);
 	envp = get_envp_in_list(env_list);
 	if (execve(cmd_path, cmd_argv, envp) == ERROR)
 	{
 		print_error(COMMAND_NOT_FOUND, cmd_argv[0]);
-		free_all(cmd_argv);
+		if (cmd_argv != NULL)
+			free_all(cmd_argv);
 		free_all(envp);
-		free(cmd_path);
+		if (cmd_path != NULL)
+			free(cmd_path);
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
 	}
 }
@@ -129,9 +134,16 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 		{
 			process_count += child_process(cmd_path, cmd_argv, env_list, redirect_info);
 			if (cmd_path != NULL)
+			{
 				free(cmd_path);
+				cmd_path = NULL;
+			}
 			if (cmd_argv != NULL)
+			{
 				free_all(cmd_argv);
+				// FIXME: 주석 풀면 작동됨
+				cmd_argv = NULL;
+			}
 			redirect_info.file = NONE;
 			redirect_info.type = NORMAL;
 		}

@@ -7,13 +7,13 @@ int	ft_pwd(char **argv, t_env_list *env_list)
 
 	if (*(argv + 1) && check_option(*(argv + 1)) == EXIT_FAILURE)
 	{
-		printf("%s\n", SYNTAX_ERROR);
+		print_error(SYNTAX_ERROR, "\n");
 		return (EXIT_FAILURE);
 	}
 	cwd = get_env_value(env_list, "PWD");
 	if (!cwd)
 	{
-		printf("Error: There is no path\n");
+		print_error("Error: There is no path\n", NULL);
 		return (EXIT_FAILURE);
 	}
 	printf("%s\n", cwd);

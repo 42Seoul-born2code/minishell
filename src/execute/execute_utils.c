@@ -86,7 +86,7 @@ char	*find_cmd_path(char *cmd, t_env_list *env_list)
 	stat(cmd, &buf);
 	if (S_ISDIR(buf.st_mode))
 	{
-		printf("%s is a directory\n", cmd);
+		print_error(cmd, "is a directory\n");
 		return (NULL);
 	}
 	idx = 0;

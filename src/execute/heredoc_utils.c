@@ -26,11 +26,6 @@ char	*merge_word_list(t_word_list *word_list)
 	return (result);
 }
 
-
-
-
-
-
 void	delete_heredoc_file(int heredoc_file_num)
 {
 	char	*heredoc_file_name;

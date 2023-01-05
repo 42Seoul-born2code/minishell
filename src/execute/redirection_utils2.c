@@ -9,6 +9,8 @@ void	no_redirect(t_redirect *redirect_info)
 		close(STDIN_FILENO);
 }
 
+// << eof : 
+// > outfile
 void	redirect_right(t_list *curr_node, t_redirect *redirect_info)
 {
 	redirect_info->file = open_file(curr_node->next, WRITE_MODE);

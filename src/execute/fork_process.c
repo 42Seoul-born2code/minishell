@@ -39,7 +39,8 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 	cmd_path = NULL;
 	cmd_argv = NULL;
 	curr_node = token_list->head_node;
-	redirect_info.file = NONE;
+	redirect_info.infile = NONE;
+	redirect_info.outfile = NONE;
 	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
 	while (curr_node != NULL)
@@ -56,14 +57,18 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		}
 		curr_node = curr_node->next;
 	}
-	if (redirect_info.file != NONE)
-		close(redirect_info.file);
+	if (redirect_info.infile != NONE)
+		close(redirect_info.infile);
+	if (redirect_info.outfile != NONE)
+		close(redirect_info.outfile);
+	// 히어독에서 시그널 받아서 종료되었을 때
 	if (g_exit_code != 0 && redirect_info.type == HEREDOC)
 	{
 		rollback_origin_fd(origin_fd);
 		return ;
 	}
-	if (redirect_info.file == NONE && redirect_info.type != NORMAL)
+	// 리다이렉션은 들어왔지만, 파일을 실제로 못 열었을 때
+	if ((redirect_info.infile == NONE || redirect_info.outfile == NONE) && redirect_info.type != NORMAL)
 	{
 		g_exit_code = 1;
 		if (cmd_path != NULL)

@@ -7,12 +7,15 @@
 - [ v ] heredoc 2번 실행시 ctrl c를 두 번 눌러야 꺼지는 오류
 - [ v ] << eof | << foe 에서
 - [ v ] cat | cat | ls  -> exit_code = 0
-- [   ] ls -al | grep test | waef
+- [ v ] ls -al | grep test | waef
+- [   ] chmod 000 -> permission denied(open_file 함수 쪽)
 
 [arguments 를 [cat, Makefile] 로 인식하지 못하는 문제]
 - [ v ] < infile cat Makefile > outfile
-- [ v ] cat < infile Makefile 
-- [ v ] << eof cat > outfile > outfile2
+- [ v ] cat < infile Makefile
+// 
+- [  ] << eof cat > outfile > outfile2
+	- cat: stdout: Bad file descriptor
 
 [파싱]
 - [ v ] < | > >> syntax error
@@ -34,12 +37,13 @@
 - [ v ] exit code $? 출력 안되는 문제
 - [ v ] export = 에러 메세지
 - [ v ] exit | exit 시 exit 출력되지 않도록
-- [ v ] echo aaa | << eof (double free or NULL free)
-- [ ] echo $NOTasdasdasd adasdadad
-	- "adasdadad" 출력 안되는 문제 해결하기
+- [ v ] echo aaa | << eof 
+	- double free or NULL free 문제
+	- command 가 없을 때 문제 발생
+	- cmd_path, cmd_argv 모두 free 후 NULL 로 변경해서 문제 해결
 
 [출력]
-- 에러 메시지를 출력할 때 printf 로 출력하는 것들 STDERR 로 출력하기
+- [ v ]에러 메시지를 출력할 때 printf 로 출력하는 것들 STDERR 로 출력하기
 
 [리다이렉션]
 - [ v ]히어독 싱글모드
