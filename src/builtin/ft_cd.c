@@ -33,6 +33,7 @@ t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
 
 	result = TRUE;
 	target_path = ft_strjoin("/", path);
+	// 폴더 권한 확인
 	if (chdir(target_path) == ERROR)
 	{
 		replace_env_value(env_list, "PWD", old_pwd);
@@ -59,8 +60,11 @@ int	change_directories(char *argv, t_env_list *env_list)
 	old_pwd = getcwd(NULL, BUFSIZ);
 	while (paths[idx] != NULL)
 	{
+		// 1. 현재 디렉토리 기준으로 이동(상대 경로)
+		// 폴더 권한 확인
 		if (chdir(paths[idx]) == ERROR)
 		{
+			// 2. 절대 경로 기준으로 이동
 			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) \
 										== FALSE)
 				return (print_error(NOT_EXISTED, argv));

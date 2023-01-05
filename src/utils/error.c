@@ -10,20 +10,3 @@ int	print_error(char *msg, char *arg)
 	free(error_msg);
 	return (EXIT_ERROR);
 }
-
-// TODO: 완성 후 삭제하기
-void	print_env_list(t_env_list *env_list)
-{
-	t_list		*list_node;
-	t_env_node	*env_node;
-
-	list_node = env_list->head_node;
-	printf("==============================================");
-	while (list_node != NULL)
-	{
-		
-		env_node = list_node->content;
-		printf("%s = %s\n", env_node->key,env_node->value);
-		list_node = list_node->next;
-	}
-}
