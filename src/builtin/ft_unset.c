@@ -1,9 +1,23 @@
 #include "builtin.h"
+
+/*
+	option O -> exit_code = EXIT_FAILURE
+	option X -> exit_code = EXIT_SUCCESS
+*/
+static int	is_option_included(char *argv)
+{
+	if (check_option(argv) == EXIT_FAILURE)
+	{
+		print_error(INVALID_OPTION, argv);
+		return (TRUE);
+	}
+	return (FALSE);
+}
+
 /*
 	Invalid env_name -> exit_code = EXIT_FAILURE
 	Invalid option -> exit_code = 2
 */
-
 static void	remove_env(t_list *target, t_env_list *env_list)
 {
 	t_list		*prev_node;
@@ -47,25 +61,29 @@ static t_list	*get_env(char *key, t_env_list *env_list)
 	return (NULL);
 }
 
+/*
+	LINE76: 인자가 들어오지 않는 경우 return
+	LINE80: 옵션이 있는 경우 syntax error 출력 후 return
+	LINE82: 인자가 "=" 인경우 not_valid_identifier 오류 출력
+	LINE84: 환경변수 이름 규칙에 맞지 않으면 not_valid_identifier 오류 출력
+*/
 int	ft_unset(char **argv, t_env_list *env_list)
 {
+	int		result;
 	t_list	*target;
 
-	// argv 두번째 값이 널이면 그냥 리턴 (옵션 존재 안할때)
-	if (!*(argv + 1))
-		return (EXIT_SUCCESS);
+	result = EXIT_SUCCESS;
+	if (*(argv + 1) == NULL)
+		return (result);
 	argv += 1;
 	while (*argv)
 	{
-		// 옵션이 있는 경우 에러
-		if (check_option(*argv) == EXIT_FAILURE)
-			return (print_error(SYNTAX_ERROR, NULL));
-		// argv가 = 인경우 에러처리
+		if (is_option_included(*argv) == TRUE)
+			return (2);
 		else if (ft_strchr(*argv, '='))
-			return (print_error(SYNTAX_ERROR, NULL));
-		// 유효하지 않은 환경변수 key는 에러처리
+			result = print_error(NOT_VALID_IDENTIFIER, *argv);
 		else if (is_valid_variable_name(*argv) == FALSE)
-			return (print_error(SYNTAX_ERROR, NULL));
+			result = print_error(NOT_VALID_IDENTIFIER, *argv);
 		else
 		{
 			target = get_env(*argv, env_list);
@@ -74,5 +92,5 @@ int	ft_unset(char **argv, t_env_list *env_list)
 		}
 		argv++;
 	}
-	return (EXIT_SUCCESS);
+	return (result);
 }

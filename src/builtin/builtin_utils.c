@@ -26,3 +26,17 @@ void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value)
 	new_node->value = value;
 	ft_lstadd_back(&env_list->head_node, ft_lstnew(new_node));
 }
+
+/*
+	option O -> exit_code = EXIT_FAILURE
+	option X -> exit_code = EXIT_SUCCESS
+*/
+int	check_option(char *argv)
+{
+	int	exit_code;
+
+	exit_code = EXIT_SUCCESS;
+	if (*argv == '-')
+		exit_code = EXIT_FAILURE;
+	return (exit_code);
+}

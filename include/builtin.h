@@ -11,6 +11,7 @@
 # include "libft.h"
 # include "utils.h"
 
+# define INVALID_OPTION			"Error: invalid option: "
 # define NOT_NUMERIC_ARGUMENT	"Error: numeric argument required: "
 # define TOO_MANY_ARGUMNET		"Error: too many arguments. "
 # define VARIABLE_IS_UNSET		"Error: variable is unset. "
@@ -24,8 +25,6 @@ typedef enum e_kv_pair{
 // builtin_utils.c
 t_bool	is_valid_variable_name(char *str);
 void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value);
-
-// check_option.c
 int		check_option(char *argv);
 
 // ft_cd.c

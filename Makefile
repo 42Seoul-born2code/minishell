@@ -13,8 +13,7 @@ SRC_BUILTIN					:=	execute_builtin_function.c		\
 								ft_env.c						\
 								ft_export.c						\
 								ft_exit.c						\
-								builtin_utils.c					\
-								check_option.c
+								builtin_utils.c					
 
 SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c				\
