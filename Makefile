@@ -5,50 +5,51 @@ SRC_DIR						:=	./src/
 INCLUDE						:=	-I./include/
 
 SRC_BUILTIN_DIR				:=	builtin/
-SRC_BUILTIN					:=	execute_builtin_function.c		\
-								ft_cd.c							\
-								ft_echo.c						\
-								ft_pwd.c						\
-								ft_unset.c						\
-								ft_env.c						\
-								ft_export.c						\
-								ft_exit.c						\
+SRC_BUILTIN					:=	execute_builtin_function.c			\
+								ft_cd.c								\
+								ft_echo.c							\
+								ft_pwd.c							\
+								ft_unset.c							\
+								ft_env.c							\
+								ft_export.c							\
+								ft_exit.c							\
 								builtin_utils.c					
 
 SRC_EXECUTE_DIR				:=	execute/
-SRC_EXECUTE					:=	execute_minishell.c				\
-								process_builtin_function.c		\
-								execute_command.c				\
-								execute_multi_command.c			\
-								execute_utils.c					\
-								fork_process.c					\
-								open_file.c						\
-								heredoc_utils.c					\
+SRC_EXECUTE					:=	execute_minishell.c					\
+								process_builtin_function.c			\
+								execute_command.c					\
+								execute_multi_command.c				\
+								execute_utils.c						\
+								fork_process.c						\
+								open_file.c							\
+								heredoc_utils.c						\
 								redirection_utils.c
 
 
 SRC_TOKENIZE_DIR			:=	tokenize/
-SRC_TOKENIZE				:=	tokenize_line.c			\
+SRC_TOKENIZE				:=	tokenize_line.c						\
 								tokenize_utils.c
 
 SRC_PARSING_DIR				:=	parsing/
-SRC_PARSING					:=	parsing.c				\
+SRC_PARSING					:=	parsing.c							\
 								syntax_analysis.c
 
 SRC_SIGNAL_DIR				:=	signal/
-SRC_SIGNAL					:=	init_signal.c			\
-								change_signal.c			\
+SRC_SIGNAL					:=	init_signal.c						\
+								change_signal.c						\
 								heredoc_signal.c
 
 SRC_EXPANSION_DIR			:=	expansion/
-SRC_EXPANSION				:=	expansion.c				\
-								quote_removal.c
+SRC_EXPANSION				:=	expansion.c							\
+								quote_removal.c						\
+								save_word_and_expanded_variable.c
 
 SRC_REDIRECT_DIR			:=	redirect/
 SRC_REDIRECT				:=	redirect.c
 
 SRC_UTILS_DIR				:=	utils/
-SRC_UTILS					:=	env_utils.c				\
+SRC_UTILS					:=	env_utils.c							\
 								error.c
 
 

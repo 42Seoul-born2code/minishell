@@ -109,9 +109,9 @@ void	execute_minishell(t_env_list *env_list)
 				expansion(token_list, env_list);
 				quote_removal(token_list);
 				execute_command(token_list, env_list);
-				add_history(line);
 			}
 		}
+		add_history(line);
 		free(line);
 		free_list_nodes(token_list);
 		// system("leaks minishell");// TODO: 통합 테스트 끝난 다음에 삭제하기 (noriminette 은 OK)

@@ -9,7 +9,7 @@ t_bool	is_valid_variable_rule(char c)
 	return (FALSE);
 }
 
-static void	save_before_env_variable(\
+void	save_before_env_variable(\
 char *word, int *idx, t_word_list *word_list, t_quote type)
 {
 	int		start;
@@ -99,8 +99,8 @@ static char	*remove_whitespace(char *str)
 	return (result);
 }
 
-static void	expand_env_variable(t_token_node *token, int *idx, \
-					t_word_list *word_list, t_quote quote_type, t_env_list *env_list)
+void	save_expand_env_variable(t_token_node *token, int *idx, \
+					t_word_list *word_list, t_env_list *env_list, t_quote quote_type)
 {
 	int		start;
 	int		word_length;
@@ -147,36 +147,6 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 	}
 }
 
-static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list)
-{
-	int		start;
-	int		word_length;
-	char	*buffer;
-
-	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-	*idx += 1;
-	start = *idx;
-	while (word[*idx] != '\0' && word[*idx] != '\'')
-		*idx += 1;
-	if (start == *idx && word[*idx] == '\'')
-	{
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-		*idx += 1;
-	}
-	else if (start == *idx && word[*idx] == '\0')
-		return ;
-	else
-	{
-		word_length = *idx - start;
-		buffer = malloc(sizeof(char) * (word_length + 1));
-		ft_memcpy(buffer, &word[start], word_length);
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-		free(buffer);
-		*idx += 1;
-	}
-}
-
 // 환경변수를 확장하기 위해 연결 리스트로 저장했던 문자열들을 하나로 합치는 함수
 void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 {	
@@ -198,10 +168,15 @@ void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 	}
 }
 
-// 환경 변수를 확장해서 기존의 토큰을 교체하는 함수
+/*
+	환경 변수를 확장해서 기존의 토큰을 교체하는 함수
+
+	LINE	: 1. 작은 따옴표 안에 있는 문자열
+	LINE	: 2. 큰 따옴표 안에 있는 문자열
+	LINE	: 3. 따옴표에 둘러 쌓이지 않은 문자열
+*/
 void	expansion(t_token *token_list, t_env_list *env_list)
 {
-	int				idx;
 	char			*replaced_word;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
@@ -211,66 +186,9 @@ void	expansion(t_token *token_list, t_env_list *env_list)
 	while (curr_node != NULL)
 	{
 		replaced_word = NULL;
-		word_list = malloc(sizeof(t_word_list));
-		word_list->head_node = NULL;
-		idx = 0;
 		curr_token = curr_node->content;
-		// 현재 토큰에 담긴 문자열의 처음부터 끝까지 순회
-		while (curr_token->word[idx] != '\0')
-		{
-			// 1. 작은 따옴표 안에 있는 문자열
-			if (curr_token->word[idx] == '\'')
-			{
-				save_single_quoted_word(curr_token->word, &idx, word_list);
-			}
-			// 2. 큰 따옴표 안에 있는 문자열
-			else if (curr_token->word[idx] == '\"')
-			{
-				ft_lstadd_back(
-					&word_list->head_node, ft_lstnew(ft_strdup("\"")));
-				idx += 1;
-				// 치환이 이루어지는 과정
-				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"')
-				{
-					// $ 만난 경우
-					if (curr_token->word[idx] == '$')
-					{
-						expand_env_variable(curr_token, &idx, word_list, QUOTED, env_list);
-					}
-					// $ 만나기 전의 경우
-					else
-					{
-						save_before_env_variable(curr_token->word, &idx, word_list, QUOTED);
-					}
-				}
-				if (curr_token->word[idx] == '\"')
-				{
-					ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
-					idx += 1;
-				}
-			}
-			// 3. 따옴표에 둘러 쌓이지 않은 문자열
-			else
-			{
-				while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"' && curr_token->word[idx] != '\'')
-				{
-					// $ 만난 경우
-					// 띄어쓰기 제거, 살릴 quote는 살리기
-					if (curr_token->word[idx] == '$')
-					{
-						expand_env_variable(curr_token, &idx, word_list, NOT_QUOTED, env_list);
-					}
-					// $ 만나기 전의 경우
-					else
-					{
-						save_before_env_variable(curr_token->word, &idx, word_list, NOT_QUOTED);
-					}
-				}
-			}
-		}
-		// 연결 리스트 노드들 하나로 합치기
+		word_list = save_word_and_expanded_variable(curr_token, env_list);
 		merge_replaced_word(word_list, &replaced_word);
-		// 기존에 있던 word 를 교체
 		if (replaced_word != NULL)
 		{
 			free(curr_token->word);
