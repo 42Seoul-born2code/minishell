@@ -68,9 +68,10 @@ int	process_export(char **argv, t_env_list *env_list)
 	int		result;
 	char	**kv_pair;
 
-	idx = 1;
+	idx = -1;
+	result = EXIT_SUCCESS;
 	kv_pair = NULL;
-	while (argv[idx] != NULL)
+	while (argv[++idx] != NULL)
 	{
 		kv_pair = ft_split(argv[idx], '=');
 		if (ft_strcmp(argv[idx], "=") == 0)
@@ -86,7 +87,6 @@ int	process_export(char **argv, t_env_list *env_list)
 				save_export(env_list, kv_pair);
 		}
 		free_all(kv_pair);
-		idx += 1;
 	}
 	return (result);
 }
