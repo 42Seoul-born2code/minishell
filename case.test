@@ -14,6 +14,11 @@
 - [ v ] < | > >> syntax error
 - [ v ]             echo 1
 	- is_all_whitespace 함수에서 whitespace 가 아닌 문자를 만났을 때 바로 return 하도록 수정
+- [ v ] | cat
+	- syntax error near unexpected token '|' 오류 발생해야 하는데 터짐
+	- 이전 노드가 없는데 파이프가 오면 에러 처리함
+- [ v ] < | cat
+	- 리다이렉션 바로 뒤에 operator 가 오면 에러 처리
 
 [빌트인]
 - [ v ] exit code $? 출력 안되는 문제
@@ -29,6 +34,9 @@
 - [ v ]히어독 여러 개 들어오는 경우 파일 여러 개로 저장하기
 - [ v ]히어독 저장 경로 /dev/tmp 로 변경하기 (unlink 로 폴더 삭제하면 파일 지울 수 있는 지 확인)
 - [ v ] << eof 입력 후 ctrl - d 입력하면 터지는 경우 (파싱 쪽이랑 관련 있을 듯)
+- [ v ] echo hello > outfile | < outfile cat | grep h | wc > outfile2 
+	- parsing norminette 맞추다가 double free 문제 발견
+	- redirection 중에서 heredoc 이 아닐 때만 작동해야 하는데, 다른 토큰들이 들어가서 발생하는 문제였음
 
 [시그널]
 - [ v ] 시그널 입력 시 아무 것도 띄우지 않도록 수정 
