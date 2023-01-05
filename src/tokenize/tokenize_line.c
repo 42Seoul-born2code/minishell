@@ -61,6 +61,11 @@ static int	get_word_length(t_token_node *node, char *line, int *i, int start)
 	return (*i - start);
 }
 
+/*
+	LINE77	: CASE1. operator 는 바로 저장
+	LINE79	: CASE2. word 는 저장 시도
+	LINE82	: CASE3. 따옴표가 제대로 닫히지 않은 경우 에러 반환
+*/
 int	add_token_lstback(t_token *token_list, char *line, int *idx)
 {
 	int				start;
@@ -85,11 +90,7 @@ int	add_token_lstback(t_token *token_list, char *line, int *idx)
 }
 
 /*
-
-	LINE96: CASE1. whitspace인 경우
-	LINE104: CASE2. operator 이면 무조건 저장
-	LINE108: CASE3. 문자열을 만났을 때
-
+	LINE102	: CASE1. whitespace가 아닌 경우 토큰 저장 시도
 */
 int	tokenize_line(char *line, t_token *token_list)
 {
