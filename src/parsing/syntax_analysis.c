@@ -2,7 +2,7 @@
 #include "parsing.h"
 #include "utils.h"
 
-t_bool	is_continuous_pipe(t_list *curr_node)
+static t_bool	is_continuous_pipe(t_list *curr_node)
 {
 	t_list			*next_node;
 	t_token_node	*curr_token;
@@ -16,7 +16,7 @@ t_bool	is_continuous_pipe(t_list *curr_node)
 	return (FALSE);
 }
 
-t_bool	is_next_token_operator(t_list *curr_node)
+static t_bool	is_next_token_operator(t_list *curr_node)
 {
 	t_list			*next_node;
 	t_token_node	*next_token;
@@ -28,36 +28,43 @@ t_bool	is_next_token_operator(t_list *curr_node)
 	return (FALSE);
 }
 
+static int	throw_syntax_error(t_token_node *curr_token)
+{
+	g_exit_code = 258;
+	return (print_error(SYNTAX_ERROR, curr_token->word));
+}
+
+/*
+	1. operator 다음에 아무 것도 없을 때
+	2. 파이프 바로 뒤에 파이프가 왔을 때
+	3. redirection 바로 뒤에 operator 가 왔는가?
+	4. 파이프 앞에 아무 것도 없거나 redirection 만 있을 때
+*/
 int	syntax_analysis(t_token *token_list)
 {
-	int				result;
+	t_list			*prev_node;
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	result = SYNTAX_OK;
+	prev_node = NULL;
 	curr_node = token_list->head_node;
-	while (curr_node != NULL && result == SYNTAX_OK)
+	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
 		if (is_operator(curr_token->word) == TRUE)
 		{
-			// 1. operator 다음에 아무 것도 없을 때
-			if (curr_node->next == NULL)
-				result = ERROR;
-			// 2. 파이프 바로 뒤에 파이프가 왔을 때
+			if (curr_token->type == PIPE && prev_node == NULL)
+				return (throw_syntax_error(curr_token));
+			else if (curr_node->next == NULL)
+				return (throw_syntax_error(curr_token));
 			else if (is_continuous_pipe(curr_node) == TRUE)
-				result = ERROR;
-			// 3. redirection 바로 뒤에 operator 가 왔는가?
+				return (throw_syntax_error(curr_token));
 			else if (curr_token->type != PIPE && \
 					is_next_token_operator(curr_node) == TRUE)
-				result = ERROR;
+				return (throw_syntax_error(curr_node->next->content));
 		}
+		prev_node = curr_node;
 		curr_node = curr_node->next;
 	}
-	if (result == ERROR)
-	{
-		g_exit_code = 258;
-		return (print_error(SYNTAX_ERROR, curr_token->word));
-	}
-	return (result);
+	return (SYNTAX_OK);
 }

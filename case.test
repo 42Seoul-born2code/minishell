@@ -14,6 +14,11 @@
 - [ v ] < | > >> syntax error
 - [ v ]             echo 1
 	- is_all_whitespace 함수에서 whitespace 가 아닌 문자를 만났을 때 바로 return 하도록 수정
+- [ v ] | cat
+	- syntax error near unexpected token '|' 오류 발생해야 하는데 터짐
+	- 이전 노드가 없는데 파이프가 오면 에러 처리함
+- [ v ] < | cat
+	- 리다이렉션 바로 뒤에 operator 가 오면 에러 처리
 
 [빌트인]
 - [ v ] exit code $? 출력 안되는 문제
