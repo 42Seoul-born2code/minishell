@@ -1,19 +1,10 @@
 #include "tokenize.h"
 
-t_bool	is_whitespace(char c);
 t_bool	is_operator(char *str);
 t_bool	is_quote(char c);
 t_meta	get_meta_type(char *str);
 void	get_operator_type(t_token_node *node, char *line, \
 								int *idx, int *length);
-
-t_bool	is_whitespace(char c)
-{
-	if (c == ' ' || c == '\n' || c == '\r' || c == '\v'
-		|| c == '\f' || c == '\t')
-		return (TRUE);
-	return (FALSE);
-}
 
 t_bool	is_operator(char *str)
 {
