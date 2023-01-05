@@ -7,6 +7,7 @@
 - [ v ] heredoc 2번 실행시 ctrl c를 두 번 눌러야 꺼지는 오류
 - [ v ] << eof | << foe 에서
 - [ v ] cat | cat | ls  -> exit_code = 0
+- [   ] ls -al | grep test | waef
 
 [arguments 를 [cat, Makefile] 로 인식하지 못하는 문제]
 - [ v ] < infile cat Makefile > outfile
@@ -281,7 +282,7 @@ ls | echo 111 > out | cat < out2 | ls
 
 === 파이프 & 리다이렉션
 ls | echo 1 > out | ls
-ls | wc > out | ls
+ls | echo 1 > out | ls
 ls | cat > out | ls
 ls | cat < out > out2 | ls
 ls | cat < out < out > out2 > out3 | ls

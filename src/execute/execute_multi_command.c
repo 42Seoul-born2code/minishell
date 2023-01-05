@@ -21,7 +21,6 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 		free_all(cmd_argv);
 		free_all(envp);
 		free(cmd_path);
-		// g_exit_code = ERROR_CODE_COMMAND_NOT_FOUND;
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
 	}
 }
@@ -37,7 +36,9 @@ void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, i
 		if (redirect_info.type != OUTFILE)
 			dup2(origin_fd[1], STDOUT_FILENO);
 		if (is_builtin_function(cmd_path) == TRUE)
+		{
 			exit(execute_builtin_function(cmd_path, cmd_argv, env_list, MULTI_COMMAND));
+		}
 		else
 		{
 			execute_cmd(cmd_path, cmd_argv, env_list);
@@ -118,10 +119,6 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 				cmd_path = ft_strdup(curr_token->word);
 			else
 				cmd_path = find_cmd_path(curr_token->word, env_list);
-			if (cmd_path == NULL)
-			{
-				printf("%s: command not found\n", curr_token->word);
-			}
 			cmd_argv = merge_arguments(curr_node);
 		}
 		else if (is_redirection(curr_token) == TRUE)
