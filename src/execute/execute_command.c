@@ -1,7 +1,7 @@
 #include "minishell.h"
 #include "execute.h"
 
-static t_command_type	get_execute_type(t_token *token_list)
+t_command_type	get_execute_type(t_token *token_list)
 {
 	t_list			*curr_node;
 	t_token_node	*curr_token;
@@ -22,22 +22,26 @@ void	execute_command(t_token *token_list, t_env_list *env_list)
 {
 	check_heredoc(token_list);
 	if (WIFSIGNALED(g_exit_code))
+	{
+		printf("im here");
 		return ;
-	if (get_execute_type(token_list) == SIMPLE_COMMAND)
-	{
-		if (is_command_builtin_function(token_list) == TRUE)
-		{
-			process_builtin_function(token_list, env_list, SIMPLE_COMMAND);
-		}
-		else
-		{
-			fork_process(token_list, env_list);
-		}
 	}
-	else
-	{
-		execute_multi_command(token_list, env_list);
-	}
+	(void)env_list;
+	// if (get_execute_type(token_list) == SIMPLE_COMMAND)
+	// {
+	// 	if (is_command_builtin_function(token_list) == TRUE)
+	// 	{
+	// 		process_builtin_function(token_list, env_list, SIMPLE_COMMAND);
+	// 	}
+	// 	else
+	// 	{
+	// 		fork_process(token_list, env_list);
+	// 	}
+	// }
+	// else
+	// {
+	// 	execute_multi_command(token_list, env_list);
+	// }
 }
 
 // [<< eof] cat [<< foe] cat
