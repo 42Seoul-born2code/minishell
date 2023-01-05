@@ -42,7 +42,10 @@ SRC_SIGNAL					:=	init_signal.c						\
 
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c							\
+								expansion_utils.c					\
 								quote_removal.c						\
+								remove_whitespace.c					\
+								save_expand_env_variable.c			\
 								save_word_and_expanded_variable.c
 
 SRC_REDIRECT_DIR			:=	redirect/
