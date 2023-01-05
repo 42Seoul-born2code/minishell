@@ -3,7 +3,10 @@
 - [ v ] ls > outfile not_existed_folder (not_existed_folder: No such file or directory)
 - [ v ] > outfile ls not_existed_folder (not_existed_folder: No such file or directory)
 - [ v ] < infile : command 가 NULL 일 때 free 를 시도해서 오류가 발생함
-- [   ] heredoc에서 ctrl c 누르면 미니쉘 두 번 출력.
+- [ v ] heredoc에서 ctrl c 누르면 미니쉘 두 번 출력. << eof -> ctrl c
+- [ v ] heredoc 2번 실행시 ctrl c를 두 번 눌러야 꺼지는 오류
+- [ v ] << eof | << foe 에서
+- [ v ] cat | cat | ls  -> exit_code = 0
 
 [arguments 를 [cat, Makefile] 로 인식하지 못하는 문제]
 - [ v ] < infile cat Makefile > outfile

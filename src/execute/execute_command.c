@@ -1,6 +1,7 @@
+#include "minishell.h"
 #include "execute.h"
 
-static t_command_type	get_execute_type(t_token *token_list)
+t_command_type	get_execute_type(t_token *token_list)
 {
 	t_list			*curr_node;
 	t_token_node	*curr_token;
@@ -20,6 +21,9 @@ static t_command_type	get_execute_type(t_token *token_list)
 void	execute_command(t_token *token_list, t_env_list *env_list)
 {
 	check_heredoc(token_list);
+	if (WIFSIGNALED(g_exit_code))
+		return ;
+	init_signal();
 	if (get_execute_type(token_list) == SIMPLE_COMMAND)
 	{
 		if (is_command_builtin_function(token_list) == TRUE)

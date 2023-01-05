@@ -9,89 +9,6 @@ void	throw_error(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-char	*merge_word_list(t_word_list *word_list)
-{
-	char	*buffer;
-	char	*result;
-	t_list	*curr_word;
-	t_list	*next_word;
-
-	buffer = NULL;
-	result = NULL;
-	curr_word = word_list->head_node;
-	while (curr_word != NULL)
-	{
-		next_word = curr_word->next;
-		buffer = ft_strdup(result);
-		if (result != NULL)
-			free(result);
-		result = ft_strjoin(buffer, (char *)curr_word->content);
-		free(buffer);
-		free(curr_word->content);
-		free(curr_word);
-		curr_word = next_word;
-	}
-	return (result);
-}
-
-char	*expand_env_variable(char *input)
-{
-	int				idx;
-	int				start;
-	int				word_length;
-	char			*env_word;
-	char			*buffer;
-	char			*result;
-	t_word_list		*word_list;
-
-	idx = 0;
-	word_list = malloc(sizeof(t_word_list));
-	word_list->head_node = NULL;
-	while (input[idx] != '\0')
-	{
-		if (input[idx] == '$')
-		{
-			idx += 1;
-			start = idx;
-			while (input[idx] != '\0')
-			{
-				if (is_valid_variable_rule(input[idx]) == FALSE)
-					break ;
-				if (is_operator(&input[idx]) == TRUE || \
-					is_whitespace(input[idx]) == TRUE)
-					break ;
-				idx += 1;
-			}
-			if (start == idx)
-				ft_lstadd_back(&word_list->head_node, \
-						ft_lstnew(ft_strdup("$")));
-			else
-			{
-				word_length = idx - start;
-				env_word = malloc(sizeof(char) * (word_length + 1));
-				ft_memcpy(env_word, &input[start], word_length);
-				ft_lstadd_back(&word_list->head_node, \
-						ft_lstnew(ft_strdup(getenv(env_word))));
-				free(env_word);
-			}
-		}
-		else
-		{
-			start = idx;
-			while (input[idx] != '\0' && input[idx] != '$')
-				idx += 1;
-			word_length = idx - start;
-			buffer = malloc(sizeof(char) * (word_length + 1));
-			ft_memcpy(buffer, &input[start], word_length);
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
-			free(buffer);
-		}
-	}
-	result = merge_word_list(word_list);
-	free(word_list);
-	return (result);
-}
-
 int	get_heredoc_file_fd(int heredoc_idx, int mode)
 {
 	int		fd;
@@ -105,37 +22,6 @@ int	get_heredoc_file_fd(int heredoc_idx, int mode)
 		fd = open(heredoc_file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	free(heredoc_file_name);
 	return (fd);
-}
-
-void	get_user_input(char *limiter, int heredoc_idx)
-{	
-	int		fd;
-	char	*input;
-	char	*expand_result;
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == CHILD_PROCESS)
-	{
-		change_heredoc_signal();
-		fd = get_heredoc_file_fd(heredoc_idx, WRITE_MODE);
-		while (TRUE)
-		{
-			input = readline(HEREDOC_PROMPT);
-			if (ft_strcmp(input, limiter) == 0)
-				break ;
-			expand_result = expand_env_variable(input);
-			ft_putstr_fd(expand_result, fd);
-			ft_putstr_fd("\n", fd);
-		}
-		close(fd);
-		exit(EXIT_SUCCESS);
-	}
-	else
-	{
-		waitpid(pid, &g_exit_code, 0);
-		g_exit_code = WEXITSTATUS(g_exit_code);
-	}
 }
 
 void	process_redirection(t_list *curr_node, t_redirect *redirect_info)
@@ -216,7 +102,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		close(redirect_info.file);
 	if (g_exit_code != 0 && redirect_info.type == HEREDOC)
 	{
-		// unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
 	}
@@ -227,7 +112,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 			free(cmd_path);
 		if (cmd_argv != NULL)
 			free_all(cmd_argv);
-		// unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		return ;
 	}

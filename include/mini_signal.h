@@ -11,6 +11,6 @@
 
 void	init_signal(void);
 void	change_signal(void);
-void	change_heredoc_signal(void);
-
+void	change_heredoc_signal_parent(void);
+void	change_heredoc_signal_child(void);
 #endif
