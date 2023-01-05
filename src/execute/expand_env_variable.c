@@ -1,12 +1,62 @@
 #include "execute.h"
 
+static void	make_env_word(char *input, int *idx, int start, \
+							t_word_list *word_list)
+{
+	int		word_length;
+	char	*env_word;
+
+	word_length = *idx - start;
+	env_word = malloc(sizeof(char) * (word_length + 1));
+	ft_memcpy(env_word, &input[start], word_length);
+	ft_lstadd_back(&word_list->head_node, \
+			ft_lstnew(ft_strdup(getenv(env_word))));
+	free(env_word);
+}
+
+static void	save_expanded_word(char *input, int *idx, t_word_list *word_list)
+{
+	int				start;
+
+	*idx += 1;
+	start = *idx;
+	while (input[*idx] != '\0')
+	{
+		if (is_valid_variable_rule(input[*idx]) == FALSE)
+			break ;
+		if (is_operator(&input[*idx]) == TRUE || \
+			is_whitespace(input[*idx]) == TRUE)
+			break ;
+		*idx += 1;
+	}
+	if (start == *idx)
+		ft_lstadd_back(&word_list->head_node, \
+				ft_lstnew(ft_strdup("$")));
+	else
+	{
+		make_env_word(input, idx, start, word_list);
+	}	
+}
+
+static void	save_word(char *input, int *idx, t_word_list *word_list)
+{
+	int				start;
+	int				word_length;
+	char			*buffer;
+
+	start = *idx;
+	while (input[*idx] != '\0' && input[*idx] != '$')
+		*idx += 1;
+	word_length = *idx - start;
+	buffer = malloc(sizeof(char) * (word_length + 1));
+	ft_memcpy(buffer, &input[start], word_length);
+	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
+	free(buffer);
+}
+
 char	*expand_env_variable(char *input)
 {
 	int				idx;
-	int				start;
-	int				word_length;
-	char			*env_word;
-	char			*buffer;
 	char			*result;
 	t_word_list		*word_list;
 
@@ -16,42 +66,9 @@ char	*expand_env_variable(char *input)
 	while (input[idx] != '\0')
 	{
 		if (input[idx] == '$')
-		{
-			idx += 1;
-			start = idx;
-			while (input[idx] != '\0')
-			{
-				if (is_valid_variable_rule(input[idx]) == FALSE)
-					break ;
-				if (is_operator(&input[idx]) == TRUE || \
-					is_whitespace(input[idx]) == TRUE)
-					break ;
-				idx += 1;
-			}
-			if (start == idx)
-				ft_lstadd_back(&word_list->head_node, \
-						ft_lstnew(ft_strdup("$")));
-			else
-			{
-				word_length = idx - start;
-				env_word = malloc(sizeof(char) * (word_length + 1));
-				ft_memcpy(env_word, &input[start], word_length);
-				ft_lstadd_back(&word_list->head_node, \
-						ft_lstnew(ft_strdup(getenv(env_word))));
-				free(env_word);
-			}
-		}
+			save_expanded_word(input, &idx, word_list);
 		else
-		{
-			start = idx;
-			while (input[idx] != '\0' && input[idx] != '$')
-				idx += 1;
-			word_length = idx - start;
-			buffer = malloc(sizeof(char) * (word_length + 1));
-			ft_memcpy(buffer, &input[start], word_length);
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
-			free(buffer);
-		}
+			save_word(input, &idx, word_list);
 	}
 	result = merge_word_list(word_list);
 	free(word_list);
