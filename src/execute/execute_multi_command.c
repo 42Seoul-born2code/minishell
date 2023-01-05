@@ -99,6 +99,8 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
+	cmd_path = NULL;
+	cmd_argv = NULL;
 	redirect_info.file = NONE;
 	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
@@ -127,16 +129,20 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 		else if (curr_token->type == PIPE)
 		{
 			process_count += child_process(cmd_path, cmd_argv, env_list, redirect_info);
-			free(cmd_path);
-			free_all(cmd_argv);
+			if (cmd_path != NULL)
+				free(cmd_path);
+			if (cmd_argv != NULL)
+				free_all(cmd_argv);
 			redirect_info.file = NONE;
 			redirect_info.type = NORMAL;
 		}
 		curr_node = curr_node->next;
 	}
 	last_child_process(cmd_path, cmd_argv, env_list, origin_fd, redirect_info);
-	free(cmd_path);
-	free_all(cmd_argv);
+	if (cmd_path != NULL)
+		free(cmd_path);
+	if (cmd_argv != NULL)
+		free_all(cmd_argv);
 	rollback_origin_fd(origin_fd);
 	while (process_count > 0)
 	{
