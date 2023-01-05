@@ -117,7 +117,7 @@ dsanih : fclean
 	make -j4 D_SANI=1 HOME_ENV=1 all
 
 debugm : fclean
-	make -j4 MAC_MINI=1 all
+	make -j4 DEBUG_MODE=1 MAC_MINI=1 all
 
 dsanim : fclean
 	make -j4 D_SANI=1 MAC_MINI=1 all

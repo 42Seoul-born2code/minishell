@@ -1,4 +1,5 @@
 #include "execute.h"
+#include "minishell.h"
 
 void	check_heredoc(t_token *token_list)
 {
@@ -9,11 +10,14 @@ void	check_heredoc(t_token *token_list)
 
 	idx = 0;
 	curr_node = token_list->head_node;
+	g_exit_code = 0;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
 		if (curr_token->type == REDIR_HEREDOC)
 		{
+			if (WIFSIGNALED(g_exit_code))
+				break;
 			limiter_node = curr_node->next->content;
 			get_user_input(limiter_node->word, idx);
 			idx += 1;
