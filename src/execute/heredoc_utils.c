@@ -91,13 +91,14 @@ void	get_user_input(char *limiter, int heredoc_idx)
 	char	*expand_result;
 	pid_t	pid;
 
-	change_heredoc_signal();
+	change_heredoc_signal_parent();	
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
 		fd = get_heredoc_file_fd(heredoc_idx, WRITE_MODE);
 		while (TRUE)
 		{
+			change_heredoc_signal_child();
 			input = readline(HEREDOC_PROMPT);
 			if (ft_strcmp(input, limiter) == 0)
 				break ;

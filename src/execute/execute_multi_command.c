@@ -30,6 +30,7 @@ void	last_child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, i
 {
 	pid_t	pid;
 
+	change_signal();
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
@@ -60,6 +61,7 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 
 	if (redirect_info.type != OUTFILE)
 		pipe(pipe_fd);
+	change_signal();
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
