@@ -52,6 +52,7 @@ typedef enum e_redir_type{
 }	t_redir_type;
 
 typedef struct s_redirect{
+	int				file; //TODO: 임시 변수. 삭제 필요
 	int				infile;
 	int				outfile;
 	int				heredoc_file_num;
