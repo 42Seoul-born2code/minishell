@@ -24,6 +24,8 @@ SRC_EXECUTE					:=	execute_minishell.c					\
 								fork_process.c						\
 								open_file.c							\
 								heredoc_utils.c						\
+								check_heredoc.c						\
+								expand_env_variable.c				\
 								redirection_utils.c
 
 

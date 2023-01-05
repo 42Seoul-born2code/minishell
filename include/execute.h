@@ -96,9 +96,16 @@ void	save_origin_fd(int origin_fd[2]);
 void	rollback_origin_fd(int origin_fd[2]);
 
 // heredoc_utils.c
-void	check_heredoc(t_token *token_list);
 void	delete_heredoc_file(int heredoc_file_num);
-void	get_user_input(char *limiter, int idx);
 char	*merge_word_list(t_word_list *word_list);
+
+
+// check_heredoc.c
+void	check_heredoc(t_token *token_list);
+void	get_user_input(char *limiter, int idx);
+
+// expand_env_variable
+char	*expand_env_variable(char *input);
+
 
 #endif
