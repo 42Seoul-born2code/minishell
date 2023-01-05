@@ -85,7 +85,7 @@ t_list		*ft_lstlast(t_list *lst);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *),
 				void (*del)(void *));
 t_list		*ft_lstnew(void *content);
-t_bool		ft_strcmp(char *s1, char *s2);
+int			ft_strcmp(char *s1, char *s2);
 
 char		*get_next_line(int fd);
 t_node		*find_fd(t_node **p_head, int fd);
