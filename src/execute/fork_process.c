@@ -68,7 +68,7 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		return ;
 	}
 	// 리다이렉션은 들어왔지만, 파일을 실제로 못 열었을 때
-	if ((redirect_info.infile == NONE || redirect_info.outfile == NONE) && redirect_info.type != NORMAL)
+	if (g_exit_code == 1 && redirect_info.type != NORMAL)
 	{
 		g_exit_code = 1;
 		if (cmd_path != NULL)
@@ -90,7 +90,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 			g_exit_code = 128 + WTERMSIG(g_exit_code);
 		else
 			g_exit_code = WEXITSTATUS(g_exit_code);
-		unlink(HEREDOC_FILE);
 		rollback_origin_fd(origin_fd);
 		if (cmd_path != NULL)
 			free(cmd_path);

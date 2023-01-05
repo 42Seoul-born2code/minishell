@@ -14,7 +14,6 @@ void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list)
 
 	if (cmd_path == NULL && cmd_argv == NULL)
 		exit(EXIT_SUCCESS);
-	// FIXME: 주석 풀면 작동됨
 	if (cmd_path == NULL)
 		exit(EXIT_SUCCESS);
 	envp = get_envp_in_list(env_list);
@@ -79,8 +78,9 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 		}
 		if (is_builtin_function(cmd_path) == TRUE)
 			exit(execute_builtin_function(cmd_path, cmd_argv, env_list, MULTI_COMMAND));
-		else if (redirect_info.file == NONE && redirect_info.type != NORMAL)
-			exit(EXIT_FAILURE);
+		// TODO: fd 설정 다시하기
+		// else if (redirect_info.infile == NONE && redirect_info.type != NORMAL)
+		// 	exit(EXIT_FAILURE);
 		else
 			execute_cmd(cmd_path, cmd_argv, env_list);
 	}
@@ -109,7 +109,8 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 
 	cmd_path = NULL;
 	cmd_argv = NULL;
-	redirect_info.file = NONE;
+	redirect_info.infile = NONE;
+	redirect_info.outfile = NONE;
 	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
 	process_count = 0;
@@ -141,10 +142,11 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 			if (cmd_argv != NULL)
 			{
 				free_all(cmd_argv);
-				// FIXME: 주석 풀면 작동됨
 				cmd_argv = NULL;
 			}
-			redirect_info.file = NONE;
+			// TODO: fd 설정 다시하기
+			redirect_info.infile = NONE;
+			redirect_info.outfile = NONE;
 			redirect_info.type = NORMAL;
 		}
 		curr_node = curr_node->next;

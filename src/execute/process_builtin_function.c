@@ -48,7 +48,8 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	redirect_info.file = NONE;
+	redirect_info.infile = NONE;
+	redirect_info.outfile = NONE;
 	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
 	curr_node = token_list->head_node;
@@ -74,8 +75,11 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 			free(cmd);
 		if (cmd_argv != NULL)
 			free_all(cmd_argv);
-		if (redirect_info.file != NONE)
-			close(redirect_info.file);
+		// TODO: fd 설정 다시하기
+		if (redirect_info.infile != NONE)
+			close(redirect_info.infile);
+		if (redirect_info.outfile != NONE)
+			close(redirect_info.outfile);
 		rollback_origin_fd(origin_fd);
 		delete_heredoc_file(redirect_info.heredoc_file_num);
 	}
