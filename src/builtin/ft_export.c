@@ -27,7 +27,7 @@ int	print_export_env_list(t_env_list *env_list)
 		if (curr_node->value == NULL)
 			printf("declare -x %s\n", curr_node->key);
 		else
-			printf("declare -x %s=%s\n", curr_node->key, curr_node->value);
+			printf("declare -x %s=\"%s\"\n", curr_node->key, curr_node->value);
 		list_node = list_node->next;
 	}
 	return (EXIT_SUCCESS);
