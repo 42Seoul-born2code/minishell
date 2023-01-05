@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 16:59:36 by joonhan           #+#    #+#             */
-/*   Updated: 2022/12/27 17:25:04 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/05 17:49:38 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_list
 }	t_list;
 
 int			ft_atoi(const char *str);
+t_bool		is_whitespace(char c);
 void		ft_bzero(void *dest, size_t size);
 void		*ft_calloc(size_t count, size_t size);
 int			ft_isalnum(int c);
