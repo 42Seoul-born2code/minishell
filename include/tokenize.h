@@ -9,10 +9,6 @@
 typedef enum e_meta{
 	WHITESPACE,
 	WORD,
-	SINGLE_QUOTE,
-	DOUBLE_QUOTE,
-	DOLLAR,
-	EQUAL,
 	PIPE,
 	REDIR_LEFT,
 	REDIR_HEREDOC,
@@ -21,7 +17,7 @@ typedef enum e_meta{
 	COMMAND,
 	ARGUMENT,
 	LIMITER,
-	FILE_NAME
+	FILE_NAME,
 }	t_meta;
 
 typedef struct s_token {
@@ -37,7 +33,6 @@ typedef struct s_token_node {
 int		tokenize_line(char *line, t_token *token_list);
 
 // tokenize_utils.c
-t_bool	is_whitespace(char c);
 t_bool	is_operator(char *str);
 t_bool	is_quote(char c);
 t_meta	get_meta_type(char *str);
