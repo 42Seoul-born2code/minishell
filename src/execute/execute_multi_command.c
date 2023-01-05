@@ -8,7 +8,7 @@
 	- 프로세스 카운트 + 1
 */
 
-void	last_child_process(char *cmd_name, char **cmd_argv, t_env_list *env_list, int origin_fd[2], t_redirect redirect_info)
+void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, int origin_fd[2], t_redirect redirect_info)
 {
 	pid_t	pid;
 
@@ -18,13 +18,13 @@ void	last_child_process(char *cmd_name, char **cmd_argv, t_env_list *env_list, i
 	{
 		if (redirect_info.type != OUTFILE)
 			dup2(origin_fd[1], STDOUT_FILENO);
-		if (is_builtin_function(cmd_name) == TRUE)
+		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
 		{
-			exit(execute_builtin_function(cmd_name, cmd_argv, env_list, MULTI_COMMAND));
+			exit(execute_builtin_function(cmd_info->cmd_name, cmd_info->cmd_argv, env_list, MULTI_COMMAND));
 		}
 		else
 		{
-			execute_cmd(cmd_name, cmd_argv, env_list);
+			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, env_list);
 		}
 	}
 	else
@@ -38,109 +38,20 @@ void	last_child_process(char *cmd_name, char **cmd_argv, t_env_list *env_list, i
 	}
 }
 
-static int	child_process(char *cmd_name, char **cmd_argv, t_env_list *env_list, t_redirect redirect_info)
-{
-	pid_t	pid;
-	int		pipe_fd[2];
-
-	if (redirect_info.type != OUTFILE)
-		pipe(pipe_fd);
-	change_signal();
-	pid = fork();
-	if (pid == CHILD_PROCESS)
-	{
-		if (redirect_info.type != OUTFILE)
-		{
-			close(pipe_fd[READ]);
-			dup2(pipe_fd[WRITE], STDOUT_FILENO);
-			close(pipe_fd[WRITE]);
-		}
-		if (is_builtin_function(cmd_name) == TRUE)
-			exit(execute_builtin_function(cmd_name, cmd_argv, env_list, MULTI_COMMAND));
-		// TODO: fd 설정 다시하기
-		// else if (redirect_info.infile == NONE && redirect_info.type != NORMAL)
-		// 	exit(EXIT_FAILURE);
-		else
-			execute_cmd(cmd_name, cmd_argv, env_list);
-	}
-	else
-	{
-		if (redirect_info.type != OUTFILE)
-		{
-			close(pipe_fd[WRITE]);
-			dup2(pipe_fd[READ], STDIN_FILENO);
-			close(pipe_fd[READ]);
-		}
-		waitpid(pid, NULL, WNOHANG);
-	}
-	return (1);
-}
-
 void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 {
+	t_cmd_info		cmd_info;
 	t_redirect		redirect_info;
-	int				origin_fd[2];
 	int				process_count;
-	char			*cmd_name;
-	char			**cmd_argv;
-	t_list			*curr_node;
-	t_token_node	*curr_token;
+	int				origin_fd[2];
 
-	cmd_name = NULL;
-	cmd_argv = NULL;
-	redirect_info.infile = NONE;
-	redirect_info.outfile = NONE;
-	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
-	process_count = 0;
-	curr_node = token_list->head_node;
+	init_cmd_info(&cmd_info, INIT);
+	init_redirect_info(&redirect_info);
 	save_origin_fd(origin_fd);
-	while (curr_node != NULL)
-	{
-		curr_token = curr_node->content;
-		if (curr_token->type == COMMAND)
-		{
-			cmd_name = ft_strdup(curr_token->word);
-			// if (is_builtin_function(curr_token->word) == TRUE)
-			// 	cmd_name = ft_strdup(curr_token->word);
-			// else
-			// 	cmd_name = find_cmd_path(curr_token->word, env_list);
-			// if (cmd_name == NULL)
-			// {
-			// 	print_error(COMMAND_NOT_FOUND, curr_token->word);
-			// 	g_exit_code = ERROR_CODE_COMMAND_NOT_FOUND;
-			// }
-			cmd_argv = merge_arguments(curr_node);
-		}
-		else if (is_redirection(curr_token) == TRUE)
-		{
-			process_redirection(curr_node, &redirect_info);
-		}
-		else if (curr_token->type == PIPE)
-		{
-			process_count += child_process(cmd_name, cmd_argv, env_list, redirect_info);
-			if (cmd_name != NULL)
-			{
-				free(cmd_name);
-				cmd_name = NULL;
-			}
-			if (cmd_argv != NULL)
-			{
-				free_all(cmd_argv);
-				cmd_argv = NULL;
-			}
-			// TODO: fd 설정 다시하기
-			redirect_info.infile = NONE;
-			redirect_info.outfile = NONE;
-			redirect_info.type = NORMAL;
-		}
-		curr_node = curr_node->next;
-	}
-	last_child_process(cmd_name, cmd_argv, env_list, origin_fd, redirect_info);
-	if (cmd_name != NULL)
-		free(cmd_name);
-	if (cmd_argv != NULL)
-		free_all(cmd_argv);
+	process_count = process_tokens(token_list->head_node, &cmd_info, &redirect_info, env_list);
+	last_child_process(&cmd_info, env_list, origin_fd, redirect_info);
+	init_cmd_info(&cmd_info, FREE);
 	rollback_origin_fd(origin_fd);
 	while (process_count > 0)
 	{

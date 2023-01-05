@@ -51,12 +51,22 @@ typedef enum e_redir_type{
 	HEREDOC
 }	t_redir_type;
 
+typedef enum e_init{
+	INIT,
+	FREE
+}	t_init;
+
 typedef struct s_redirect{
 	int				infile;
 	int				outfile;
 	int				heredoc_file_num;
 	t_redir_type	type;
 }	t_redirect;
+
+typedef struct s_cmd_info{
+	char	*cmd_name;
+	char	**cmd_argv;
+}	t_cmd_info;
 
 // execute_minishell.c
 void	execute_minishell(t_env_list *env);
@@ -84,6 +94,12 @@ t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
 char	*find_cmd_path(char *cmd, t_env_list *env_list);
+
+// execute_utils2.c
+void	init_cmd_info(t_cmd_info *cmd_info, t_init type);
+void	init_redirect_info(t_redirect *redirect_info);
+int		process_tokens(t_list *curr_node, t_cmd_info *cmd_info, \
+				t_redirect *redirect_info, t_env_list *env_list);
 
 // fork_process.c
 void	fork_process(t_token *token_list, t_env_list *env_list);

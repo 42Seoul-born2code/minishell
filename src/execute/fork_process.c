@@ -49,12 +49,6 @@ void	fork_process(t_token *token_list, t_env_list *env_list)
 		if (curr_token->type == COMMAND)
 		{
 			cmd_name = ft_strdup(curr_token->word);
-			// cmd_name = find_cmd_path(curr_token->word, env_list);
-			// if (cmd_name == NULL)
-			// {
-			// 	print_error(COMMAND_NOT_FOUND, curr_token->word);
-			// 	g_exit_code = ERROR_CODE_COMMAND_NOT_FOUND;
-			// }
 			cmd_argv = merge_arguments(curr_node);
 		}
 		else if (is_redirection(curr_token) == TRUE)

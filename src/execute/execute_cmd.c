@@ -17,12 +17,7 @@ void	execute_cmd(char *cmd_name, char **cmd_argv, t_env_list *env_list)
 	envp = get_envp_in_list(env_list);
 	if (execve(cmd_path, cmd_argv, envp) == ERROR)
 	{
-		print_error(COMMAND_NOT_FOUND, cmd_argv[0]);
-		// if (cmd_argv != NULL)
-		// 	free_all(cmd_argv);
-		// free_all(envp);
-		// if (cmd_path != NULL)
-		// 	free(cmd_path);
+		print_error(COMMAND_NOT_FOUND, cmd_path);
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
 	}
 }
