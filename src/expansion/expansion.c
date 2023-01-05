@@ -36,15 +36,39 @@ char *word, int *idx, t_word_list *word_list, t_quote type)
 	free(buffer);
 }
 
-char	*add_double_quotes(char *env_word)
+static t_quote	get_content_quote_type(char *str)
 {
+	int	idx;
+
+	idx = 0;
+	while (str[idx] != '\0')
+	{
+		if (str[idx] == '\'')
+			return (SINGLE_QUOTED);
+		if (str[idx] == '\"')
+			return (DOUBLE_QUOTED);
+		idx += 1;
+	}
+	return (NOT_QUOTED);
+}
+
+static char	*add_quotes(char *env_word)
+{
+	t_quote	quote_type;
 	char	*prev_word;
 	char	*buffer;
 
-	buffer = ft_strjoin("\"", env_word);
+	quote_type = get_content_quote_type(env_word);
+	if (quote_type == DOUBLE_QUOTED)
+		buffer = ft_strjoin("\'", env_word);
+	else
+		buffer = ft_strjoin("\"", env_word);
 	prev_word = ft_strdup(buffer);
 	free(buffer);
-	buffer = ft_strjoin(prev_word, "\"");
+	if (quote_type == DOUBLE_QUOTED)
+		buffer = ft_strjoin(prev_word, "\'");
+	else
+		buffer = ft_strjoin(prev_word, "\"");
 	free(prev_word);
 	return (buffer);
 }
@@ -138,7 +162,7 @@ void	save_expand_env_variable(t_token_node *token, int *idx, \
 		else if (quote_type == NOT_QUOTED)
 		{
 			not_spaced_env_word = remove_whitespace(ft_strdup(get_env_value(env_list, env_word)));
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(add_double_quotes(not_spaced_env_word)));
+			ft_lstadd_back(&word_list->head_node, ft_lstnew(add_quotes(not_spaced_env_word)));
 			free(not_spaced_env_word);
 		}
 		else if (quote_type == QUOTED)

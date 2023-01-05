@@ -9,10 +9,6 @@
 typedef enum e_meta{
 	WHITESPACE,
 	WORD,
-	SINGLE_QUOTE,
-	DOUBLE_QUOTE,
-	DOLLAR,
-	EQUAL,
 	PIPE,
 	REDIR_LEFT,
 	REDIR_HEREDOC,
@@ -21,7 +17,7 @@ typedef enum e_meta{
 	COMMAND,
 	ARGUMENT,
 	LIMITER,
-	FILE_NAME
+	FILE_NAME,
 }	t_meta;
 
 typedef struct s_token {
