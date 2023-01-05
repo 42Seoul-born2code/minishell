@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 16:59:36 by joonhan           #+#    #+#             */
-/*   Updated: 2022/12/27 17:25:04 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/05 18:24:53 by jeongkpa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_list		*ft_lstlast(t_list *lst);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *),
 				void (*del)(void *));
 t_list		*ft_lstnew(void *content);
-t_bool		ft_strcmp(char *s1, char *s2);
+int			ft_strcmp(char *s1, char *s2);
 
 char		*get_next_line(int fd);
 t_node		*find_fd(t_node **p_head, int fd);

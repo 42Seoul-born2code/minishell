@@ -26,7 +26,9 @@ SRC_EXECUTE					:=	execute_minishell.c					\
 								heredoc_utils.c						\
 								check_heredoc.c						\
 								expand_env_variable.c				\
-								redirection_utils.c
+								process_redirection.c				\
+								redirection_utils.c					\
+								redirection_utils2.c
 
 
 SRC_TOKENIZE_DIR			:=	tokenize/
@@ -137,3 +139,7 @@ $(NAME) : $(OBJS)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDE) -I$(LIB_DIR) $(READLINE_COMPILE)
+
+
+
+

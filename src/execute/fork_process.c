@@ -24,48 +24,6 @@ int	get_heredoc_file_fd(int heredoc_idx, int mode)
 	return (fd);
 }
 
-void	process_redirection(t_list *curr_node, t_redirect *redirect_info)
-{
-	t_token_node	*curr_token;
-
-	// << eof cat << foe cat
-	if (redirect_info->file != NONE)
-	{
-		close(redirect_info->file);
-		if (redirect_info->type == OUTFILE)
-			close(STDOUT_FILENO);
-		else if (redirect_info->type == INFILE)
-			close(STDIN_FILENO);
-	}
-	curr_token = curr_node->content;
-	if (curr_token->type == REDIR_RIGHT)
-	{
-		redirect_info->file = open_file(curr_node->next, WRITE_MODE);
-		redirect_info->type = OUTFILE;
-		dup2(redirect_info->file, STDOUT_FILENO);
-	}
-	else if (curr_token->type == REDIR_HEREDOC)
-	{
-		//TODO: heredoc file 이름 바꿔야함
-		redirect_info->file = get_heredoc_file_fd(redirect_info->heredoc_file_num, READ_MODE);
-		redirect_info->type = HEREDOC;
-		dup2(redirect_info->file, STDIN_FILENO);
-		redirect_info->heredoc_file_num += 1;
-	}
-	else if (curr_token->type == REDIR_APPEND)
-	{
-		redirect_info->file = open_file(curr_node->next, APPEND_MODE);
-		redirect_info->type = OUTFILE;
-		dup2(redirect_info->file, STDOUT_FILENO);
-	}
-	else if (curr_token->type == REDIR_LEFT)
-	{
-		redirect_info->file = open_file(curr_node->next, READ_MODE);
-		redirect_info->type = INFILE;
-		dup2(redirect_info->file, STDIN_FILENO);
-	}
-}
-
 void	fork_process(t_token *token_list, t_env_list *env_list)
 {
 	int				origin_fd[2];
