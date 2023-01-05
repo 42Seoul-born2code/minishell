@@ -68,8 +68,7 @@ int		execute_builtin_function(char *cmd, char **argv, \
 // process_builtin_function.c
 t_bool	is_builtin_function(char *word);
 t_bool	is_command_builtin_function(t_token *token_list);
-void	process_builtin_function(t_token *token_list, \
-							t_env_list *env_list, t_command_type type);
+void	process_builtin_function(t_token *token_list, t_env_list *env_list);
 
 // execute_command.c
 void	execute_command(t_token *token_list, t_env_list *env_list);

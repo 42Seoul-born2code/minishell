@@ -39,7 +39,7 @@ t_bool	is_command_builtin_function(t_token *token_list)
 	return (FALSE);
 }
 
-void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_command_type type)
+void	process_builtin_function(t_token *token_list, t_env_list *env_list)
 {
 	t_redirect		redirect_info;
 	int				origin_fd[2];
@@ -48,7 +48,8 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 	t_list			*curr_node;
 	t_token_node	*curr_token;
 
-	redirect_info.file = NONE;
+	redirect_info.infile = NONE;
+	redirect_info.outfile = NONE;
 	redirect_info.type = NORMAL;
 	redirect_info.heredoc_file_num = 0;
 	curr_node = token_list->head_node;
@@ -67,20 +68,16 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list, t_comma
 		}
 		curr_node = curr_node->next;
 	}
-	if (type == SIMPLE_COMMAND)
-	{
-		g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list, SIMPLE_COMMAND);
-		if (cmd != NULL)
-			free(cmd);
-		if (cmd_argv != NULL)
-			free_all(cmd_argv);
-		if (redirect_info.file != NONE)
-			close(redirect_info.file);
-		rollback_origin_fd(origin_fd);
-		delete_heredoc_file(redirect_info.heredoc_file_num);
-	}
-	else
-	{
-
-	}
+	g_exit_code = execute_builtin_function(cmd, cmd_argv, env_list, SIMPLE_COMMAND);
+	if (cmd != NULL)
+		free(cmd);
+	if (cmd_argv != NULL)
+		free_all(cmd_argv);
+	// TODO: fd 설정 다시하기
+	if (redirect_info.infile != NONE)
+		close(redirect_info.infile);
+	if (redirect_info.outfile != NONE)
+		close(redirect_info.outfile);
+	rollback_origin_fd(origin_fd);
+	delete_heredoc_file(redirect_info.heredoc_file_num);
 }

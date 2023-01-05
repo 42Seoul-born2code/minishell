@@ -15,8 +15,14 @@
 - [ v ] < infile cat Makefile > outfile
 - [ v ] cat < infile Makefile
 // 
-- [  ] << eof cat > outfile > outfile2
+- [ v ] << eof cat > outfile > outfile2
 	- cat: stdout: Bad file descriptor
+	- close(STDOUT_FILENO) 를 수행하면 outfile fd 가 1로 설정되는 문제 발생
+	- close(STDOUT_FILENO) 를 제거해서 문제 해결
+- [ v ] < infile cat > outfile < outfile cat
+	- cat: No such file or directory 오류가 안뜨는 문제 발견
+	- merge_argument 함수에서 argument 개수를 잘못 세고 있었음
+	- redirection 뒤에는 FILE_NAME 또는 LIMITER 이기 때문에 redirection + ( FILE_NAME or LIMITER ) 는 무시하고 지나가면 됨
 
 [파싱]
 - [ v ] < | > >> syntax error
