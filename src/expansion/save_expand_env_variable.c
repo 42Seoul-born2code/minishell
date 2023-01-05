@@ -66,7 +66,7 @@ static void	lst_add_back_expanded_word(char *env_word, t_quote quote_type, \
 	free(env_word);
 }
 
-void	move_word_idx(char *word, int *idx)
+static void	move_word_idx(char *word, int *idx)
 {
 	while (word[*idx] != '\0' && word[*idx] != '\"' && \
 			word[*idx] != '\'' && word[*idx] != '$')
