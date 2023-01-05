@@ -97,7 +97,7 @@ int	ft_export(char **argv, t_env_list *env_list)
 
 	if (argv[1] == NULL)
 		return (print_export_env_list(env_list));
-	result = process_export(argv, env_list);
+	result = process_export(&argv[1], env_list);
 	return (result);
 }
 
