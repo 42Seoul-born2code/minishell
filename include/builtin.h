@@ -10,6 +10,7 @@
 
 # include "libft.h"
 # include "utils.h"
+# include "execute.h"
 
 # define INVALID_OPTION			"Error: invalid option: "
 # define NOT_NUMERIC_ARGUMENT	"Error: numeric argument required: "

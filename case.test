@@ -18,7 +18,7 @@
 [빌트인]
 - [ v ] exit code $? 출력 안되는 문제
 - [ v ] export = 에러 메세지
-- exit | exit 시 exit 출력되지 않도록
+- [ v ] exit | exit 시 exit 출력되지 않도록
 - [ v ] echo aaa | << eof (double free or NULL free)
 
 [출력]

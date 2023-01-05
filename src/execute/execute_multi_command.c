@@ -70,7 +70,7 @@ static int	child_process(char *cmd_path, char **cmd_argv, t_env_list *env_list, 
 			close(pipe_fd[WRITE]);
 		}
 		if (is_builtin_function(cmd_path) == TRUE)
-			exit(execute_builtin_function(cmd_path, cmd_argv, env_list, TRUE));
+			exit(execute_builtin_function(cmd_path, cmd_argv, env_list, MULTI_COMMAND));
 		else if (redirect_info.file == NONE && redirect_info.type != NORMAL)
 			exit(EXIT_FAILURE);
 		else
