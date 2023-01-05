@@ -38,19 +38,16 @@ static t_token	*init_token_list(void)
 */
 static t_bool	is_all_whitespace(char *line)
 {
-	int		idx;
-	t_bool	result;
+	int	idx;
 
 	idx = 0;
-	result = TRUE;
 	while (line[idx] != '\0')
 	{
 		if (is_whitespace(line[idx]) == FALSE)
-			result = FALSE;
-		return (result);
+			return (FALSE);
 		idx += 1;
 	}
-	return (result);
+	return (TRUE);
 }
 
 /*
