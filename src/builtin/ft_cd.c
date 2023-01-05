@@ -25,6 +25,25 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
+t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
+								char **paths, t_env_list *env_list)
+{
+	t_bool	result;
+	char	*target_path;
+
+	result = TRUE;
+	target_path = ft_strjoin("/", path);
+	if (chdir(target_path) == ERROR)
+	{
+		replace_env_value(env_list, "PWD", old_pwd);
+		free(old_pwd);
+		free_all(paths);
+		result = FALSE;
+	}
+	free(target_path);
+	return (result);
+}
+
 /*
 	실제로 현재 디렉토리를 변경하는 함수
 */
@@ -32,7 +51,6 @@ int	change_directories(char *argv, t_env_list *env_list)
 {
 	int		idx;
 	char	*old_pwd;
-	char	*target_path;
 	char	*curr_path;
 	char	**paths;
 
@@ -43,17 +61,9 @@ int	change_directories(char *argv, t_env_list *env_list)
 	{
 		if (chdir(paths[idx]) == ERROR)
 		{
-			target_path = ft_strjoin("/", paths[idx]);
-			if (chdir(target_path) == ERROR)
-			{
-				replace_env_value(env_list, "PWD", old_pwd);
-				print_error(NOT_EXISTED, argv);
-				free(old_pwd);
-				free(target_path);
-				free_all(paths);
-				return (EXIT_FAILURE);
-			}
-			free(target_path);
+			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) \
+										== FALSE)
+				return (print_error(NOT_EXISTED, argv));
 		}
 		curr_path = getcwd(NULL, BUFSIZ);
 		replace_env_value(env_list, "PWD", curr_path);
