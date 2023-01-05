@@ -1,7 +1,7 @@
 #include "execute.h"
 #include "builtin.h"
 
-int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list)
+int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list, t_command_type command_type)
 {
 	if (ft_strcmp(cmd, "echo") == 0)
 		return (ft_echo(argv));
@@ -16,6 +16,6 @@ int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list)
 	else if (ft_strcmp(cmd, "env") == 0)
 		return (ft_env(argv, env_list));
 	else if (ft_strcmp(cmd, "exit") == 0)
-		return (ft_exit(argv, env_list));
+		return (ft_exit(argv, env_list, command_type));
 	return (EXIT_SUCCESS);
 }

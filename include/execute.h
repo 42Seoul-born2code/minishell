@@ -61,7 +61,7 @@ typedef struct s_redirect{
 void	execute_minishell(t_env_list *env);
 
 // execute_builtin_function.c
-int		execute_builtin_function(char *cmd, char **argv, t_env_list *env_list);
+int		execute_builtin_function(char *cmd, char **argv, t_env_list *env_list, t_command_type command_type);
 
 // process_builtin_function.c
 t_bool	is_builtin_function(char *word);

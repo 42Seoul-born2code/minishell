@@ -82,13 +82,14 @@ static void	free_env_list(t_env_list *env_list)
 	env_list->head_node = NULL;
 }
 
-int	ft_exit(char **argv, t_env_list *env_list)
+int	ft_exit(char **argv, t_env_list *env_list, t_command_type command_type)
 {
 	char			*arg;
 	unsigned char	exit_code;
 
 	exit_code = EXIT_SUCCESS;
-	ft_putstr_fd("exit\n", STDERR_FILENO);
+	if (command_type == SIMPLE_COMMAND)
+		print_error("exit\n", NULL);
 	if (*(argv + 1))
 	{
 		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");

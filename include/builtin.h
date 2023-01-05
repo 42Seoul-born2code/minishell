@@ -46,5 +46,6 @@ int		ft_export(char **argv, t_env_list *env_list);
 int		ft_unset(char **argv, t_env_list *env_list);
 
 // ft_exit.c
-int		ft_exit(char **argv, t_env_list *env_list);
+int		ft_exit(char **argv, t_env_list *env_list, t_command_type command_type);
+
 #endif
