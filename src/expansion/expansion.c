@@ -9,7 +9,7 @@ t_bool	is_valid_variable_rule(char c)
 	return (FALSE);
 }
 
-static void	save_before_env_variable(\
+void	save_before_env_variable(\
 char *word, int *idx, t_word_list *word_list, t_quote type)
 {
 	int		start;
@@ -99,7 +99,7 @@ static char	*remove_whitespace(char *str)
 	return (result);
 }
 
-static void	expand_env_variable(t_token_node *token, int *idx, \
+void	save_expand_env_variable(t_token_node *token, int *idx, \
 					t_word_list *word_list, t_env_list *env_list, t_quote quote_type)
 {
 	int		start;
@@ -147,36 +147,6 @@ static void	expand_env_variable(t_token_node *token, int *idx, \
 	}
 }
 
-static void	save_single_quoted_word(char *word, int *idx, t_word_list *word_list)
-{
-	int		start;
-	int		word_length;
-	char	*buffer;
-
-	ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-	*idx += 1;
-	start = *idx;
-	while (word[*idx] != '\0' && word[*idx] != '\'')
-		*idx += 1;
-	if (start == *idx && word[*idx] == '\'')
-	{
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-		*idx += 1;
-	}
-	else if (start == *idx && word[*idx] == '\0')
-		return ;
-	else
-	{
-		word_length = *idx - start;
-		buffer = malloc(sizeof(char) * (word_length + 1));
-		ft_memcpy(buffer, &word[start], word_length);
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup(buffer)));
-		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\'")));
-		free(buffer);
-		*idx += 1;
-	}
-}
-
 // 환경변수를 확장하기 위해 연결 리스트로 저장했던 문자열들을 하나로 합치는 함수
 void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 {	
@@ -199,55 +169,6 @@ void	merge_replaced_word(t_word_list *word_list, char **replaced_word)
 }
 
 /*
-	1. $ 만난 경우: 환경변수 확장해서 저장
-	2. $ 만나기 전의 경우: 환경변수 만나기 전까지 문자열 저장
-*/
-void	add_back_to_word_list(t_token_node *curr_token, int *idx, t_word_list *word_list, t_env_list *env_list, t_quote quote_type)
-{
-	if (curr_token->word[*idx] == '$')
-	{
-		expand_env_variable(curr_token, idx, word_list, env_list, quote_type);
-	}
-	else
-	{
-		save_before_env_variable(curr_token->word, idx, word_list, quote_type);
-	}
-}
-
-t_word_list	*save_word_and_expanded_variable(t_token_node *curr_token, t_env_list *env_list)
-{
-	int				idx;
-	t_word_list		*word_list;
-
-	idx = 0;
-	word_list = malloc(sizeof(t_word_list));
-	word_list->head_node = NULL;
-	while (curr_token->word[idx] != '\0')
-	{
-		if (curr_token->word[idx] == '\'')
-			save_single_quoted_word(curr_token->word, &idx, word_list);
-		else if (curr_token->word[idx] == '\"')
-		{
-			ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
-			idx += 1;
-			while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"')
-				add_back_to_word_list(curr_token, &idx, word_list, env_list, QUOTED);
-			if (curr_token->word[idx] == '\"')
-			{
-				ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("\"")));
-				idx += 1;
-			}
-		}
-		else
-		{
-			while (curr_token->word[idx] != '\0' && curr_token->word[idx] != '\"' && curr_token->word[idx] != '\'')
-				add_back_to_word_list(curr_token, &idx, word_list, env_list, NOT_QUOTED);
-		}
-	}
-	return (word_list);
-}
-
-/*
 	환경 변수를 확장해서 기존의 토큰을 교체하는 함수
 
 	LINE	: 1. 작은 따옴표 안에 있는 문자열
@@ -267,9 +188,7 @@ void	expansion(t_token *token_list, t_env_list *env_list)
 		replaced_word = NULL;
 		curr_token = curr_node->content;
 		word_list = save_word_and_expanded_variable(curr_token, env_list);
-		// 연결 리스트 노드들 하나로 합치기
 		merge_replaced_word(word_list, &replaced_word);
-		// 기존에 있던 word 를 교체
 		if (replaced_word != NULL)
 		{
 			free(curr_token->word);
