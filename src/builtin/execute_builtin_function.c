@@ -1,7 +1,8 @@
 #include "execute.h"
 #include "builtin.h"
 
-int	execute_builtin_function(char *cmd, char **argv, t_env_list *env_list, t_command_type command_type)
+int	execute_builtin_function(char *cmd, char **argv, \
+							t_env_list *env_list, t_command_type command_type)
 {
 	if (ft_strcmp(cmd, "echo") == 0)
 		return (ft_echo(argv));
