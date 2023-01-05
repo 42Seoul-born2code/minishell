@@ -21,26 +21,27 @@ typedef struct s_word_info{
 	t_env_list	*env_list;
 }	t_word_info;
 
-void	quote_removal(t_token *token_list);
-t_bool	is_valid_variable_rule(char c);
-
-// expansion.c
-void	expansion(t_token *token_list, t_env_list *env_list);
+// quote_removal.c
+void		quote_removal(t_token *token_list);
 
 // expansion_utils.c
-t_bool	is_valid_variable_rule(char c);
-char	*copy_str_length(int start, const char *src, int word_length);
-void	save_before_env_variable(char *word, int *idx, \
+t_bool		is_valid_variable_rule(char c);
+char		*copy_str_length(int start, const char *src, int word_length);
+void		save_before_env_variable(char *word, int *idx, \
 					t_word_list *word_list, t_quote type);
 
+// expansion.c
+void		expansion(t_token *token_list, t_env_list *env_list);
+
 // remove_whitespace.c
-char	*remove_whitespace(char *str);
+char		*remove_whitespace(char *str);
 
 // save_expand_env_variable.c
-void	save_expand_env_variable(t_word_info word_info, int *idx, \
+void		save_expand_env_variable(t_word_info word_info, int *idx, \
 					t_word_list *word_list, t_quote quote_type);
 
 // save_word_and_expanded_variable.c
-t_word_list	*save_word_and_expanded_variable(t_token_node *curr_token, t_env_list *env_list);
+t_word_list	*save_word_and_expanded_variable(t_token_node *curr_token, \
+											t_env_list *env_list);
 
 #endif
