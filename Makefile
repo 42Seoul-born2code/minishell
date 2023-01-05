@@ -19,6 +19,7 @@ SRC_EXECUTE_DIR				:=	execute/
 SRC_EXECUTE					:=	execute_minishell.c					\
 								process_builtin_function.c			\
 								execute_command.c					\
+								execute_cmd.c						\
 								execute_multi_command.c				\
 								execute_utils.c						\
 								fork_process.c						\

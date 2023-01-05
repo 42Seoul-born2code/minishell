@@ -30,9 +30,7 @@ char	**merge_arguments(t_list *curr_node)
 			curr_node = curr_node->next;
 		else if (curr_token->type == ARGUMENT || curr_token->type == COMMAND)
 		{
-			// FIXME: word 가 NULL 인 경우 ft_strdup 이 NULL 을 반환
-			// 그래서 다음 문자열이 있음에도 제대로 출력을 못함
-			cmd_argv[idx] = ft_strdup(curr_token->word);
+			cmd_argv[idx] = ft_strjoin(curr_token->word, "");
 			idx += 1;
 		}
 		curr_node = curr_node->next;
