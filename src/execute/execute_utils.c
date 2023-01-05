@@ -16,22 +16,18 @@ char	**merge_arguments(t_list *curr_node)
 	int				idx;
 	int				argv_count;
 	char			**cmd_argv;
-	t_bool			is_redirection_met;
 	t_token_node	*curr_token;
 
 	idx = 0;
-	is_redirection_met = FALSE;
 	argv_count = count_argv(curr_node);
 	cmd_argv = malloc((sizeof(char *)) * (argv_count + 1));
 	while (idx < argv_count)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE && is_redirection_met == FALSE)
-			is_redirection_met = TRUE;
-		else if (is_redirection(curr_token) == TRUE && is_redirection_met == TRUE)
+		if (curr_token->type == PIPE)
 			break ;
-		else if (curr_token->type == PIPE)
-			break ;
+		if (is_redirection(curr_token) == TRUE && curr_node->next != NULL)
+			curr_node = curr_node->next;
 		else if (curr_token->type == ARGUMENT || curr_token->type == COMMAND)
 		{
 			cmd_argv[idx] = ft_strdup(curr_token->word);
@@ -46,20 +42,16 @@ char	**merge_arguments(t_list *curr_node)
 int	count_argv(t_list *curr_node)
 {
 	int				argv_count;
-	t_bool			is_redirection_met;
 	t_token_node	*curr_token;
 
 	argv_count = 0;
-	is_redirection_met = FALSE;
 	while (curr_node != NULL)
 	{
 		curr_token = curr_node->content;
-		if (is_redirection(curr_token) == TRUE && is_redirection_met == FALSE)
-			is_redirection_met = TRUE;
-		else if (is_redirection(curr_token) == TRUE && is_redirection_met == TRUE)
+		if (curr_token->type == PIPE)
 			break ;
-		else if (curr_token->type == PIPE)
-			break ;
+		if (is_redirection(curr_token) == TRUE && curr_node->next != NULL)
+			curr_node = curr_node->next;
 		else if (curr_token->type == ARGUMENT || curr_token->type == COMMAND)
 			argv_count += 1;
 		curr_node = curr_node->next;
