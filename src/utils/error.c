@@ -11,6 +11,7 @@ int	print_error(char *msg, char *arg)
 	return (EXIT_ERROR);
 }
 
+// TODO: 완성 후 삭제하기
 void	print_env_list(t_env_list *env_list)
 {
 	t_list		*list_node;
