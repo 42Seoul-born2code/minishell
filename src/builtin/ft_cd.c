@@ -1,26 +1,12 @@
 #include "builtin.h"
 #include <dirent.h>
 
-static t_bool	is_dir_accessible(char *path)
-{
-	DIR	*p_dir;
-
-	p_dir = opendir(path);
-	if (p_dir == NULL)
-		return (FALSE);
-	else
-	{
-		free(p_dir);
-		return (TRUE);
-	}
-}
-
 /*
 	매개변수로 전달된 환경변수의 경로로 현재 위치를 변경
 	- env_path: 이동할 환경변수
 	- env_list: 환경변수 리스트
 */
-int	move_to_env_path(char *env_path, t_env_list *env_list)
+static int	move_to_env_path(char *env_path, t_env_list *env_list)
 {
 	char	*curr_path;
 	char	*target_path;
@@ -39,33 +25,6 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
-// static int	try_to_move_directories(char **paths, old_pwd);
-// 	while (paths[++idx] != NULL && result == EXIT_SUCCESS)
-// 	{
-// 		abs_path = ft_strjoin("/", paths[idx]);
-// 		stat(paths[idx], &buf);
-// 		stat(abs_path, &abs_buf);
-// 		if (S_ISDIR(buf.st_mode))
-// 		{
-// 			if (is_dir_accessible(paths[idx]) == TRUE)
-// 				chdir(paths[idx]);
-// 			else
-// 				result = print_error(PERMISSION_DENIED, argv);
-// 		}
-// 		else if (S_ISDIR(abs_buf.st_mode))
-// 		{
-// 			if (is_dir_accessible(abs_path) == TRUE)
-// 				chdir(abs_path);
-// 			else
-// 				result = print_error(PERMISSION_DENIED, argv);
-// 		}
-// 		else
-// 			result = print_error(NOT_EXISTED, argv);
-// 		curr_path = getcwd(NULL, BUFSIZ);
-// 		replace_env_value(env_list, "PWD", curr_path);
-// 		free(curr_path);
-// 	}
-
 /*
 	실제로 현재 디렉토리를 변경하는 함수
 	1. 폴더가 존재하는지 먼저 확인: stat 이나 lstat 으로 먼저 확인
@@ -81,46 +40,15 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	5. 절대 경로 존재 O 접근 X
 	6. 절대 경로 존재 X 접근 O/X
 */
-int	change_directories(char *argv, t_env_list *env_list)
+int	change_directories(char *argv, char **paths, t_env_list *env_list)
 {
 	int		idx;
-	char	*old_pwd;
-	char	*curr_path;
-	char	*abs_path;
-
-	char	**paths;
 	int		result;
-	struct stat	buf;
-	struct stat	abs_buf;
+	char	*old_pwd;
 
 	idx = -1;
-	result = EXIT_SUCCESS;
-	paths = ft_split(argv, '/');
 	old_pwd = getcwd(NULL, BUFSIZ);
-	// result = try_to_move_directories(paths, old_pwd);
-	while (paths[++idx] != NULL && result == EXIT_SUCCESS)
-	{
-		abs_path = ft_strjoin("/", paths[idx]);
-		if (stat(paths[idx], &buf) == 0 && S_ISDIR(buf.st_mode))
-		{
-			if (is_dir_accessible(paths[idx]) == TRUE)
-				chdir(paths[idx]);
-			else
-				result = print_error(PERMISSION_DENIED, argv);
-		}
-		else if (stat(abs_path, &abs_buf) == 0 && S_ISDIR(abs_buf.st_mode))
-		{
-			if (is_dir_accessible(abs_path) == TRUE)
-				chdir(abs_path);
-			else
-				result = print_error(PERMISSION_DENIED, argv);
-		}
-		else
-			result = print_error(NOT_EXISTED, argv);
-		curr_path = getcwd(NULL, BUFSIZ);
-		replace_env_value(env_list, "PWD", curr_path);
-		free(curr_path);
-	}
+	result = try_to_move_directories(idx, argv, paths, env_list);
 	replace_env_value(env_list, "OLDPWD", old_pwd);
 	free(old_pwd);
 	free_all(paths);
@@ -129,6 +57,8 @@ int	change_directories(char *argv, t_env_list *env_list)
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
+	char	**paths;
+
 	if (argv[1] == NULL)
 	{
 		if (is_env_existed(env_list, "HOME") == TRUE)
@@ -137,7 +67,8 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
-	return (change_directories(argv[1], env_list));
+	paths = ft_split(argv[1], '/');
+	return (change_directories(argv[1], paths, env_list));
 }
 
 /*

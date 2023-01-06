@@ -23,6 +23,13 @@ typedef enum e_kv_pair{
 	VALUE
 }	t_kv_pair;
 
+typedef struct e_dir_info{
+	char		*curr_path;
+	char		*abs_path;
+	struct stat	buf;
+	struct stat	abs_buf;
+}	t_dir_info;
+
 // builtin_utils.c
 t_bool	is_valid_variable_name(char *str);
 void	ft_lstadd_env_node(t_env_list *env_list, char *key, char *value);
@@ -31,6 +38,9 @@ int		check_option(char *argv);
 // ft_cd.c
 int		ft_cd(char **argv, t_env_list *env_list);
 
+// ft_cd_utils.c
+int		try_to_move_directories(int idx, char *argv, \
+									char **paths, t_env_list *env_list);
 // ft_echo.c
 int		ft_echo(char **argv);
 
