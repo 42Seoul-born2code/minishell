@@ -8,8 +8,9 @@
 - [ v ] << eof | << foe 에서
 - [ v ] cat | cat | ls  -> exit_code = 0
 - [ v ] ls -al | grep test | waef
-- [   ] chmod 000 -> permission denied(open_file 함수 쪽)
+- [ v ] chmod 000 -> permission denied(open_file 함수 쪽)
 	- cd not_permissioned_dir 입력 시 permission denied 뜨도록 수정
+- [ v ] exit 개행 출력 제거
 
 [arguments 를 [cat, Makefile] 로 인식하지 못하는 문제]
 - [ v ] < infile cat Makefile > outfile

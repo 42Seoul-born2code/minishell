@@ -89,7 +89,7 @@ int	ft_exit(char **argv, t_env_list *env_list, t_command_type command_type)
 
 	exit_code = EXIT_SUCCESS;
 	if (command_type == SIMPLE_COMMAND)
-		print_error("exit\n", NULL);
+		print_error("exit", NULL);
 	if (*(argv + 1))
 	{
 		arg = ft_strtrim(*(argv + 1), " \n\t\f\v\r");
