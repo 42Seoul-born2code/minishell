@@ -26,6 +26,21 @@ char	*merge_word_list(t_word_list *word_list)
 	return (result);
 }
 
+int	get_heredoc_file_fd(int heredoc_idx, int mode)
+{
+	int		fd;
+	char	*heredoc_file_name;
+
+	fd = NONE;
+	heredoc_file_name = ft_strjoin(HEREDOC_FILE, ft_itoa(heredoc_idx));
+	if (mode == READ_MODE)
+		fd = open(heredoc_file_name, O_RDONLY, 0644);
+	else if (mode == WRITE_MODE)
+		fd = open(heredoc_file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	free(heredoc_file_name);
+	return (fd);
+}
+
 void	delete_heredoc_file(int heredoc_file_num)
 {
 	char	*heredoc_file_name;
