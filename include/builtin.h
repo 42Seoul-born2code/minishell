@@ -12,11 +12,11 @@
 # include "utils.h"
 # include "execute.h"
 
-# define INVALID_OPTION			"Error: invalid option: "
-# define NOT_NUMERIC_ARGUMENT	"Error: numeric argument required: "
-# define TOO_MANY_ARGUMNET		"Error: too many arguments. "
-# define VARIABLE_IS_UNSET		"Error: variable is unset. "
-# define NOT_VALID_IDENTIFIER	"Error: not a valid identifier: "
+# define INVALID_OPTION			"❌ Error: invalid option: "
+# define NOT_NUMERIC_ARGUMENT	"❌ Error: numeric argument required: "
+# define TOO_MANY_ARGUMNET		"❌ Error: too many arguments. "
+# define VARIABLE_IS_UNSET		"❌ Error: variable is unset. "
+# define NOT_VALID_IDENTIFIER	"❌ Error: not a valid identifier: "
 
 typedef enum e_kv_pair{
 	KEY,
