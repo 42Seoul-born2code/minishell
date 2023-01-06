@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include "execute.h"
 
 static char	**get_path_env(char *str)
@@ -15,7 +16,8 @@ static t_bool	is_command_directory(char *cmd)
 	stat(cmd, &buf);
 	if (S_ISDIR(buf.st_mode))
 	{
-		print_error(cmd, "is a directory\n");
+		print_error(cmd, "is a directory");
+		g_exit_code = 126;
 		return (TRUE);
 	}
 	return (FALSE);
