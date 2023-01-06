@@ -39,35 +39,32 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 	return (EXIT_SUCCESS);
 }
 
-t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
-					char **paths, t_env_list *env_list)
-{
-	struct stat	buf;
-	char		*target_path;
-
-	target_path = ft_strjoin("/", path);
-	stat(target_path, &buf);
-	if (!S_ISDIR(buf.st_mode))
-	{
-		print_error(NOT_EXISTED, target_path);
-		return (FALSE);
-	}
-	if (is_dir_accessible(target_path) == FALSE)
-	{
-		print_error(PERMISSON_DENIED, path);
-		return (FALSE);
-	}
-	if (chdir(target_path) == ERROR)
-	{
-		replace_env_value(env_list, "PWD", old_pwd);
-		free(old_pwd);
-		free_all(paths);
-		free(target_path);
-		return (print_error(NOT_EXISTED, path));
-	}
-	free(target_path);
-	return (TRUE);
-}
+// static int	try_to_move_directories(char **paths, old_pwd);
+// 	while (paths[++idx] != NULL && result == EXIT_SUCCESS)
+// 	{
+// 		abs_path = ft_strjoin("/", paths[idx]);
+// 		stat(paths[idx], &buf);
+// 		stat(abs_path, &abs_buf);
+// 		if (S_ISDIR(buf.st_mode))
+// 		{
+// 			if (is_dir_accessible(paths[idx]) == TRUE)
+// 				chdir(paths[idx]);
+// 			else
+// 				result = print_error(PERMISSION_DENIED, argv);
+// 		}
+// 		else if (S_ISDIR(abs_buf.st_mode))
+// 		{
+// 			if (is_dir_accessible(abs_path) == TRUE)
+// 				chdir(abs_path);
+// 			else
+// 				result = print_error(PERMISSION_DENIED, argv);
+// 		}
+// 		else
+// 			result = print_error(NOT_EXISTED, argv);
+// 		curr_path = getcwd(NULL, BUFSIZ);
+// 		replace_env_value(env_list, "PWD", curr_path);
+// 		free(curr_path);
+// 	}
 
 /*
 	실제로 현재 디렉토리를 변경하는 함수
@@ -75,50 +72,51 @@ t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
 	2. 접근 가능한지 확인: opendir 로 확인
 	3. 상대 경로 -> 절대 경로 순서대로 확인: 순차적으로 확인
 */
+
+/*
+	1. 상대 경로 존재 O 접근 O
+	2. 상대 경로 존재 O 접근 X
+	3. 상대 경로 존재 X 접근 O/X
+	4. 절대 경로 존재 O 접근 O
+	5. 절대 경로 존재 O 접근 X
+	6. 절대 경로 존재 X 접근 O/X
+*/
 int	change_directories(char *argv, t_env_list *env_list)
 {
 	int		idx;
 	char	*old_pwd;
 	char	*curr_path;
+	char	*abs_path;
+
 	char	**paths;
 	int		result;
 	struct stat	buf;
+	struct stat	abs_buf;
 
 	idx = -1;
 	result = EXIT_SUCCESS;
 	paths = ft_split(argv, '/');
 	old_pwd = getcwd(NULL, BUFSIZ);
+	// result = try_to_move_directories(paths, old_pwd);
 	while (paths[++idx] != NULL && result == EXIT_SUCCESS)
 	{
-		stat(paths[idx], &buf);
-		// 1. 폴더가 존재할 때
-		if (S_ISDIR(buf.st_mode))
+		abs_path = ft_strjoin("/", paths[idx]);
+		if (stat(paths[idx], &buf) == 0 && S_ISDIR(buf.st_mode))
 		{
-			// 2. 폴더가 접근 가능할 때
 			if (is_dir_accessible(paths[idx]) == TRUE)
-			{
-				// 3. 상대 경로로 먼저 접근
-				if (chdir(paths[idx]) == ERROR)
-				{
-					// 4. 절대 경로로 접근
-					if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) == FALSE)
-					{
-						result = EXIT_FAILURE;
-					}
-				}
-			}
+				chdir(paths[idx]);
 			else
-			{
-				result = print_error(PERMISSON_DENIED, argv);
-			}
+				result = print_error(PERMISSION_DENIED, argv);
+		}
+		else if (stat(abs_path, &abs_buf) == 0 && S_ISDIR(abs_buf.st_mode))
+		{
+			if (is_dir_accessible(abs_path) == TRUE)
+				chdir(abs_path);
+			else
+				result = print_error(PERMISSION_DENIED, argv);
 		}
 		else
-		{
-			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) == FALSE)
-			{
-				result = EXIT_FAILURE;
-			}
-		}
+			result = print_error(NOT_EXISTED, argv);
 		curr_path = getcwd(NULL, BUFSIZ);
 		replace_env_value(env_list, "PWD", curr_path);
 		free(curr_path);
