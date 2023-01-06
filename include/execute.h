@@ -58,7 +58,6 @@ typedef enum e_init{
 }	t_init;
 
 typedef struct s_redirect{
-	int				file; //TODO: 임시 변수. 삭제 필요
 	int				infile;
 	int				outfile;
 	int				heredoc_file_num;
@@ -71,7 +70,7 @@ typedef struct s_cmd_info{
 }	t_cmd_info;
 
 // execute_minishell.c
-void	execute_minishell(t_env_list *env);
+void	execute_minishell(t_token *token_list, t_env_list *env);
 
 // execute_builtin_function.c
 int		execute_builtin_function(char *cmd, char **argv, \
@@ -95,7 +94,6 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
-
 
 // execute_utils2.c
 void	init_cmd_info(t_cmd_info *cmd_info, t_init type);

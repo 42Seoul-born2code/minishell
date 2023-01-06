@@ -1,38 +1,8 @@
 #include "execute.h"
 
-static t_token	*init_token_list(void);
 static t_bool	is_all_whitespace(char *line);
 static void		free_list_nodes(t_token *lst);
-void			execute_minishell(t_env_list *env_list);
-
-// TODO: 전부 끝내고 삭제하기
-void	print_token_word(t_token *token_list)
-{
-	t_list			*curr_node;
-	t_token_node	*curr_token;
-
-	curr_node = token_list->head_node;
-	while (curr_node != NULL)
-	{
-		curr_token = curr_node->content;
-		printf("curr_token->word: %s, type: %d\n", curr_token->word, curr_token->type);
-		curr_node = curr_node->next;
-	}
-}
-
-/*
-	init_token_list()	- Initialize token list
-
-	token_list			- Entry point of linked list
-*/
-static t_token	*init_token_list(void)
-{
-	t_token	*token_list;
-
-	token_list = malloc(sizeof(t_token));
-	token_list->head_node = NULL;
-	return (token_list);
-}
+void			execute_minishell(t_token *token_list, t_env_list *env_list);
 
 /*
 	is_all_whitespace()	- Check if user input is all whitespace
@@ -79,6 +49,12 @@ static void	free_list_nodes(t_token *lst)
 	lst->head_node = NULL;
 }
 
+static void	free_line_and_list(char *line, t_token *token_list)
+{
+	free(line);
+	free_list_nodes(token_list);
+}
+
 /*
 	execute_minishell()	- Execute command until signaled by SIGINT or EOF.
 
@@ -88,12 +64,10 @@ static void	free_list_nodes(t_token *lst)
 	next_list			- Next token list node
 	curr_node			- Current actual token node
 */
-void	execute_minishell(t_env_list *env_list)
+void	execute_minishell(t_token *token_list, t_env_list *env_list)
 {
 	char	*line;
-	t_token	*token_list;
 
-	token_list = init_token_list();
 	while (TRUE)
 	{
 		init_signal();
@@ -109,15 +83,13 @@ void	execute_minishell(t_env_list *env_list)
 				{
 					expansion(token_list, env_list);
 					quote_removal(token_list);
-					// print_token_word(token_list);
 					execute_command(token_list, env_list);
 				}
 			}
 			add_history(line);
 		}
-		free(line);
-		free_list_nodes(token_list);
-		// system("leaks minishell");// TODO: 통합 테스트 끝난 다음에 삭제하기 (noriminette 은 OK)
+		free_line_and_list(line, token_list);
+		// system("leaks minishell");
 	}
 }
 
