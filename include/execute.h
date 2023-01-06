@@ -17,6 +17,7 @@
 # define HEREDOC_PROMPT "heredoc> "
 
 # define CHILD_PROCESS	0
+# define PARENT_PROCESS	1
 
 # define WRITE_MODE		0
 # define READ_MODE		1
