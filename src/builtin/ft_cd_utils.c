@@ -22,7 +22,7 @@ static t_bool	is_dir_accessible(char *path)
 		return (FALSE);
 	else
 	{
-		free(p_dir);
+		closedir(p_dir);
 		return (TRUE);
 	}
 }
