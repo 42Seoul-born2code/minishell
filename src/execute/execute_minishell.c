@@ -101,7 +101,7 @@ void	execute_minishell(t_token *token_list, t_env_list *env_list)
 			add_history(line);
 		}
 		free_line_and_list(line, token_list);
-		// system("leaks minishell");
+		system("leaks minishell");
 	}
 }
 
