@@ -43,10 +43,10 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	int				process_count;
 	int				origin_fd[2];
 
-	redirect_info.heredoc_file_num = 0;
+	save_origin_fd(origin_fd);
 	init_cmd_info(&cmd_info, INIT);
 	init_redirect_info(&redirect_info);
-	save_origin_fd(origin_fd);
+	redirect_info.heredoc_file_num = 0;
 	process_count = process_tokens(token_list->head_node, \
 						&cmd_info, &redirect_info, env_list);
 	last_child_process(&cmd_info, env_list, origin_fd, redirect_info);
