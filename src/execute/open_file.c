@@ -6,7 +6,7 @@ static int	open_read_mode_file(char *file)
 	if (access(file, F_OK) == ERROR)
 		print_error(NO_FILE_OR_DIR, file);
 	else if (access(file, R_OK) == ERROR)
-		print_error(PERMISSON_DENIED, file);
+		print_error(PERMISSION_DENIED, file);
 	return (open(file, O_RDONLY));
 }
 
@@ -23,7 +23,7 @@ static int	open_write_mode_file(char *file, int mode)
 		if (access(file, F_OK) == ERROR)
 			print_error(NO_FILE_OR_DIR, file);
 		else if (access(file, W_OK | X_OK) == ERROR)
-			print_error(PERMISSON_DENIED, file);
+			print_error(PERMISSION_DENIED, file);
 	}
 	return (fd);
 }

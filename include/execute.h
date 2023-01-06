@@ -28,7 +28,7 @@
 # define ERROR_CODE_COMMAND_NOT_FOUND	127
 
 # define NO_FILE_OR_DIR			"❌Error: No such file or directory: "
-# define PERMISSON_DENIED		"❌Error: permission denied: "
+# define PERMISSION_DENIED		"❌Error: permission denied: "
 # define PIPE_ERROR				"❌Error: pipe function doesn't work."
 # define FORK_ERROR				"❌Error: fork error occured."
 # define COMMAND_NOT_FOUND		"❌Error: command not found: "
