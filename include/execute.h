@@ -93,13 +93,16 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
-char	*find_cmd_path(char *cmd, t_env_list *env_list);
+
 
 // execute_utils2.c
 void	init_cmd_info(t_cmd_info *cmd_info, t_init type);
 void	init_redirect_info(t_redirect *redirect_info);
 int		process_tokens(t_list *curr_node, t_cmd_info *cmd_info, \
 				t_redirect *redirect_info, t_env_list *env_list);
+
+// find_cmd_path.c
+char	*find_cmd_path(char *cmd, t_env_list *env_list);
 
 // fork_process.c
 void	fork_process(t_token *token_list, t_env_list *env_list);
