@@ -29,7 +29,24 @@ void	init_redirect_info(t_redirect *redirect_info)
 	redirect_info->type = NORMAL;
 }
 
-static int	child_process(t_cmd_info *cmd_info, t_env_list *env_list, t_redirect redirect_info)
+static void	close_pipe_and_dup2(int pipe_fd[2], int type)
+{
+	if (type == CHILD_PROCESS)
+	{
+		close(pipe_fd[READ]);
+		dup2(pipe_fd[WRITE], STDOUT_FILENO);
+		close(pipe_fd[WRITE]);
+	}
+	else
+	{
+		close(pipe_fd[WRITE]);
+		dup2(pipe_fd[READ], STDIN_FILENO);
+		close(pipe_fd[READ]);
+	}
+}
+
+static int	child_process(t_cmd_info *cmd_info, \
+		t_env_list *env_list, t_redirect redirect_info)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -41,24 +58,17 @@ static int	child_process(t_cmd_info *cmd_info, t_env_list *env_list, t_redirect 
 	if (pid == CHILD_PROCESS)
 	{
 		if (redirect_info.type != OUTFILE)
-		{
-			close(pipe_fd[READ]);
-			dup2(pipe_fd[WRITE], STDOUT_FILENO);
-			close(pipe_fd[WRITE]);
-		}
+			close_pipe_and_dup2(pipe_fd, CHILD_PROCESS);
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
-			exit(execute_builtin_function(cmd_info->cmd_name, cmd_info->cmd_argv, env_list, MULTI_COMMAND));
+			exit(execute_builtin_function(cmd_info->cmd_name, \
+				cmd_info->cmd_argv, env_list, MULTI_COMMAND));
 		else
 			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, env_list);
 	}
 	else
 	{
 		if (redirect_info.type != OUTFILE)
-		{
-			close(pipe_fd[WRITE]);
-			dup2(pipe_fd[READ], STDIN_FILENO);
-			close(pipe_fd[READ]);
-		}
+			close_pipe_and_dup2(pipe_fd, PARENT_PROCESS);
 		waitpid(pid, NULL, WNOHANG);
 	}
 	return (1);
@@ -69,7 +79,7 @@ int	process_tokens(t_list *curr_node, t_cmd_info *cmd_info, \
 {
 	int				process_count;
 	t_token_node	*curr_token;
-	
+
 	process_count = 0;
 	while (curr_node != NULL)
 	{

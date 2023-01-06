@@ -17,6 +17,7 @@
 # define HEREDOC_PROMPT "heredoc> "
 
 # define CHILD_PROCESS	0
+# define PARENT_PROCESS	1
 
 # define WRITE_MODE		0
 # define READ_MODE		1
@@ -108,7 +109,6 @@ char	*find_cmd_path(char *cmd, t_env_list *env_list);
 // fork_process.c
 void	fork_process(t_token *token_list, t_env_list *env_list);
 char	*make_heredoc_file_name(int idx);
-int		get_heredoc_file_fd(int heredoc_idx, int mode);
 
 // open_file.c
 int		open_file(t_list *next_node, int mode);
@@ -125,8 +125,9 @@ void	redirect_append(t_list *curr_node, t_redirect *redirect_info);
 void	redirect_left(t_list *curr_node, t_redirect *redirect_info);
 
 // heredoc_utils.c
-void	delete_heredoc_file(int heredoc_file_num);
+int		get_heredoc_file_fd(int heredoc_idx, int mode);
 char	*merge_word_list(t_word_list *word_list);
+void	delete_heredoc_file(int heredoc_file_num);
 
 // check_heredoc.c
 void	check_heredoc(t_token *token_list);

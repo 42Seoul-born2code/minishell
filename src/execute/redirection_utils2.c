@@ -30,8 +30,8 @@ void	redirect_left(t_list *curr_node, t_redirect *redirect_info)
 
 void	redirect_heredoc(t_redirect *redirect_info)
 {
-	redirect_info->infile = get_heredoc_file_fd(redirect_info->heredoc_file_num, \
-												READ_MODE);
+	redirect_info->infile = get_heredoc_file_fd(\
+		redirect_info->heredoc_file_num, READ_MODE);
 	if (redirect_info->infile == ERROR)
 		g_exit_code = 1;
 	redirect_info->type = HEREDOC;
