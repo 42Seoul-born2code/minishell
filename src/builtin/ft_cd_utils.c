@@ -68,7 +68,8 @@ int	try_to_move_directories(int idx, char *argv, \
 		else
 			result = print_error(NOT_EXISTED, argv);
 		free(dir_info.abs_path);
-		save_curr_pwd(dir_info, env_list);
+		if (result == EXIT_SUCCESS)
+			save_curr_pwd(dir_info, env_list);
 	}
 	return (result);
 }
