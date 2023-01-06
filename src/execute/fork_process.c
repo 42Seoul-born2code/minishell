@@ -9,7 +9,8 @@ void	throw_error(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-static void	execute_simple_command(t_cmd_info *cmd_info, t_redirect redirect_info, t_env_list *env_list, int origin_fd[2])
+static void	execute_simple_command(t_cmd_info *cmd_info, \
+	t_redirect redirect_info, t_env_list *env_list, int origin_fd[2])
 {
 	pid_t	pid;
 
@@ -17,7 +18,8 @@ static void	execute_simple_command(t_cmd_info *cmd_info, t_redirect redirect_inf
 	if (pid == CHILD_PROCESS)
 	{
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
-			exit(execute_builtin_function(cmd_info->cmd_name, cmd_info->cmd_argv, env_list, SIMPLE_COMMAND));
+			exit(execute_builtin_function(cmd_info->cmd_name, \
+			cmd_info->cmd_argv, env_list, SIMPLE_COMMAND));
 		execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, env_list);
 	}
 	else

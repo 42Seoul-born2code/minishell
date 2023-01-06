@@ -14,7 +14,7 @@ t_bool	is_builtin_function(char *word)
 	else if (ft_strcmp(word, "unset") == 0)
 		return (TRUE);
 	else if (ft_strcmp(word, "env") == 0)
-		return (TRUE);	
+		return (TRUE);
 	else if (ft_strcmp(word, "exit") == 0)
 		return (TRUE);
 	return (FALSE);
