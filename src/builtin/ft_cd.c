@@ -62,7 +62,6 @@ t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
 /*
 	실제로 현재 디렉토리를 변경하는 함수
 */
-
 int	change_directories(char *argv, t_env_list *env_list)
 {
 	int		idx;
@@ -70,10 +69,10 @@ int	change_directories(char *argv, t_env_list *env_list)
 	char	*curr_path;
 	char	**paths;
 
-	idx = 0;
+	idx = -1;
 	paths = ft_split(argv, '/');
 	old_pwd = getcwd(NULL, BUFSIZ);
-	while (paths[idx] != NULL)
+	while (paths[++idx] != NULL)
 	{
 		if (is_dir_accessible(paths[idx]) == FALSE)
 			return (print_error(PERMISSON_DENIED, argv));
@@ -86,7 +85,6 @@ int	change_directories(char *argv, t_env_list *env_list)
 		curr_path = getcwd(NULL, BUFSIZ);
 		replace_env_value(env_list, "PWD", curr_path);
 		free(curr_path);
-		idx += 1;
 	}
 	replace_env_value(env_list, "OLDPWD", old_pwd);
 	free(old_pwd);
