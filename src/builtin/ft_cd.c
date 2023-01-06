@@ -1,6 +1,20 @@
 #include "builtin.h"
 #include <dirent.h>
 
+static t_bool	is_dir_accessible(char *path)
+{
+	DIR	*p_dir;
+
+	p_dir = opendir(path);
+	if (p_dir == NULL)
+		return (FALSE);
+	else
+	{
+		free(p_dir);
+		return (TRUE);
+	}
+}
+
 /*
 	매개변수로 전달된 환경변수의 경로로 현재 위치를 변경
 	- env_path: 이동할 환경변수
@@ -26,28 +40,29 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 }
 
 t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
-								char **paths, t_env_list *env_list)
+					char **paths, t_env_list *env_list)
 {
-	t_bool	result;
 	char	*target_path;
 
-	result = TRUE;
 	target_path = ft_strjoin("/", path);
-	// 폴더 권한 확인
+	if (is_dir_accessible(target_path) == FALSE)
+		return (print_error(PERMISSON_DENIED, path));
 	if (chdir(target_path) == ERROR)
 	{
 		replace_env_value(env_list, "PWD", old_pwd);
 		free(old_pwd);
 		free_all(paths);
-		result = FALSE;
+		free(target_path);
+		return (print_error(NOT_EXISTED, path));
 	}
 	free(target_path);
-	return (result);
+	return (TRUE);
 }
 
 /*
 	실제로 현재 디렉토리를 변경하는 함수
 */
+
 int	change_directories(char *argv, t_env_list *env_list)
 {
 	int		idx;
@@ -60,14 +75,13 @@ int	change_directories(char *argv, t_env_list *env_list)
 	old_pwd = getcwd(NULL, BUFSIZ);
 	while (paths[idx] != NULL)
 	{
-		// 1. 현재 디렉토리 기준으로 이동(상대 경로)
-		// 폴더 권한 확인
+		if (is_dir_accessible(paths[idx]) == FALSE)
+			return (print_error(PERMISSON_DENIED, argv));
 		if (chdir(paths[idx]) == ERROR)
 		{
-			// 2. 절대 경로 기준으로 이동
 			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) \
 										== FALSE)
-				return (print_error(NOT_EXISTED, argv));
+				return (EXIT_FAILURE);
 		}
 		curr_path = getcwd(NULL, BUFSIZ);
 		replace_env_value(env_list, "PWD", curr_path);

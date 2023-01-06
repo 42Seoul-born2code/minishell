@@ -30,12 +30,14 @@ int	main(void)
 	struct dirent	*file;
 
     dirp = opendir("test_dir");
-	while (42)
-	{
-		file = readdir(dirp);
-		if (!file)
-			break ;
-		classify(file);
-	}
-	closedir(dirp);
+	if (dirp == NULL)
+		printf("NULLLLLLLL");
+	// while (42)
+	// {
+	// 	file = readdir(dirp);
+	// 	if (!file)
+	// 		break ;
+	// 	classify(file);
+	// }
+	// closedir(dirp);
 }
