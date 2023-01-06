@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
+/*   By: joonhan <joonhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 13:18:29 by joonhan           #+#    #+#             */
-/*   Updated: 2022/04/11 10:38:08 by joonhan          ###   ########.fr       */
+/*   Updated: 2022/12/27 17:24:53 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static char	*duplicate_word(const char *src, char d)
 	return (ptr);
 }
 
-static char	**free_all(char **arr)
+char	**free_all(char **arr)
 {
 	size_t	i;
 

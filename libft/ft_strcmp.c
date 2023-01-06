@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/28 09:31:43 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/05 22:50:14 by jeongkpa         ###   ########.fr       */
+/*   Created: 2022/11/30 13:09:31 by joonhan           #+#    #+#             */
+/*   Updated: 2023/01/05 22:50:34 by jeongkpa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+int	ft_strcmp(char *s1, char *s2)
 {
-	ssize_t	s1_len;
-	ssize_t	s2_len;
-	char	*ptr;
+	int	i;
+	int	result;
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	ptr = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
-	if (ptr == NULL)
-		return (NULL);
-	ft_memcpy(ptr, s1, s1_len);
-	ft_memcpy(ptr + s1_len, s2, s2_len);
-	*(ptr + s1_len + s2_len) = '\0';
-	return (ptr);
+	i = 0;
+	if (s1 == NULL || s2 == NULL)
+		return (ERROR);
+	while (s1[i] != '\0' && s2[i] != '\0')
+	{
+		if (s1[i] != s2[i])
+		{
+			break ;
+		}
+		i += 1;
+	}
+	result = s1[i] - s2[i];
+	return (result);
 }

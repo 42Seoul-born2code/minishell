@@ -6,18 +6,18 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:06:00 by joonhan           #+#    #+#             */
-/*   Updated: 2022/04/05 11:32:55 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/05 17:49:31 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	is_whitespace(char c)
+t_bool	is_whitespace(char c)
 {
 	if (c == ' ' || c == '\n' || c == '\r' || c == '\v'
 		|| c == '\f' || c == '\t')
-		return (1);
-	return (0);
+		return (TRUE);
+	return (FALSE);
 }
 
 static int	is_sign_symbol(char c)

@@ -1,0 +1,315 @@
+######## 수정 필요 ############
+
+- [ v ] ls > outfile not_existed_folder (not_existed_folder: No such file or directory)
+- [ v ] > outfile ls not_existed_folder (not_existed_folder: No such file or directory)
+- [ v ] < infile : command 가 NULL 일 때 free 를 시도해서 오류가 발생함
+- [ v ] heredoc에서 ctrl c 누르면 미니쉘 두 번 출력. << eof -> ctrl c
+- [ v ] heredoc 2번 실행시 ctrl c를 두 번 눌러야 꺼지는 오류
+- [ v ] << eof | << foe 에서
+- [ v ] cat | cat | ls  -> exit_code = 0
+- [ v ] ls -al | grep test | waef
+- [ v ] chmod 000 -> permission denied(open_file 함수 쪽)
+	- cd not_permissioned_dir 입력 시 permission denied 뜨도록 수정
+- [ v ] exit 개행 출력 제거
+
+[arguments 를 [cat, Makefile] 로 인식하지 못하는 문제]
+- [ v ] < infile cat Makefile > outfile
+- [ v ] cat < infile Makefile
+// 
+- [ v ] << eof cat > outfile > outfile2
+	- cat: stdout: Bad file descriptor
+	- close(STDOUT_FILENO) 를 수행하면 outfile fd 가 1로 설정되는 문제 발생
+	- close(STDOUT_FILENO) 를 제거해서 문제 해결
+- [ v ] < infile cat > outfile < outfile cat
+	- cat: No such file or directory 오류가 안뜨는 문제 발견
+	- merge_argument 함수에서 argument 개수를 잘못 세고 있었음
+	- redirection 뒤에는 FILE_NAME 또는 LIMITER 이기 때문에 redirection + ( FILE_NAME or LIMITER ) 는 무시하고 지나가면 됨
+
+[파싱]
+- [ v ] < | > >> syntax error
+- [ v ]             echo 1
+	- is_all_whitespace 함수에서 whitespace 가 아닌 문자를 만났을 때 바로 return 하도록 수정
+- [ v ] | cat
+	- syntax error near unexpected token '|' 오류 발생해야 하는데 터짐
+	- 이전 노드가 없는데 파이프가 오면 에러 처리함
+- [ v ] < | cat
+	- 리다이렉션 바로 뒤에 operator 가 오면 에러 처리
+
+[확장]
+- [ v ] export a='a    "a"   b'; echo $a 출력 시 쌍따옴표 제거되는 문제
+	- 작은 따옴표가 안에 있으면 큰 따옴표, 큰 따옴표가 있으면 작은 따옴표로 감싸줌
+- [ v ] echo $NOT 실행 시 segfault 발생
+	- 환경변수가 없을 때 get_content_quote_type 함수에서 NULL 값을 참조해서 발생함
+
+[빌트인]
+- [ v ] exit code $? 출력 안되는 문제
+- [ v ] export = 에러 메세지
+- [ v ] exit | exit 시 exit 출력되지 않도록
+- [ v ] echo aaa | << eof 
+	- double free or NULL free 문제
+	- command 가 없을 때 문제 발생
+	- cmd_path, cmd_argv 모두 free 후 NULL 로 변경해서 문제 해결
+
+[출력]
+- [ v ]에러 메시지를 출력할 때 printf 로 출력하는 것들 STDERR 로 출력하기
+
+[리다이렉션]
+- [ v ]히어독 싱글모드
+- [ v ]히어독 여러 개 들어오는 경우 파일 여러 개로 저장하기
+- [ v ]히어독 저장 경로 /dev/tmp 로 변경하기 (unlink 로 폴더 삭제하면 파일 지울 수 있는 지 확인)
+- [ v ] << eof 입력 후 ctrl - d 입력하면 터지는 경우 (파싱 쪽이랑 관련 있을 듯)
+- [ v ] echo hello > outfile | < outfile cat | grep h | wc > outfile2 
+	- parsing norminette 맞추다가 double free 문제 발견
+	- redirection 중에서 heredoc 이 아닐 때만 작동해야 하는데, 다른 토큰들이 들어가서 발생하는 문제였음
+
+[시그널]
+- [ v ] 시그널 입력 시 아무 것도 띄우지 않도록 수정 
+- [ v ] << eof 입력 후 ctrl - c 하면 프롬프트 2개 나옴 
+
+- [ ] ./ 입력 시 command not found 뜨지 않게 수정
+
+######## 수정 필요 ############
+
+# 체크리스트
+
+- [ ] 허용 함수 확인하기 (nm)
+- [ ] printf 를 stderr 로 바꾸기
+- [ ] 노미넷 맞추기
+- [ ] 테스트 케이스 다시 한번 해보기
+
+# general
+/bin/ls
+
+# 리다이렉션
+cat infile > outfile
+
+## heredoc
+<< eof out
+<< eof cat
+<< eof > out
+<< eof cat > out
+echo << eof ttttt
+echo << eof
+cat << eof
+cat << eof bbb
+cat << eof < out
+<<
+<<eof
+
+## redirection
+cat > out
+
+## syntex error
+echo 'a''
+echo '''a'
+echo "'"a'"
+| cmd
+cmd |
+echo "$USER
+echo '$USER
+echo $USER'
+echo $USER"
+echo ""''$USER"''""
+echo ""'''$USER''""
+
+### quote 규칙
+# 1. 바깥 쌍부터 체크한다.
+# -> 쌍이 성립되지 않는다면, 에러.
+# echo "test => 에러
+# echo "test" => test
+# echo ""''test'''"" => 에러 : '는 ""에 쌓여져 있지 않음 (3번참조)
+# 2. 쌍 개수가 홀수라면
+# "인경우 : $는 해석, 그 외에는 문자열 출력 :: echo "$USER'" => staek'
+# '인경우 : 문자열 출력 :: echo '"$USER' => "$USER
+# 3. 쌍 개수가 짝수라면 없는 quote는 애초에 없었던 것 처럼 초기화된다.
+# echo ""test"" => test
+# echo ""test'"" => 에러 : '는 ""에 쌓여져 있지 않음
+# echo ""''test''"" => test
+
+## exit code
+echo 1 # 0
+ctrl + c # 130
+
+## signal (kill -l)
+cat | cat # sigint 1번
+<<eof # sigint 1번
+ls -al | grep test | waef
+awef | awef | ls -al
+명령어 종료 방식 - sigint 몇번에 종료
+$? 에 저장 방식, 순서 등
+$HOME
+$USER
+$?
+ls -al | grep test | waef # $? : 127
+ awef | awef | ls -al
+
+## 접근불가 권한
+mkdir test; chmod 400 test; cd test ## exitcode 1
+chmod 000 a.out; ./a.out ## exitcode 126
+/dev/null ## exitcode 126
+cat < out < out2 | < out3 < out4 # 파일 없는경우.
+<< eof cat > out
+cat << eof bbb
+cat << eof < out
+마지막 노드가 변하는 경우
+[X] <<abc | << abc
+heredoc 키보드 ........
+ cat <<a > out | cat <<b > out2 # ctrl+c 1회 130 확인
+
+> out awefawef # 에러가 안나
+ech oaewf > out # 이럿도 에러 나와야 함
+#syntex error
+/*
+	되는거
+	)), )|, )||, )&&
+	((, ||(, &&(, |(
+	|<, |>, |>>, |<<
+	||<, ||>, ||>>, ||<<
+	&&<, &&>, &&>>, &&<<
+	(<, (>, (>>, (<<
+	)<, )>, )>>, )<<		
+*/
+/*
+	안되는거
+	1. 처음문자가 &&, |, ||,  )
+	2. 마지막문자가 &&, |, ||
+	3. () 개수 안맞음
+	4. 중간문자
+		(&&, (|, (||, ()
+		|^|, |^||, |&&, |)
+		||^|, ||&&, ||^||, ||)
+		&&^|, &&&&, &&||, &&)
+*/
+
+# 명령어 사이 공간은 isspace로 한다. 9 10 11 12 13 32
+echo 1	echo 2
+
+################ 빌트인 테스트
+==== test case ====
+echo bonjour | |
+|
+		cd $HOME/Documents
+echo >
+echo -n -n -nnnn -nnnnm
+cat /dev/random | head -n 1 | cat -e
+unset var1 # with undefined var1
+		export "" et unset ""
+echo test > file test1
+$
+		not_cmd bonjour > salut
+		env puis export puis env # vars aren't sorted
+		cat Makefile | grep pr | head -n 5 | cd test (mybin) # check status code
+cat Makefile | grep pr | head -n 5 | cat test (bin) # check status code
+cat Makefile | grep pr | head -n 5 | hello (NA) # check status code
+echo bonjour > > out
+echo 2 >> out1 > out2
+echo 2 > out1 >> out2
+cat < test # with non-existent test
+		echo bonjour > $test # with test not defined
+file_name_in_current_dir
+cd ../../../../../.. ; pwd
+		ctrl-C . 130 sur bin(ex : sleep 10)&line vide
+		ctrl-\ .131 sur bin
+echo "bip | bip ; coyotte > < " "
+cat | cat | cat | ls # check outputs order
+$bla # with bla not defined
+export var ="cat Makefile | grep >"
+		export "test=ici"=coucou
+c$var Makefile # with var=at
+$LESS$VAR
+/bin/echo bonjour
+not_cmd
+sleep 5 | exit
+		echo bonjour > $test w/ t
+"exit retour a la ligne"
+minishell # binary not in path without "./" before
+cat diufosgid # check exit code
+exit # should return the last exit code value
+		exit -10
+		exit +10
+;
+echo "$HOME"
+echo '$HOME'
+echo $HOME
+> log echo coucou
+echo hudifg d | | hugdfihd
+echo
+echo simple
+echo -n simple
+echo ''
+echo ""
+echo "\"
+echo "\n \n \n"
+echo "\n \n \\n"
+echo hi";" hihi
+echo hi " ; " hihi
+cd
+cd .
+cd ~
+cd /
+cd no_file
+cd a b c d
+pwd a
+pwd a b c d
+export LOL=lala ROR=rara
+unset LOL ROR
+export "HI= hi"
+export "HI =hi"
+/bin/ls
+
+# write something the press ctrl+c
+# write something then press ctrl+d
+# write something then press ctrl+\
+
+echo $?
+l^Ds
+echo |
+| echo
+sort | ls # check output order
+cat < >
+cat < <
+cat > >
+> a ls > b < Makefile
+echo > a Hello World!
+> a echo Hello World!
+	cat < Makefile | grep gcc > output
+	exit 0 | exit 1
+	exit 1 | exit 0
+
+=== not working
+	cd $HOME/Documents
+	export "" et unset ""
+not_cmd bonjour > salut
+	env puis export puis env # vars aren't sorted
+cat Makefile | grep pr | head -n 5 | cd test (mybin) # check status code
+	ctrl-C . 130 sur bin(ex : sleep 10)&line vide
+	ctrl-\ .131 sur bin
+	export "test=ici"=coucou
+	echo bonjour > $test w/ t
+	exit -10
+	exit +10
+cat < Makefile | grep cc > output
+exit 0 | exit 1
+exit 1 | exit 0
+cat < out < out2 > out3 > out4
+echo 1 > out | echo 2 > out2
+cat < out | echo 2 > out2
+cat < out | echo aa < out2
+cat < out | cat < out2
+echo 111 > out | echo 2 < out2
+echo 111 > out | cat < out2
+ls | echo 1 > out | echo 2 > out2 | ls
+ls | cat < out | echo 2 > out2 | ls
+ls | cat < out | echo aa < out2 | ls
+ls | cat < out | cat < out2 | ls
+ls | echo 111 > out | echo 2 < out2 | ls
+ls | echo 111 > out | cat < out2 | ls
+
+=== 파이프 & 리다이렉션
+ls | echo 1 > out | ls
+ls | echo 1 > out | ls
+ls | cat > out | ls
+ls | cat < out > out2 | ls
+ls | cat < out < out > out2 > out3 | ls
+cat > out | ls
+cat | ls

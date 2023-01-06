@@ -6,21 +6,24 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 16:59:36 by joonhan           #+#    #+#             */
-/*   Updated: 2022/09/17 12:47:27 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/05 17:49:38 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 
 # define LIBFT_H
-# define TRUE   		1
-# define FALSE  		0
 # define ERROR			-1
 # define BUFFER_SIZE   100
 
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdarg.h>
+
+typedef enum bool {
+	FALSE,
+	TRUE
+}	t_bool;
 
 typedef struct s_node
 {
@@ -37,6 +40,7 @@ typedef struct s_list
 }	t_list;
 
 int			ft_atoi(const char *str);
+t_bool		is_whitespace(char c);
 void		ft_bzero(void *dest, size_t size);
 void		*ft_calloc(size_t count, size_t size);
 int			ft_isalnum(int c);
@@ -55,6 +59,7 @@ void		ft_putendl_fd(char *s, int fd);
 void		ft_putnbr_fd(int n, int fd);
 void		ft_putstr_fd(char *s, int fd);
 char		**ft_split(char const *s, char d);
+char		**free_all(char **arr);
 char		*ft_strchr(const char *s, int c);
 char		*ft_strdup(const char *src);
 void		ft_striteri(char *s, void (*f)(unsigned int, char*));
@@ -80,6 +85,7 @@ t_list		*ft_lstlast(t_list *lst);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *),
 				void (*del)(void *));
 t_list		*ft_lstnew(void *content);
+int			ft_strcmp(char *s1, char *s2);
 
 char		*get_next_line(int fd);
 t_node		*find_fd(t_node **p_head, int fd);
