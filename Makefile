@@ -125,6 +125,12 @@ all : $(NAME)
 .PHONY : clean
 clean :
 	rm -f $(OBJS)
+	$(MAKE) clean -C $(LIB_DIR)
+
+.PHONY : fclean
+fclean : clean
+	rm -f $(NAME)
+	$(MAKE) fclean -C $(LIB_DIR)
 
 .PHONY : fclean
 fclean : clean
