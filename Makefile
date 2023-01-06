@@ -23,6 +23,7 @@ SRC_EXECUTE					:=	execute_minishell.c					\
 								execute_multi_command.c				\
 								execute_utils.c						\
 								execute_utils2.c					\
+								find_cmd_path.c						\
 								fork_process.c						\
 								open_file.c							\
 								heredoc_utils.c						\

@@ -8,7 +8,8 @@
 	- 프로세스 카운트 + 1
 */
 
-void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, int origin_fd[2], t_redirect redirect_info)
+void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
+					int origin_fd[2], t_redirect redirect_info)
 {
 	pid_t	pid;
 
@@ -19,13 +20,10 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, int origin_f
 		if (redirect_info.type != OUTFILE)
 			dup2(origin_fd[1], STDOUT_FILENO);
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
-		{
-			exit(execute_builtin_function(cmd_info->cmd_name, cmd_info->cmd_argv, env_list, MULTI_COMMAND));
-		}
+			exit(execute_builtin_function(cmd_info->cmd_name, \
+					cmd_info->cmd_argv, env_list, MULTI_COMMAND));
 		else
-		{
 			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, env_list);
-		}
 	}
 	else
 	{
@@ -45,11 +43,12 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list)
 	int				process_count;
 	int				origin_fd[2];
 
-	redirect_info.heredoc_file_num = 0;
+	save_origin_fd(origin_fd);
 	init_cmd_info(&cmd_info, INIT);
 	init_redirect_info(&redirect_info);
-	save_origin_fd(origin_fd);
-	process_count = process_tokens(token_list->head_node, &cmd_info, &redirect_info, env_list);
+	redirect_info.heredoc_file_num = 0;
+	process_count = process_tokens(token_list->head_node, \
+						&cmd_info, &redirect_info, env_list);
 	last_child_process(&cmd_info, env_list, origin_fd, redirect_info);
 	init_cmd_info(&cmd_info, FREE);
 	rollback_origin_fd(origin_fd);
