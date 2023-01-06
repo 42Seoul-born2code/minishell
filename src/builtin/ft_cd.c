@@ -42,11 +42,21 @@ int	move_to_env_path(char *env_path, t_env_list *env_list)
 t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
 					char **paths, t_env_list *env_list)
 {
-	char	*target_path;
+	struct stat	buf;
+	char		*target_path;
 
 	target_path = ft_strjoin("/", path);
+	stat(target_path, &buf);
+	if (!S_ISDIR(buf.st_mode))
+	{
+		print_error(NOT_EXISTED, target_path);
+		return (FALSE);
+	}
 	if (is_dir_accessible(target_path) == FALSE)
-		return (print_error(PERMISSON_DENIED, path));
+	{
+		print_error(PERMISSON_DENIED, path);
+		return (FALSE);
+	}
 	if (chdir(target_path) == ERROR)
 	{
 		replace_env_value(env_list, "PWD", old_pwd);
@@ -61,6 +71,9 @@ t_bool	is_absolute_path_existed(char *path, char *old_pwd, \
 
 /*
 	실제로 현재 디렉토리를 변경하는 함수
+	1. 폴더가 존재하는지 먼저 확인: stat 이나 lstat 으로 먼저 확인
+	2. 접근 가능한지 확인: opendir 로 확인
+	3. 상대 경로 -> 절대 경로 순서대로 확인: 순차적으로 확인
 */
 int	change_directories(char *argv, t_env_list *env_list)
 {
@@ -68,19 +81,43 @@ int	change_directories(char *argv, t_env_list *env_list)
 	char	*old_pwd;
 	char	*curr_path;
 	char	**paths;
+	int		result;
+	struct stat	buf;
 
 	idx = -1;
+	result = EXIT_SUCCESS;
 	paths = ft_split(argv, '/');
 	old_pwd = getcwd(NULL, BUFSIZ);
-	while (paths[++idx] != NULL)
+	while (paths[++idx] != NULL && result == EXIT_SUCCESS)
 	{
-		if (is_dir_accessible(paths[idx]) == FALSE)
-			return (print_error(PERMISSON_DENIED, argv));
-		if (chdir(paths[idx]) == ERROR)
+		stat(paths[idx], &buf);
+		// 1. 폴더가 존재할 때
+		if (S_ISDIR(buf.st_mode))
 		{
-			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) \
-										== FALSE)
-				return (EXIT_FAILURE);
+			// 2. 폴더가 접근 가능할 때
+			if (is_dir_accessible(paths[idx]) == TRUE)
+			{
+				// 3. 상대 경로로 먼저 접근
+				if (chdir(paths[idx]) == ERROR)
+				{
+					// 4. 절대 경로로 접근
+					if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) == FALSE)
+					{
+						result = EXIT_FAILURE;
+					}
+				}
+			}
+			else
+			{
+				result = print_error(PERMISSON_DENIED, argv);
+			}
+		}
+		else
+		{
+			if (is_absolute_path_existed(paths[idx], old_pwd, paths, env_list) == FALSE)
+			{
+				result = EXIT_FAILURE;
+			}
 		}
 		curr_path = getcwd(NULL, BUFSIZ);
 		replace_env_value(env_list, "PWD", curr_path);
@@ -89,7 +126,7 @@ int	change_directories(char *argv, t_env_list *env_list)
 	replace_env_value(env_list, "OLDPWD", old_pwd);
 	free(old_pwd);
 	free_all(paths);
-	return (EXIT_SUCCESS);
+	return (result);
 }
 
 int	ft_cd(char **argv, t_env_list *env_list)
