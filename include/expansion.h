@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:57 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 11:41:18 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 20:20:29 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_word_info{
 void		quote_removal(t_token *token_list);
 
 // expansion_utils.c
-t_bool		is_valid_variable_rule(char c, int start, int idx);
+t_bool		is_valid_variable_rule(char c);
 char		*copy_str_length(int start, const char *src, int word_length);
 void		save_before_env_variable(char *word, int *idx, \
 					t_word_list *word_list, t_quote type);

@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:14 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/08 18:14:57 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 20:22:03 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,19 +80,15 @@ static void	lst_add_back_expanded_word(char *env_word, t_quote quote_type, \
 
 static t_bool	move_word_idx(char *word, int *idx)
 {
-	int	start;
-
-	start = *idx;
+	if (ft_isdigit(word[*idx]) == TRUE)
+		return (FALSE);
 	while (word[*idx] != '\0' && word[*idx] != '\"' && \
 			word[*idx] != '\'' && word[*idx] != '$')
 	{
-		if (is_valid_variable_rule(word[*idx], start, *idx) == FALSE)
-		{
-			*idx += 1;
-			return (FALSE);
-		}
 		if (is_operator(&word[*idx]) == TRUE || \
 			is_whitespace(word[*idx]) == TRUE)
+			break ;
+		if (is_valid_variable_rule(word[*idx]) == FALSE)
 			break ;
 		*idx += 1;
 	}

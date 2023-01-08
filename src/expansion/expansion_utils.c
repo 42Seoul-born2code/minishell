@@ -6,17 +6,15 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:05 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/08 11:43:12 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 20:20:22 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "expansion.h"
 
-t_bool	is_valid_variable_rule(char c, int start, int idx)
+t_bool	is_valid_variable_rule(char c)
 {
-	if (start == idx && ft_isdigit(c) == TRUE)
-		return (FALSE);
 	if (ft_isalnum(c) == TRUE || c == '_')
 		return (TRUE);
 	return (FALSE);
