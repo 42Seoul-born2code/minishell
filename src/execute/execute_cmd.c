@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:41 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:43 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:04:37 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "execute.h"
 #include "libft.h"
 
-void	execute_cmd(char *cmd_name, char **cmd_argv, t_env_list *env_list)
+void	execute_cmd(char *cmd_name, char **cmd_argv, t_redirect redirect_info, t_env_list *env_list)
 {
 	char	*cmd_path;
 	char	**envp;
@@ -22,6 +22,8 @@ void	execute_cmd(char *cmd_name, char **cmd_argv, t_env_list *env_list)
 	cmd_path = find_cmd_path(cmd_name, env_list);
 	if (g_exit_code == 126)
 		exit(126);
+	if (redirect_info.heredoc_file_num > 0 && cmd_path == NULL)
+		exit(EXIT_SUCCESS);
 	if (cmd_path == NULL)
 	{
 		print_error(COMMAND_NOT_FOUND, cmd_name);

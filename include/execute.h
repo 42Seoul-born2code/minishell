@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:56 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 11:58:29 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:04:53 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list);
 void	execute_command(t_token *token_list, t_env_list *env_list);
 
 // execute_cmd.c
-void	execute_cmd(char *cmd_path, char **cmd_argv, t_env_list *env_list);
+void	execute_cmd(char *cmd_path, char **cmd_argv, t_redirect redirect_info, t_env_list *env_list);
 
 // execute_multi_command.c
 void	execute_multi_command(t_token *token_list, t_env_list *env_list);
