@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:14 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/06 16:18:38 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 11:41:37 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,25 @@ static void	lst_add_back_expanded_word(char *env_word, t_quote quote_type, \
 	free(env_word);
 }
 
-static void	move_word_idx(char *word, int *idx)
+static t_bool	move_word_idx(char *word, int *idx)
 {
+	int	start;
+
+	start = *idx;
 	while (word[*idx] != '\0' && word[*idx] != '\"' && \
 			word[*idx] != '\'' && word[*idx] != '$')
 	{
-		if (is_valid_variable_rule(word[*idx]) == FALSE)
-			break ;
+		if (is_valid_variable_rule(word[*idx], start, *idx) == FALSE)
+		{
+			*idx += 1;
+			return (FALSE);
+		}
 		if (is_operator(&word[*idx]) == TRUE || \
 			is_whitespace(word[*idx]) == TRUE)
 			break ;
 		*idx += 1;
 	}
+	return (TRUE);
 }
 
 void	save_expand_env_variable(t_word_info word_info, int *idx, \
@@ -102,7 +109,8 @@ void	save_expand_env_variable(t_word_info word_info, int *idx, \
 	word = word_info.word;
 	*idx += 1;
 	start = *idx;
-	move_word_idx(word, idx);
+	if (move_word_idx(word, idx) == FALSE)
+		return ;
 	if (start == *idx && word[start - 1] == '$' && word[*idx] != '?')
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
 	else if (word[*idx] == '?')
