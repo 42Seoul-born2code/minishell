@@ -6,7 +6,7 @@
 #    By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 16:19:07 by joonhan           #+#    #+#              #
-#    Updated: 2023/01/06 16:19:10 by joonhan          ###   ########.fr        #
+#    Updated: 2023/01/08 11:33:42 by joonhan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ INCLUDE						:=	-I./include/
 SRC_BUILTIN_DIR				:=	builtin/
 SRC_BUILTIN					:=	execute_builtin_function.c			\
 								ft_cd.c								\
-								ft_cd_utils.c								\
+								ft_cd_utils.c						\
 								ft_echo.c							\
 								ft_pwd.c							\
 								ft_unset.c							\
@@ -125,16 +125,12 @@ all : $(NAME)
 .PHONY : clean
 clean :
 	rm -f $(OBJS)
-	$(MAKE) clean -C $(LIB_DIR)
+#	$(MAKE) clean -C $(LIB_DIR)
 
 .PHONY : fclean
 fclean : clean
 	rm -f $(NAME)
-	$(MAKE) fclean -C $(LIB_DIR)
-
-.PHONY : fclean
-fclean : clean
-	rm -f $(NAME)
+#	$(MAKE) fclean -C $(LIB_DIR)
 
 .PHONY : re
 re : fclean all
