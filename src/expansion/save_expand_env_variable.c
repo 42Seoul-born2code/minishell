@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:14 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/08 11:41:37 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 18:14:57 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	save_expand_env_variable(t_word_info word_info, int *idx, \
 	word = word_info.word;
 	*idx += 1;
 	start = *idx;
-	if (move_word_idx(word, idx) == FALSE)
+	if (word[start] != '?' && move_word_idx(word, idx) == FALSE)
 		return ;
 	if (start == *idx && word[start - 1] == '$' && word[*idx] != '?')
 		ft_lstadd_back(&word_list->head_node, ft_lstnew(ft_strdup("$")));
