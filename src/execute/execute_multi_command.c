@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:44 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:58 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 04:39:12 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,15 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 	pid_t	pid;
 
 	change_signal();
+	(void)origin_fd;
+	(void)redirect_info;
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		if (redirect_info.type != OUTFILE)
-			dup2(origin_fd[1], STDOUT_FILENO);
+		// FIXME: echo h > outfile | grep h
+		// 리다이렉션이 이미 설정되어있을 때 원래 STDOUT 으로 다시 돌릴 필요는 없는 건가?
+		// if (redirect_info.type != OUTFILE)
+			// dup2(origin_fd[1], STDOUT_FILENO);
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
 			exit(execute_builtin_function(cmd_info->cmd_name, \
 					cmd_info->cmd_argv, env_list, MULTI_COMMAND));
@@ -44,7 +48,7 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 			g_exit_code = 128 + WTERMSIG(g_exit_code);
 		else
 			g_exit_code = WEXITSTATUS(g_exit_code);
-		close(STDIN_FILENO);
+		// close(STDIN_FILENO);
 	}
 }
 
