@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+         #
+#    By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/06 16:19:07 by joonhan           #+#    #+#              #
-#    Updated: 2023/01/08 11:33:42 by joonhan          ###   ########.fr        #
+#    Updated: 2023/01/08 15:59:23 by jeongkpa         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,8 @@ SRC_PARSING					:=	parsing.c							\
 SRC_SIGNAL_DIR				:=	signal/
 SRC_SIGNAL					:=	init_signal.c						\
 								change_signal.c						\
-								heredoc_signal.c
+								heredoc_signal.c					\
+								termios.c
 
 SRC_EXPANSION_DIR			:=	expansion/
 SRC_EXPANSION				:=	expansion.c							\

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_signal.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
+/*   By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:58 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/06 16:19:52 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 15:59:56 by jeongkpa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,9 @@ void	init_signal(void);
 void	change_signal(void);
 void	change_heredoc_signal_parent(void);
 void	change_heredoc_signal_child(void);
+
+//termios.c
+void	echoctl_on(void);
+void	echoctl_off(void);
+
 #endif
