@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:41 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 13:11:05 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 15:11:18 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	execute_cmd(char *cmd_name, char **cmd_argv, \
 	cmd_path = find_cmd_path(cmd_name, env_list);
 	if (g_exit_code == 126)
 		exit(126);
-	if (redirect_info.heredoc_file_num > 0 && cmd_path == NULL)
+	if (redirect_info.heredoc_file_num > 0 && \
+		cmd_name == NULL && cmd_path == NULL)
 		exit(EXIT_SUCCESS);
 	if (cmd_path == NULL)
 	{
