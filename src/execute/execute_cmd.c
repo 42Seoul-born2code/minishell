@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:41 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 13:04:37 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:11:05 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include "execute.h"
 #include "libft.h"
 
-void	execute_cmd(char *cmd_name, char **cmd_argv, t_redirect redirect_info, t_env_list *env_list)
+void	execute_cmd(char *cmd_name, char **cmd_argv, \
+					t_redirect redirect_info, t_env_list *env_list)
 {
 	char	*cmd_path;
 	char	**envp;

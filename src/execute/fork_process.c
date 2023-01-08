@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:28 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/08 13:05:07 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:10:53 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static void	execute_simple_command(t_cmd_info *cmd_info, \
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
 			exit(execute_builtin_function(cmd_info->cmd_name, \
 			cmd_info->cmd_argv, env_list, SIMPLE_COMMAND));
-		execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, redirect_info, env_list);
+		execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, \
+					redirect_info, env_list);
 	}
 	else
 	{

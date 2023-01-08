@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:42 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 21:42:24 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:10:31 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,24 @@ static void	free_line_and_list(char *line, t_token *token_list)
 	free_list_nodes(token_list);
 }
 
+static void	process_line(char *line, t_token *token_list, t_env_list *env_list)
+{
+	if (is_all_whitespace(line) == FALSE)
+	{
+		if (tokenize_line(line, token_list) == EXIT_SUCCESS)
+		{
+			parsing(token_list);
+			if (syntax_analysis(token_list) == SYNTAX_OK)
+			{
+				expansion(token_list, env_list);
+				quote_removal(token_list);
+				execute_command(token_list, env_list);
+			}
+		}
+		add_history(line);
+	}
+}
+
 /*
 	execute_minishell()	- Execute command until signaled by SIGINT or EOF.
 
@@ -85,20 +103,7 @@ void	execute_minishell(t_token *token_list, t_env_list *env_list)
 			printf("exit\n");
 			break ;
 		}
-		if (is_all_whitespace(line) == FALSE)
-		{
-			if (tokenize_line(line, token_list) == EXIT_SUCCESS)
-			{
-				parsing(token_list);
-				if (syntax_analysis(token_list) == SYNTAX_OK)
-				{
-					expansion(token_list, env_list);
-					quote_removal(token_list);
-					execute_command(token_list, env_list);
-				}
-			}
-			add_history(line);
-		}
+		process_line(line, token_list, env_list);
 		free_line_and_list(line, token_list);
 	}
 }

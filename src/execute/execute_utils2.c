@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:49 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 13:03:53 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:11:00 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ static int	child_process(t_cmd_info *cmd_info, \
 			exit(execute_builtin_function(cmd_info->cmd_name, \
 				cmd_info->cmd_argv, env_list, MULTI_COMMAND));
 		else
-			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, redirect_info, env_list);
+			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, \
+						redirect_info, env_list);
 	}
 	else
 	{
