@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_minishell.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
+/*   By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:42 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 13:10:31 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 16:01:15 by jeongkpa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ static void	process_line(char *line, t_token *token_list, t_env_list *env_list)
 			{
 				expansion(token_list, env_list);
 				quote_removal(token_list);
+				echoctl_on();
 				execute_command(token_list, env_list);
 			}
 		}
@@ -97,6 +98,7 @@ void	execute_minishell(t_token *token_list, t_env_list *env_list)
 	while (TRUE)
 	{
 		init_signal();
+		echoctl_off();
 		line = readline(PROMPT);
 		if (line == NULL)
 		{
