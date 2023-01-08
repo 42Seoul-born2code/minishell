@@ -6,15 +6,11 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:42 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:46 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/06 21:42:24 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
-
-static t_bool	is_all_whitespace(char *line);
-static void		free_list_nodes(t_token *lst);
-void			execute_minishell(t_token *token_list, t_env_list *env_list);
 
 /*
 	is_all_whitespace()	- Check if user input is all whitespace
@@ -85,7 +81,10 @@ void	execute_minishell(t_token *token_list, t_env_list *env_list)
 		init_signal();
 		line = readline(PROMPT);
 		if (line == NULL)
+		{
+			printf("exit\n");
 			break ;
+		}
 		if (is_all_whitespace(line) == FALSE)
 		{
 			if (tokenize_line(line, token_list) == EXIT_SUCCESS)
