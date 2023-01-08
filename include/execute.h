@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:56 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:20:32 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 11:58:29 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ void	execute_multi_command(t_token *token_list, t_env_list *env_list);
 t_bool	is_redirection(t_token_node *curr_token);
 char	**merge_arguments(t_list *curr_node);
 int		count_argv(t_list *curr_node);
+void	close_pipes(int pipe_fd[2]);
 
 // execute_utils2.c
 void	init_cmd_info(t_cmd_info *cmd_info, t_init type);

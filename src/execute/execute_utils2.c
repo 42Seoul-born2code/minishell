@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:49 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/08 11:34:38 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 12:43:30 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,14 @@ static int	child_process(t_cmd_info *cmd_info, \
 	pid_t	pid;
 	int		pipe_fd[2];
 
-	// if (redirect_info.type != OUTFILE)
-		pipe(pipe_fd);
-	(void)redirect_info;
+	pipe(pipe_fd);
 	change_signal();
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		// if (redirect_info.type != OUTFILE)
+		if (redirect_info.type == OUTFILE)
+			close_pipes(pipe_fd);
+		else
 			close_pipe_and_dup2(pipe_fd, CHILD_PROCESS);
 		if (is_builtin_function(cmd_info->cmd_name) == TRUE)
 			exit(execute_builtin_function(cmd_info->cmd_name, \
@@ -80,8 +80,7 @@ static int	child_process(t_cmd_info *cmd_info, \
 	}
 	else
 	{
-		// if (redirect_info.type != OUTFILE)
-			close_pipe_and_dup2(pipe_fd, PARENT_PROCESS);
+		close_pipe_and_dup2(pipe_fd, PARENT_PROCESS);
 		waitpid(pid, NULL, WNOHANG);
 	}
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:48 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:18:03 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 11:58:33 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,10 @@ int	count_argv(t_list *curr_node)
 		curr_node = curr_node->next;
 	}
 	return (argv_count);
+}
+
+void	close_pipes(int pipe_fd[2])
+{
+	close(pipe_fd[READ]);
+	close(pipe_fd[WRITE]);
 }
