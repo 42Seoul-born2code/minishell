@@ -27,7 +27,7 @@ static t_bool	is_dir_accessible(char *path)
 	}
 }
 
-static void	save_curr_pwd(t_dir_info dir_info, t_env_list *env_list)
+void	save_curr_pwd(t_dir_info dir_info, t_env_list *env_list)
 {
 	dir_info.curr_path = getcwd(NULL, BUFSIZ);
 	replace_env_value(env_list, "PWD", dir_info.curr_path);

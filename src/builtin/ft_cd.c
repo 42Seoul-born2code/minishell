@@ -70,6 +70,7 @@ int	change_directories(char *argv, char **paths, t_env_list *env_list)
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
+	char	*old_pwd;
 	char	**paths;
 
 	if (argv[1] == NULL)
@@ -80,6 +81,15 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
+	if (ft_strcmp(argv[1], "/") == 0)
+	{
+		old_pwd = getcwd(NULL, BUFSIZ);
+		replace_env_value(env_list, "PWD", "/");
+		replace_env_value(env_list, "OLDPWD", old_pwd);
+		free(old_pwd);
+		chdir("/");
+		return (EXIT_SUCCESS);
+	}
 	paths = ft_split(argv[1], '/');
 	return (change_directories(argv[1], paths, env_list));
 }
