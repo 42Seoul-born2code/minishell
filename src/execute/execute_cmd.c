@@ -31,6 +31,8 @@ void	execute_cmd(char *cmd_name, char **cmd_argv, \
 		print_error(COMMAND_NOT_FOUND, cmd_name);
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
 	}
+	if (g_exit_code == EXIT_FAILURE && redirect_info.type != NORMAL)
+		exit(g_exit_code);
 	if (cmd_argv == NULL)
 		exit(EXIT_SUCCESS);
 	envp = get_envp_in_list(env_list);
