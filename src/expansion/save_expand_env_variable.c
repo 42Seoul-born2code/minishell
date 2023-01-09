@@ -81,7 +81,10 @@ static void	lst_add_back_expanded_word(char *env_word, t_quote quote_type, \
 static t_bool	move_word_idx(char *word, int *idx)
 {
 	if (ft_isdigit(word[*idx]) == TRUE)
+	{
+		*idx += 1;
 		return (FALSE);
+	}
 	while (word[*idx] != '\0' && word[*idx] != '\"' && \
 			word[*idx] != '\'' && word[*idx] != '$')
 	{
