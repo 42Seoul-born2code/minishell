@@ -20,7 +20,7 @@ int	ft_env(char **argv, t_env_list *env_list)
 	list_node = env_list->head_node;
 	if (*(argv + 1))
 	{
-		print_error(SYNTAX_ERROR, "\n");
+		print_error(SYNTAX_ERROR, *(argv + 1));
 		return (EXIT_FAILURE);
 	}
 	while (list_node)
