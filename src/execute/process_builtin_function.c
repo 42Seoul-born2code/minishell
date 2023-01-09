@@ -63,15 +63,11 @@ void	process_builtin_function(t_token *token_list, t_env_list *env_list)
 	redirect_info.heredoc_file_num = 0;
 	process_tokens(token_list->head_node, \
 						&cmd_info, &redirect_info, env_list);
-	if (redirect_info.type != NORMAL && g_exit_code == EXIT_FAILURE)
+	if ((redirect_info.type != NORMAL && g_exit_code == EXIT_FAILURE) == FALSE)
 	{
-		init_cmd_info(&cmd_info, FREE);
-		rollback_origin_fd(origin_fd);
-		delete_heredoc_file(redirect_info.heredoc_file_num);
-		return ;
+		g_exit_code = execute_builtin_function(cmd_info.cmd_name, \
+			cmd_info.cmd_argv, env_list, SIMPLE_COMMAND);
 	}
-	g_exit_code = execute_builtin_function(cmd_info.cmd_name, \
-		cmd_info.cmd_argv, env_list, SIMPLE_COMMAND);
 	init_cmd_info(&cmd_info, FREE);
 	rollback_origin_fd(origin_fd);
 	delete_heredoc_file(redirect_info.heredoc_file_num);
