@@ -74,7 +74,6 @@ static void	process_line(char *line, t_token *token_list, t_env_list *env_list)
 			{
 				expansion(token_list, env_list);
 				quote_removal(token_list);
-				echoctl_on();
 				execute_command(token_list, env_list);
 			}
 		}
