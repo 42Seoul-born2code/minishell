@@ -61,7 +61,8 @@ int	change_directories(char *argv, char **paths, t_env_list *env_list)
 	idx = -1;
 	old_pwd = getcwd(NULL, BUFSIZ);
 	result = try_to_move_directories(idx, argv, paths, env_list);
-	replace_env_value(env_list, "OLDPWD", old_pwd);
+	if (result != EXIT_ERROR)
+		replace_env_value(env_list, "OLDPWD", old_pwd);
 	free(old_pwd);
 	free_all(paths);
 	return (result);

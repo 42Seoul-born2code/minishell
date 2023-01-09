@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:16:43 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:16:51 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 11:51:32 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ char	*find_cmd_path(char *cmd, t_env_list *env_list)
 	char		*cmd_path;
 	char		**path_env;
 
+	if (ft_strlen(cmd) == 0)
+		return (NULL);
 	if (is_command_directory(cmd) == TRUE)
 		return (NULL);
 	if (access(cmd, F_OK | X_OK) == 0)

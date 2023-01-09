@@ -51,11 +51,12 @@ void	get_user_input(char *limiter, int heredoc_idx)
 
 void	check_heredoc(t_token *token_list)
 {
+	int				idx;
 	t_list			*curr_node;
 	t_token_node	*limiter_node;
 	t_token_node	*curr_token;
-	int				idx;
 
+	echoctl_off();
 	idx = 0;
 	curr_node = token_list->head_node;
 	g_exit_code = 0;
@@ -72,4 +73,5 @@ void	check_heredoc(t_token *token_list)
 		}
 		curr_node = curr_node->next;
 	}
+	echoctl_on();
 }

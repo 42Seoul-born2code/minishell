@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:50 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:54 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 20:25:08 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ static void	save_expanded_word(char *input, int *idx, t_word_list *word_list)
 	int				start;
 
 	*idx += 1;
+	if (ft_isdigit(input[*idx]) == TRUE)
+	{
+		*idx += 1;
+		return ;
+	}
 	start = *idx;
 	while (input[*idx] != '\0')
 	{

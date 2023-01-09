@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute_minishell.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
+/*   By: jeongkpa <jeongkpa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:42 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:46 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 16:01:15 by jeongkpa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
-
-static t_bool	is_all_whitespace(char *line);
-static void		free_list_nodes(t_token *lst);
-void			execute_minishell(t_token *token_list, t_env_list *env_list);
 
 /*
 	is_all_whitespace()	- Check if user input is all whitespace
@@ -67,6 +63,24 @@ static void	free_line_and_list(char *line, t_token *token_list)
 	free_list_nodes(token_list);
 }
 
+static void	process_line(char *line, t_token *token_list, t_env_list *env_list)
+{
+	if (is_all_whitespace(line) == FALSE)
+	{
+		if (tokenize_line(line, token_list) == EXIT_SUCCESS)
+		{
+			parsing(token_list);
+			if (syntax_analysis(token_list) == SYNTAX_OK)
+			{
+				expansion(token_list, env_list);
+				quote_removal(token_list);
+				execute_command(token_list, env_list);
+			}
+		}
+		add_history(line);
+	}
+}
+
 /*
 	execute_minishell()	- Execute command until signaled by SIGINT or EOF.
 
@@ -83,23 +97,14 @@ void	execute_minishell(t_token *token_list, t_env_list *env_list)
 	while (TRUE)
 	{
 		init_signal();
+		echoctl_off();
 		line = readline(PROMPT);
 		if (line == NULL)
-			break ;
-		if (is_all_whitespace(line) == FALSE)
 		{
-			if (tokenize_line(line, token_list) == EXIT_SUCCESS)
-			{
-				parsing(token_list);
-				if (syntax_analysis(token_list) == SYNTAX_OK)
-				{
-					expansion(token_list, env_list);
-					quote_removal(token_list);
-					execute_command(token_list, env_list);
-				}
-			}
-			add_history(line);
+			printf("exit\n");
+			break ;
 		}
+		process_line(line, token_list, env_list);
 		free_line_and_list(line, token_list);
 	}
 }

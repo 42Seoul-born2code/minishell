@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:17:44 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:17:58 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/08 13:10:47 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 	pid_t	pid;
 
 	change_signal();
+	if (redirect_info.type != NORMAL && g_exit_code == EXIT_FAILURE)
+		return ;
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
@@ -35,7 +37,8 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 			exit(execute_builtin_function(cmd_info->cmd_name, \
 					cmd_info->cmd_argv, env_list, MULTI_COMMAND));
 		else
-			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, env_list);
+			execute_cmd(cmd_info->cmd_name, cmd_info->cmd_argv, \
+						redirect_info, env_list);
 	}
 	else
 	{
@@ -44,7 +47,6 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 			g_exit_code = 128 + WTERMSIG(g_exit_code);
 		else
 			g_exit_code = WEXITSTATUS(g_exit_code);
-		close(STDIN_FILENO);
 	}
 }
 
