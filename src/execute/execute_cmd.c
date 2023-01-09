@@ -24,9 +24,9 @@ void	execute_cmd(char *cmd_name, char **cmd_argv, \
 	if (g_exit_code == 126)
 		exit(126);
 	if (redirect_info.heredoc_file_num > 0 && \
-		cmd_name == NULL && cmd_path == NULL)
+		cmd_name == NULL && cmd_path == NULL && redirect_info.type == NORMAL)
 		exit(EXIT_SUCCESS);
-	if (cmd_path == NULL)
+	if (cmd_path == NULL && redirect_info.type == NORMAL)
 	{
 		print_error(COMMAND_NOT_FOUND, cmd_name);
 		exit(ERROR_CODE_COMMAND_NOT_FOUND);
