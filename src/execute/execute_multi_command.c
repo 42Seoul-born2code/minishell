@@ -26,6 +26,8 @@ void	last_child_process(t_cmd_info *cmd_info, t_env_list *env_list, \
 	pid_t	pid;
 
 	change_signal();
+	if (redirect_info.type != NORMAL && g_exit_code == EXIT_FAILURE)
+		return ;
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
