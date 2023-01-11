@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:18:54 by joonhan           #+#    #+#             */
-/*   Updated: 2023/01/06 16:19:41 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/11 14:49:18 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define TOO_MANY_ARGUMNET		"❌ Error: too many arguments. "
 # define VARIABLE_IS_UNSET		"❌ Error: variable is unset. "
 # define NOT_VALID_IDENTIFIER	"❌ Error: not a valid identifier: "
+# define NO_SUCH_FILE_OR_DIR	"❌ Error: No such file or directory: "
 
 typedef enum e_kv_pair{
 	KEY,

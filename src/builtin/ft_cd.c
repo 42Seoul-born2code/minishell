@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:19:44 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/06 16:19:47 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/11 14:50:53 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ static int	move_to_env_path(char *env_path, t_env_list *env_list)
 	target_path = get_env_value(env_list, env_path);
 	if (chdir(target_path) == ERROR)
 	{
-		return (print_error(VARIABLE_IS_UNSET, env_path));
+		print_error(NO_SUCH_FILE_OR_DIR, target_path);
+		free(curr_path);
+		return (EXIT_FAILURE);
 	}
 	replace_env_value(env_list, "PWD", target_path);
 	replace_env_value(env_list, "OLDPWD", curr_path);
