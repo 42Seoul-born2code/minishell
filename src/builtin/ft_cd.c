@@ -6,7 +6,7 @@
 /*   By: joonhan <joonhan@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 16:19:44 by jeongkpa          #+#    #+#             */
-/*   Updated: 2023/01/06 16:19:47 by joonhan          ###   ########.fr       */
+/*   Updated: 2023/01/11 14:50:53 by joonhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ static int	move_to_env_path(char *env_path, t_env_list *env_list)
 	target_path = get_env_value(env_list, env_path);
 	if (chdir(target_path) == ERROR)
 	{
-		return (print_error(VARIABLE_IS_UNSET, env_path));
+		print_error(NO_SUCH_FILE_OR_DIR, target_path);
+		free(curr_path);
+		return (EXIT_FAILURE);
 	}
 	replace_env_value(env_list, "PWD", target_path);
 	replace_env_value(env_list, "OLDPWD", curr_path);
@@ -70,6 +72,7 @@ int	change_directories(char *argv, char **paths, t_env_list *env_list)
 
 int	ft_cd(char **argv, t_env_list *env_list)
 {
+	char	*old_pwd;
 	char	**paths;
 
 	if (argv[1] == NULL)
@@ -80,6 +83,15 @@ int	ft_cd(char **argv, t_env_list *env_list)
 	}
 	if (ft_strcmp(argv[1], "-") == 0 || ft_strcmp(argv[1], "--") == 0)
 		return (move_to_env_path("OLDPWD", env_list));
+	if (ft_strcmp(argv[1], "/") == 0)
+	{
+		old_pwd = getcwd(NULL, BUFSIZ);
+		replace_env_value(env_list, "PWD", "/");
+		replace_env_value(env_list, "OLDPWD", old_pwd);
+		free(old_pwd);
+		chdir("/");
+		return (EXIT_SUCCESS);
+	}
 	paths = ft_split(argv[1], '/');
 	return (change_directories(argv[1], paths, env_list));
 }
